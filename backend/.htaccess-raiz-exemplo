@@ -1,0 +1,18 @@
+# .htaccess - Raiz ccjv.com.br
+# Não modificar sem verificar impacto no site principal
+
+RewriteEngine On
+RewriteBase /
+
+# Forçar HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Se arquivo existe, serve diretamente
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Caso contrário, index.html
+DirectoryIndex index.html
+RewriteRule ^(.*)$ index.html [QSA,L]

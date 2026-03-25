@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Igreja Connect - Plataforma Digital para Igrejas</title>
+    <meta name="description" content="Crie o site da sua igreja em minutos. Plataforma completa com pedidos de oração, gestão de membros e muito mais." />
+    <meta name="author" content="Igreja Connect" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="icon" type="image/jpeg" href="/assets/church-logo.jpg" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="Igreja Connect - Plataforma para Igrejas" />
+    <meta property="og:description" content="Crie o site da sua igreja em minutos. Plataforma completa e fácil de usar." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/assets/hero-worship.jpg" />
+    <meta property="og:url" content="https://plataforma.ccjv.com.br" />
+    <meta property="og:site_name" content="Igreja Connect" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Igreja Connect" />
+    <meta name="twitter:description" content="Crie o site da sua igreja em minutos." />
+
+    <!-- Google Analytics 4 (Configurável via .env) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=%VITE_GA_ID%"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '%VITE_GA_ID%', {
+        page_title: document.title,
+        page_location: window.location.href
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

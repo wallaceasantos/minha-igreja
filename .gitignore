@@ -1,0 +1,55 @@
+# ============================================
+# VARIÁVEIS DE AMBIENTE
+# ============================================
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# ============================================
+# LOGS
+# ============================================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ============================================
+# DEPENDÊNCIAS
+# ============================================
+node_modules
+dist
+dist-ssr
+build
+
+# ============================================
+# EDITOR
+# ============================================
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ============================================
+# ARQUIVOS TEMPORÁRIOS
+# ============================================
+*.tmp
+*.temp
+.cache
+.parcel-cache
+
+# ============================================
+# SISTEMA OPERACIONAL
+# ============================================
+Thumbs.db
+.DS_Store
+._*
