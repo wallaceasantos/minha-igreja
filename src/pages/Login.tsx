@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react';
+import { buildApiUrl } from '@/lib/config';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,7 +41,7 @@ export default function Login() {
 
     try {
       // Chamar API de login
-      const response = await fetch('http://localhost:3000/api/auth/login', {
+      const response = await fetch(buildApiUrl('/api/auth/login'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
