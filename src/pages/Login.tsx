@@ -85,14 +85,14 @@ export default function Login() {
       localStorage.removeItem('redirectAfterLogin');
 
       // Redirecionar para o dashboard apropriado
-      if (isMainDomain) {
-        // Login na plataforma (super admin)
-        const userRole = localStorage.getItem('userRole');
-        if (userRole === 'super_admin') {
-          navigate(redirectPath || '/super-admin/dashboard');
-        } else {
-          navigate(redirectPath || '/admin/dashboard');
-        }
+      const userRole = localStorage.getItem('userRole');
+      
+      if (userRole === 'super_admin') {
+        // Super admin sempre vai para o dashboard da plataforma
+        navigate(redirectPath || '/super-admin/dashboard');
+      } else if (isMainDomain) {
+        // Login na plataforma (admin normal)
+        navigate(redirectPath || '/admin/dashboard');
       } else {
         // Login na igreja (admin local) - vai para dashboard
         navigate(redirectPath || '/admin/dashboard');

@@ -56,11 +56,19 @@ export function useDashboard(): UseDashboardReturn {
   useEffect(() => {
     const loadChurch = async () => {
       try {
-        // Pegar churchId e adminEmail do localStorage
+        // Pegar churchId, adminEmail e userRole do localStorage
         const churchId = localStorage.getItem('churchId');
         const adminEmail = localStorage.getItem('adminEmail');
+        const userRole = localStorage.getItem('userRole');
 
+        // Super admin pode não ter church_id - isso é normal
         if (!churchId) {
+          if (userRole === 'super_admin') {
+            // Super admin não precisa de dados de igreja
+            setChurch(null);
+            setLoading(false);
+            return;
+          }
           setError('Igreja não encontrada. Faça login novamente.');
           setLoading(false);
           return;
