@@ -94,8 +94,8 @@ export default function Login() {
           navigate(redirectPath || '/admin/dashboard');
         }
       } else {
-        // Login na igreja (admin local) - vai direto para configurações
-        navigate(redirectPath || '/admin/configuracoes');
+        // Login na igreja (admin local) - vai para dashboard
+        navigate(redirectPath || '/admin/dashboard');
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Erro ao fazer login';
