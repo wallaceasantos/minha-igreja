@@ -44,6 +44,7 @@ import {
   Save,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { buildApiUrl } from '@/lib/config';
 
 interface PlanConfig {
   plan_slug: string;
@@ -97,7 +98,7 @@ export default function SuperAdminPlans() {
   const loadPlanConfigs = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3000/api/admin/plan-settings', {
+      const response = await fetch(buildApiUrl('/api/admin/plan-settings'), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -140,7 +141,7 @@ export default function SuperAdminPlans() {
     if (!editingPlan) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/plan-settings/${editingPlan.plan_slug}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/plan-settings/${editingPlan.plan_slug}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -166,7 +167,7 @@ export default function SuperAdminPlans() {
 
   const applyQuickDiscount = async (planSlug: string, discount: number) => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/plan-settings/apply-discount', {
+      const response = await fetch(buildApiUrl('/api/admin/plan-settings/apply-discount'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

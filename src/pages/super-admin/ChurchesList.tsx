@@ -22,6 +22,7 @@ import {
   CreditCard
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { buildApiUrl } from '@/lib/config';
 
 export default function SuperAdminChurches() {
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ export default function SuperAdminChurches() {
         ...filters,
       });
 
-      const response = await fetch(`http://localhost:3000/api/admin/churches?${params}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/churches?${params}`), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -72,7 +73,7 @@ export default function SuperAdminChurches() {
   const handleSuspend = async (churchId: number, is_active: number) => {
     try {
       const action = is_active ? 'suspend' : 'reactivate';
-      const response = await fetch(`http://localhost:3000/api/admin/churches/${churchId}/${action}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/churches/${churchId}/${action}`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

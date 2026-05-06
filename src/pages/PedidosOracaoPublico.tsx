@@ -21,6 +21,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { HeartHandshake, Send, ShieldCheck, CheckCircle, Church, Heart, MapPin, Phone, Mail, ExternalLink, Menu, X, Sun, Moon, Facebook, Instagram, Youtube } from 'lucide-react';
 import emailjs from '@emailjs/browser';
+import { buildApiUrl } from '@/lib/config';
 
 export default function PedidosOracaoPublico() {
   const params = useParams();
@@ -112,7 +113,7 @@ ${church?.name || 'Nossa Igreja'}
     const loadChurch = async () => {
       try {
         const slug = params.slug || 'demo';
-        const response = await fetch(`http://localhost:3000/api/church/slug/${slug}`);
+        const response = await fetch(buildApiUrl(`/api/church/slug/${slug}`));
         const data = await response.json();
         
         if (data.success && data.data) {
@@ -153,7 +154,7 @@ ${church?.name || 'Nossa Igreja'}
       }
 
       // Enviar pedido
-      const response = await fetch('http://localhost:3000/api/pedidos/public', {
+      const response = await fetch(buildApiUrl('/api/pedidos/public'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

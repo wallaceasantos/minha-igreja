@@ -48,6 +48,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
+import { buildApiUrl } from '@/lib/config';
   LineChart as RechartsLineChart,
   Line,
   XAxis,
@@ -139,7 +140,7 @@ export default function SuperAdminReports() {
         ...advancedFilters,
       });
 
-      const response = await fetch(`http://localhost:3000/api/admin/reports/access-stats?${params}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/reports/access-stats?${params}`), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -163,7 +164,7 @@ export default function SuperAdminReports() {
       if (advancedFilters.status) params.append('status', advancedFilters.status);
       if (advancedFilters.method) params.append('method', advancedFilters.method);
 
-      const response = await fetch(`http://localhost:3000/api/admin/reports/top-pages?${params}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/reports/top-pages?${params}`), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -187,7 +188,7 @@ export default function SuperAdminReports() {
       if (advancedFilters.status) params.append('status', advancedFilters.status);
       if (advancedFilters.method) params.append('method', advancedFilters.method);
 
-      const response = await fetch(`http://localhost:3000/api/admin/reports/access-stats?${params}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/reports/access-stats?${params}`), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -211,7 +212,7 @@ export default function SuperAdminReports() {
       if (advancedFilters.status) params.append('status', advancedFilters.status);
       if (advancedFilters.method) params.append('method', advancedFilters.method);
 
-      const response = await fetch(`http://localhost:3000/api/admin/reports/hourly-traffic?${params}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/reports/hourly-traffic?${params}`), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -234,7 +235,7 @@ export default function SuperAdminReports() {
       if (advancedFilters.user_id) params.append('user_id', advancedFilters.user_id);
       if (advancedFilters.method) params.append('method', advancedFilters.method);
 
-      const response = await fetch(`http://localhost:3000/api/admin/reports/error-details?${params}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/reports/error-details?${params}`), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -258,7 +259,7 @@ export default function SuperAdminReports() {
       if (advancedFilters.status) params.append('status', advancedFilters.status);
       if (advancedFilters.method) params.append('method', advancedFilters.method);
 
-      const response = await fetch(`http://localhost:3000/api/admin/reports/user-activity?${params}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/reports/user-activity?${params}`), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -282,7 +283,7 @@ export default function SuperAdminReports() {
         ...advancedFilters,
       });
 
-      const response = await fetch(`http://localhost:3000/api/admin/reports/export?${params}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/reports/export?${params}`), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -316,7 +317,7 @@ export default function SuperAdminReports() {
         ...advancedFilters,
       });
 
-      const response = await fetch(`http://localhost:3000/api/admin/reports/export?${params}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/reports/export?${params}`), {
         headers: {
           'x-user-role': 'super_admin',
         },

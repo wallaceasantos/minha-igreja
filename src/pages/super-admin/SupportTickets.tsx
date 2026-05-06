@@ -51,6 +51,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { buildApiUrl } from '@/lib/config';
 
 const statusConfig: any = {
   open: { color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200', label: 'Aberto' },
@@ -127,7 +128,7 @@ export default function SuperAdminTickets() {
         ...filters,
       });
 
-      const response = await fetch(`http://localhost:3000/api/admin/tickets?${queryParams}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/tickets?${queryParams}`), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -149,7 +150,7 @@ export default function SuperAdminTickets() {
 
   const loadStats = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/tickets/stats', {
+      const response = await fetch(buildApiUrl('/api/admin/tickets/stats'), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -167,7 +168,7 @@ export default function SuperAdminTickets() {
 
   const loadAdmins = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/tickets/admins', {
+      const response = await fetch(buildApiUrl('/api/admin/tickets/admins'), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -185,7 +186,7 @@ export default function SuperAdminTickets() {
 
   const loadChurches = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/churches?limit=1000', {
+      const response = await fetch(buildApiUrl('/api/admin/churches?limit=1000'), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -204,7 +205,7 @@ export default function SuperAdminTickets() {
   const loadTicketDetails = async (id: string) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:3000/api/admin/tickets/${id}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/tickets/${id}`), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -240,7 +241,7 @@ export default function SuperAdminTickets() {
     setIsCreating(true);
 
     try {
-      const response = await fetch('http://localhost:3000/api/admin/tickets', {
+      const response = await fetch(buildApiUrl('/api/admin/tickets'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -284,7 +285,7 @@ export default function SuperAdminTickets() {
     if (!selectedTicket) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/tickets/${selectedTicket.id}/assign`, {
+      const response = await fetch(buildApiUrl(`/api/admin/tickets/${selectedTicket.id}/assign`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -317,7 +318,7 @@ export default function SuperAdminTickets() {
     if (!selectedTicket || !replyMessage.trim()) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/tickets/${selectedTicket.id}/reply`, {
+      const response = await fetch(buildApiUrl(`/api/admin/tickets/${selectedTicket.id}/reply`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -350,7 +351,7 @@ export default function SuperAdminTickets() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/tickets/${selectedTicket.id}/close`, {
+      const response = await fetch(buildApiUrl(`/api/admin/tickets/${selectedTicket.id}/close`), {
         method: 'POST',
         headers: {
           'x-user-role': 'super_admin',
@@ -377,7 +378,7 @@ export default function SuperAdminTickets() {
     if (!selectedTicket) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/tickets/${selectedTicket.id}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/tickets/${selectedTicket.id}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

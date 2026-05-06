@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useDashboard } from '@/hooks/useDashboard';
 import { toast } from 'sonner';
 import {
+import { buildApiUrl } from '@/lib/config';
   Crown,
   Check,
   ArrowLeft,
@@ -105,7 +106,7 @@ export default function Plans() {
 
     try {
       // Solicitar upgrade com trial
-      const response = await fetch('http://localhost:3000/api/admin/upgrade/request', {
+      const response = await fetch(buildApiUrl('/api/admin/upgrade/request'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

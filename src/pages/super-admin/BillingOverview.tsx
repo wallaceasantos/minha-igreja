@@ -23,6 +23,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { buildApiUrl } from '@/lib/config';
 
 export default function SuperAdminBilling() {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ export default function SuperAdminBilling() {
   const loadBilling = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3000/api/admin/billing/overview', {
+      const response = await fetch(buildApiUrl('/api/admin/billing/overview'), {
         headers: { 'x-user-role': 'super_admin' },
       });
       const result = await response.json();
@@ -54,7 +55,7 @@ export default function SuperAdminBilling() {
 
   const handleExport = async (type: string) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/billing/export?type=${type}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/billing/export?type=${type}`), {
         headers: { 'x-user-role': 'super_admin' },
       });
 
@@ -77,7 +78,7 @@ export default function SuperAdminBilling() {
 
   const handleExportPdf = async (type: string) => {
     try {
-      const url = `http://localhost:3000/api/admin/billing/export-pdf/${type}`;
+      const url = buildApiUrl(`/api/admin/billing/export-pdf/${type}`);
       
       // Criar link de download com header
       const link = document.createElement('a');

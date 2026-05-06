@@ -54,6 +54,7 @@ import {
   UserX,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { buildApiUrl } from '@/lib/config';
 
 export default function SuperAdminSecurity() {
   const navigate = useNavigate();
@@ -93,7 +94,7 @@ export default function SuperAdminSecurity() {
 
   const loadStats = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/security/stats', {
+      const response = await fetch(buildApiUrl('/api/admin/security/stats'), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -111,7 +112,7 @@ export default function SuperAdminSecurity() {
 
   const loadSessions = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/security/sessions?limit=10', {
+      const response = await fetch(buildApiUrl('/api/admin/security/sessions?limit=10'), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -129,7 +130,7 @@ export default function SuperAdminSecurity() {
 
   const loadBlockedIPs = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/security/blocked-ips?limit=10', {
+      const response = await fetch(buildApiUrl('/api/admin/security/blocked-ips?limit=10'), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -149,7 +150,7 @@ export default function SuperAdminSecurity() {
     if (!confirm(`Tem certeza que deseja revogar esta sessão${userName ? ` de ${userName}` : ''}? O usuário será desconectado imediatamente.`)) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/security/sessions/${sessionId}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/security/sessions/${sessionId}`), {
         method: 'DELETE',
         headers: {
           'x-user-role': 'super_admin',
@@ -184,7 +185,7 @@ export default function SuperAdminSecurity() {
     try {
       setLoading(true);
       const promises = selectedSessions.map(id =>
-        fetch(`http://localhost:3000/api/admin/security/sessions/${id}`, {
+        fetch(buildApiUrl(`/api/admin/security/sessions/${id}`), {
           method: 'DELETE',
           headers: {
             'x-user-role': 'super_admin',
@@ -214,7 +215,7 @@ export default function SuperAdminSecurity() {
 
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3000/api/admin/security/sessions/revoke-all', {
+      const response = await fetch(buildApiUrl('/api/admin/security/sessions/revoke-all'), {
         method: 'DELETE',
         headers: {
           'x-user-role': 'super_admin',
@@ -249,7 +250,7 @@ export default function SuperAdminSecurity() {
       const userSessionIds = sessions.filter(s => s.user_id === userId).map(s => s.id);
       
       const promises = userSessionIds.map(id =>
-        fetch(`http://localhost:3000/api/admin/security/sessions/${id}`, {
+        fetch(buildApiUrl(`/api/admin/security/sessions/${id}`), {
           method: 'DELETE',
           headers: {
             'x-user-role': 'super_admin',
@@ -294,7 +295,7 @@ export default function SuperAdminSecurity() {
     if (!confirm('Tem certeza que deseja desbloquear este IP?')) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/security/blocked-ips/${ipId}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/security/blocked-ips/${ipId}`), {
         method: 'DELETE',
         headers: {
           'x-user-role': 'super_admin',

@@ -54,6 +54,7 @@ import {
   Copy,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { buildApiUrl } from '@/lib/config';
 
 const typeConfig: any = {
   info: { color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200', icon: Info, label: 'Informativo' },
@@ -120,7 +121,7 @@ export default function SuperAdminAnnouncements() {
 
   const loadTemplates = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/templates?active_only=true', {
+      const response = await fetch(buildApiUrl('/api/admin/templates?active_only=true'), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -138,7 +139,7 @@ export default function SuperAdminAnnouncements() {
 
   const loadLiveStats = async (announcementId: number) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/announcements/${announcementId}/live-stats`, {
+      const response = await fetch(buildApiUrl(`/api/admin/announcements/${announcementId}/live-stats`), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -156,7 +157,7 @@ export default function SuperAdminAnnouncements() {
 
   const loadReaders = async (announcementId: number) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/announcements/${announcementId}/readers`, {
+      const response = await fetch(buildApiUrl(`/api/admin/announcements/${announcementId}/readers`), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -197,7 +198,7 @@ export default function SuperAdminAnnouncements() {
         ...filters,
       });
 
-      const response = await fetch(`http://localhost:3000/api/admin/announcements?${queryParams}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/announcements?${queryParams}`), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -219,7 +220,7 @@ export default function SuperAdminAnnouncements() {
 
   const loadStats = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/announcements/stats', {
+      const response = await fetch(buildApiUrl('/api/admin/announcements/stats'), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -257,7 +258,7 @@ export default function SuperAdminAnnouncements() {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/admin/announcements', {
+      const response = await fetch(buildApiUrl('/api/admin/announcements'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -314,7 +315,7 @@ export default function SuperAdminAnnouncements() {
     setIsSending(true);
 
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/announcements/${announcementId}/send`, {
+      const response = await fetch(buildApiUrl(`/api/admin/announcements/${announcementId}/send`), {
         method: 'POST',
         headers: {
           'x-user-role': 'super_admin',
@@ -346,7 +347,7 @@ export default function SuperAdminAnnouncements() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/announcements/${id}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/announcements/${id}`), {
         method: 'DELETE',
         headers: {
           'x-user-role': 'super_admin',
@@ -370,7 +371,7 @@ export default function SuperAdminAnnouncements() {
 
   const handleView = async (id: number) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/announcements/${id}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/announcements/${id}`), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -417,7 +418,7 @@ export default function SuperAdminAnnouncements() {
     toast.success(`Template "${template.name}" carregado!`);
     
     // Registrar uso do template
-    fetch(`http://localhost:3000/api/admin/templates/${template.id}/use`, {
+    fetch(buildApiUrl(`/api/admin/templates/${template.id}/use`), {
       method: 'POST',
       headers: {
         'x-user-role': 'super_admin',

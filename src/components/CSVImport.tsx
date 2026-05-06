@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Upload, Download, FileText, CheckCircle, AlertCircle, X } from 'lucide-react';
+import { buildApiUrl } from '@/lib/config';
 
 interface CSVImportDialogProps {
   open: boolean;
@@ -38,7 +39,7 @@ export default function CSVImportDialog({
 
   // Baixar template CSV
   const handleDownloadTemplate = () => {
-    window.open(`http://localhost:3000/api/members/import-template?church_id=${churchId}`, '_blank');
+    window.open(buildApiUrl(`/api/members/import-template?church_id=${churchId}`), '_blank');
   };
 
   // Selecionar arquivo
@@ -81,7 +82,7 @@ export default function CSVImportDialog({
       const formData = new FormData();
       formData.append('file', selectedFile);
 
-      const response = await fetch(`http://localhost:3000/api/members/import-csv?church_id=${churchId}`, {
+      const response = await fetch(buildApiUrl(`/api/members/import-csv?church_id=${churchId}`), {
         method: 'POST',
         body: formData,
       });

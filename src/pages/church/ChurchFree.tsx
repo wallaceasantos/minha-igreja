@@ -9,6 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ChurchHeader, ChurchFooter, MinistryCard, ServiceCard, EventCard } from './ChurchBase';
 import type { ChurchData, Ministry, Service, Event } from './ChurchBase';
 import { toast } from 'sonner';
+import { buildApiUrl } from '@/lib/config';
 
 export default function ChurchFree() {
   const { slug } = useParams<{ slug: string }>();
@@ -28,7 +29,7 @@ export default function ChurchFree() {
       setLoading(true);
       
       // Carregar dados da igreja
-      const churchRes = await fetch(`http://localhost:3000/api/church/slug/${slug}`);
+      const churchRes = await fetch(buildApiUrl(`/api/church/slug/${slug}`));
       const churchData = await churchRes.json();
       
       if (churchData.success) {
@@ -53,19 +54,19 @@ export default function ChurchFree() {
   };
 
   const loadMinistries = async (churchId: number) => {
-    const res = await fetch(`http://localhost:3000/api/ministries?church_id=${churchId}`);
+    const res = await fetch(buildApiUrl(`/api/ministries?church_id=${churchId}`));
     const data = await res.json();
     if (data.success) setMinistries(data.data);
   };
 
   const loadServices = async (churchId: number) => {
-    const res = await fetch(`http://localhost:3000/api/services?church_id=${churchId}`);
+    const res = await fetch(buildApiUrl(`/api/services?church_id=${churchId}`));
     const data = await res.json();
     if (data.success) setServices(data.data);
   };
 
   const loadEvents = async (churchId: number) => {
-    const res = await fetch(`http://localhost:3000/api/events?church_id=${churchId}`);
+    const res = await fetch(buildApiUrl(`/api/events?church_id=${churchId}`));
     const data = await res.json();
     if (data.success) setEvents(data.data);
   };

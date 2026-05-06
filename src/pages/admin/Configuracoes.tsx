@@ -21,6 +21,7 @@ import { useDashboard } from '@/hooks/useDashboard';
 import DomainValidator from '@/components/DomainValidator';
 import { toast } from 'sonner';
 import {
+import { buildApiUrl } from '@/lib/config';
   Church,
   Upload,
   MapPin,
@@ -198,7 +199,7 @@ export default function AdminConfiguracoes() {
       };
 
       // Salvar configurações básicas
-      const configResponse = await fetch(`http://localhost:3000/api/church/${churchId}/config`, {
+      const configResponse = await fetch(buildApiUrl(`/api/church/${churchId}/config`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -238,7 +239,7 @@ export default function AdminConfiguracoes() {
     setSaving(true);
 
     try {
-      const response = await fetch('http://localhost:3000/api/admin/domain/request', {
+      const response = await fetch(buildApiUrl('/api/admin/domain/request'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -312,7 +313,7 @@ export default function AdminConfiguracoes() {
       const formData = new FormData();
       formData.append('logo', file);
 
-      const response = await fetch(`http://localhost:3000/api/church/${churchId}/logo`, {
+      const response = await fetch(buildApiUrl(`/api/church/${churchId}/logo`), {
         method: 'POST',
         headers: {
           'x-church-id': String(churchId),

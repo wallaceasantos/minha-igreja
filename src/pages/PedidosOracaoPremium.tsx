@@ -23,6 +23,7 @@ import { toast } from 'sonner';
 import { ChurchHeader, ChurchFooter } from './church/ChurchBase';
 import emailjs from '@emailjs/browser';
 import {
+import { buildApiUrl } from '@/lib/config';
   Heart,
   Send,
   Shield,
@@ -59,7 +60,7 @@ export default function PedidosOracaoPremium() {
 
   const loadChurchData = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/church/slug/${slug}`);
+      const res = await fetch(buildApiUrl(`/api/church/slug/${slug}`));
       const data = await res.json();
 
       if (data.success) {
@@ -77,7 +78,7 @@ export default function PedidosOracaoPremium() {
 
   const loadPrayerCount = async (churchId: number) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/pedidos?church_id=${churchId}`);
+      const res = await fetch(buildApiUrl(`/api/pedidos?church_id=${churchId}`));
       const data = await res.json();
       if (data.success) {
         setPrayerCount(data.data?.length || 0);
@@ -196,7 +197,7 @@ ${church?.name || 'Nossa Igreja'}
         throw new Error('Igreja não encontrada');
       }
 
-      const response = await fetch('http://localhost:3000/api/pedidos', {
+      const response = await fetch(buildApiUrl('/api/pedidos'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

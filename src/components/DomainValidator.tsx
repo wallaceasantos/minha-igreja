@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { Check, X, Loader, AlertCircle, ExternalLink } from 'lucide-react';
+import { buildApiUrl } from '@/lib/config';
 
 interface DomainValidationProps {
   domain: string;
@@ -39,7 +40,7 @@ export default function DomainValidator({ domain, onValidated }: DomainValidatio
 
       try {
         // 1. Validar formato
-        const formatResponse = await fetch('http://localhost:3000/api/admin/domain/validate', {
+        const formatResponse = await fetch(buildApiUrl('/api/admin/domain/validate'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ domain }),
@@ -61,7 +62,7 @@ export default function DomainValidator({ domain, onValidated }: DomainValidatio
 
         // 2. Verificar se já está registrado
         const checkResponse = await fetch(
-          `http://localhost:3000/api/admin/domain/check?domain=${encodeURIComponent(domain)}`
+          buildApiUrl(`/api/admin/domain/check?domain=${encodeURIComponent(domain)}`)
         );
 
         const checkResult = await checkResponse.json();
@@ -80,7 +81,7 @@ export default function DomainValidator({ domain, onValidated }: DomainValidatio
 
         // 3. Check básico de DNS
         const dnsResponse = await fetch(
-          `http://localhost:3000/api/admin/domain/dns-check?domain=${encodeURIComponent(domain)}`
+          buildApiUrl(`/api/admin/domain/dns-check?domain=${encodeURIComponent(domain)}`)
         );
 
         const dnsResult = await dnsResponse.json();

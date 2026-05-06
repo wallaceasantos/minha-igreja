@@ -19,6 +19,7 @@ import {
   DollarSign
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { buildApiUrl } from '@/lib/config';
 
 export default function SuperAdminChurchPlans() {
   const { id } = useParams();
@@ -36,7 +37,7 @@ export default function SuperAdminChurchPlans() {
   const loadChurch = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:3000/api/admin/churches/${id}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/churches/${id}`), {
         headers: { 'x-user-role': 'super_admin' },
       });
       const result = await response.json();
@@ -55,7 +56,7 @@ export default function SuperAdminChurchPlans() {
   const handleChangePlan = async () => {
     try {
       setSaving(true);
-      const response = await fetch(`http://localhost:3000/api/admin/churches/${id}/plans`, {
+      const response = await fetch(buildApiUrl(`/api/admin/churches/${id}/plans`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

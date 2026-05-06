@@ -10,6 +10,7 @@ import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { buildApiUrl } from '@/lib/config';
 
 // Páginas
 const LandingPage = lazy(() => import("./pages/LandingPage"));
@@ -56,7 +57,7 @@ const PedidosOracaoRouter = () => {
   useEffect(() => {
     const loadChurchPlan = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/church/slug/${slug}`);
+        const res = await fetch(buildApiUrl(`/api/church/slug/${slug}`));
         const data = await res.json();
         
         if (data.success) {

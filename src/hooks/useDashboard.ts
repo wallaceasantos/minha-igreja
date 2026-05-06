@@ -8,6 +8,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { buildApiUrl } from '@/lib/config';
 
 export interface ChurchData {
   id: number;
@@ -66,7 +67,7 @@ export function useDashboard(): UseDashboardReturn {
         }
 
         // Buscar dados da igreja do backend
-        const response = await fetch(`http://localhost:3000/api/church/${churchId}`);
+        const response = await fetch(buildApiUrl(`/api/church/${churchId}`));
         const result = await response.json();
 
         if (result.success && result.data) {

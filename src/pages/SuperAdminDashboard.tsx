@@ -29,6 +29,7 @@ import {
   Globe,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { buildApiUrl } from '@/lib/config';
 
 export default function SuperAdminDashboard() {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ export default function SuperAdminDashboard() {
       setError(null);
 
       // Buscar estatísticas
-      const statsRes = await fetch('http://localhost:3000/api/admin/stats', {
+      const statsRes = await fetch(buildApiUrl('/api/admin/stats'), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -64,7 +65,7 @@ export default function SuperAdminDashboard() {
       }
 
       // Buscar receita
-      const revenueRes = await fetch('http://localhost:3000/api/admin/revenue', {
+      const revenueRes = await fetch(buildApiUrl('/api/admin/revenue'), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -75,7 +76,7 @@ export default function SuperAdminDashboard() {
       }
 
       // Buscar igrejas recentes
-      const churchesRes = await fetch('http://localhost:3000/api/admin/recent-churches?limit=5', {
+      const churchesRes = await fetch(buildApiUrl('/api/admin/recent-churches?limit=5'), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -86,7 +87,7 @@ export default function SuperAdminDashboard() {
       }
 
       // Buscar trials acabando
-      const trialsRes = await fetch('http://localhost:3000/api/admin/trials-ending?days=7', {
+      const trialsRes = await fetch(buildApiUrl('/api/admin/trials-ending?days=7'), {
         headers: {
           'x-user-role': 'super_admin',
         },

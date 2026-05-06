@@ -35,6 +35,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useNavigate } from 'react-router-dom';
+import { buildApiUrl } from '@/lib/config';
 
 interface Event {
   id: number;
@@ -92,7 +93,7 @@ export default function Eventos() {
         params.append('search', searchTerm);
       }
 
-      const response = await fetch(`http://localhost:3000/api/events?${params}`);
+      const response = await fetch(buildApiUrl(`/api/events?${params}`));
       const result = await response.json();
 
       if (result.success) {
@@ -109,7 +110,7 @@ export default function Eventos() {
   const loadStats = async () => {
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch(`http://localhost:3000/api/events/stats/overview?church_id=${churchId}`);
+      const response = await fetch(buildApiUrl(`/api/events/stats/overview?church_id=${churchId}`));
       const result = await response.json();
 
       if (result.success) {
@@ -164,8 +165,8 @@ export default function Eventos() {
     try {
       const churchId = localStorage.getItem('churchId');
       const url = editingEvent 
-        ? `http://localhost:3000/api/events/${editingEvent.id}`
-        : `http://localhost:3000/api/events`;
+        ? buildApiUrl(`/api/events/${editingEvent.id}`)
+        : buildApiUrl(`/api/events`);
       
       const params = new URLSearchParams({ church_id: churchId || '' });
       const method = editingEvent ? 'PUT' : 'POST';
@@ -197,7 +198,7 @@ export default function Eventos() {
 
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch(`http://localhost:3000/api/events/${eventId}?church_id=${churchId}`, {
+      const response = await fetch(buildApiUrl(`/api/events/${eventId}?church_id=${churchId}`), {
         method: 'DELETE'
       });
 

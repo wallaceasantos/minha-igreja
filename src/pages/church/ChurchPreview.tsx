@@ -11,6 +11,7 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import ChurchFree from './ChurchFree';
 import ChurchPremium from './ChurchPremium';
+import { buildApiUrl } from '@/lib/config';
 
 export default function ChurchPreview() {
   const { slug } = useParams<{ slug: string }>();
@@ -26,7 +27,7 @@ export default function ChurchPreview() {
     try {
       setLoading(true);
 
-      const res = await fetch(`http://localhost:3000/api/church/slug/${slug}`);
+      const res = await fetch(buildApiUrl(`/api/church/slug/${slug}`));
       const data = await res.json();
 
       if (data.success) {

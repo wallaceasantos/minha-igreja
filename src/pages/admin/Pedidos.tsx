@@ -43,6 +43,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useDashboard } from '@/hooks/useDashboard';
+import { buildApiUrl } from '@/lib/config';
 
 interface Pedido {
   id: number;
@@ -112,7 +113,7 @@ export default function Pedidos() {
 
       // Se for para mostrar apenas pedidos antigos (> 7 dias)
       if (showOldPendingOnly) {
-        response = await fetch(`http://localhost:3000/api/pedidos/old-pending?church_id=${churchId}`);
+        response = await fetch(buildApiUrl(`/api/pedidos/old-pending?church_id=${churchId}`));
         result = await response.json();
         if (result.success) {
           setPedidos(result.data);
@@ -126,7 +127,7 @@ export default function Pedidos() {
           params.append('status', statusFilter);
         }
 
-        response = await fetch(`http://localhost:3000/api/pedidos?${params}`);
+        response = await fetch(buildApiUrl(`/api/pedidos?${params}`));
         result = await response.json();
 
         if (result.success) {
@@ -144,7 +145,7 @@ export default function Pedidos() {
   const loadStats = async () => {
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch(`http://localhost:3000/api/pedidos/stats/overview?church_id=${churchId}`);
+      const response = await fetch(buildApiUrl(`/api/pedidos/stats/overview?church_id=${churchId}`));
       const result = await response.json();
 
       if (result.success) {
@@ -158,7 +159,7 @@ export default function Pedidos() {
   const handleToggleAtendido = async (pedido: Pedido) => {
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch(`http://localhost:3000/api/pedidos/${pedido.id}?church_id=${churchId}`, {
+      const response = await fetch(buildApiUrl(`/api/pedidos/${pedido.id}?church_id=${churchId}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -186,7 +187,7 @@ export default function Pedidos() {
   const handleMarkAsAnswered = async (pedido: Pedido) => {
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch(`http://localhost:3000/api/pedidos/${pedido.id}?church_id=${churchId}`, {
+      const response = await fetch(buildApiUrl(`/api/pedidos/${pedido.id}?church_id=${churchId}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -216,7 +217,7 @@ export default function Pedidos() {
     
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch(`http://localhost:3000/api/pedidos/${pedido.id}?church_id=${churchId}`, {
+      const response = await fetch(buildApiUrl(`/api/pedidos/${pedido.id}?church_id=${churchId}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

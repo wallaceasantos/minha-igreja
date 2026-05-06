@@ -25,6 +25,7 @@ import {
   Shield
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { buildApiUrl } from '@/lib/config';
 
 export default function SuperAdminUsers() {
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ export default function SuperAdminUsers() {
         ...filters,
       });
 
-      const response = await fetch(`http://localhost:3000/api/admin/users?${params}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/users?${params}`), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -75,7 +76,7 @@ export default function SuperAdminUsers() {
   const handleBan = async (userId: number, is_active: number) => {
     try {
       const action = is_active ? 'ban' : 'reactivate';
-      const response = await fetch(`http://localhost:3000/api/admin/users/${userId}/${action}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/users/${userId}/${action}`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +100,7 @@ export default function SuperAdminUsers() {
     const tempPassword = 'temp123456';
     
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/users/${userId}/reset-password`, {
+      const response = await fetch(buildApiUrl(`/api/admin/users/${userId}/reset-password`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -124,7 +125,7 @@ export default function SuperAdminUsers() {
     if (!confirm('Tem certeza que deseja excluir este usuário?')) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/users/${userId}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/users/${userId}`), {
         method: 'DELETE',
         headers: {
           'x-user-role': 'super_admin',

@@ -36,6 +36,7 @@ import {
 } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { buildApiUrl } from '@/lib/config';
 
 interface Service {
   id: number;
@@ -83,7 +84,7 @@ export default function Cultos() {
   const loadServices = async () => {
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch(`http://localhost:3000/api/services?church_id=${churchId}`);
+      const response = await fetch(buildApiUrl(`/api/services?church_id=${churchId}`));
       const result = await response.json();
 
       if (result.success) {
@@ -164,8 +165,8 @@ export default function Cultos() {
     try {
       const churchId = localStorage.getItem('churchId');
       const url = editingService 
-        ? `http://localhost:3000/api/services/${editingService.id}`
-        : `http://localhost:3000/api/services`;
+        ? buildApiUrl(`/api/services/${editingService.id}`)
+        : buildApiUrl(`/api/services`);
       
       const params = new URLSearchParams({ church_id: churchId || '' });
       const method = editingService ? 'PUT' : 'POST';
@@ -224,7 +225,7 @@ export default function Cultos() {
   const handleToggleStatus = async (service: Service) => {
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch(`http://localhost:3000/api/services/${service.id}?church_id=${churchId}`, {
+      const response = await fetch(buildApiUrl(`/api/services/${service.id}?church_id=${churchId}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -436,7 +437,7 @@ export default function Cultos() {
                               if (confirm(`Excluir todos os ${services.length} cultos?`)) {
                                 Promise.all(
                                   services.map(s => 
-                                    fetch(`http://localhost:3000/api/services/${s.id}?church_id=${localStorage.getItem('churchId')}`, {
+                                    fetch(buildApiUrl(`/api/services/${s.id}?church_id=${localStorage.getItem('churchId')}`), {
                                       method: 'DELETE'
                                     })
                                   )

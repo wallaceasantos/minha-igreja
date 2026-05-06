@@ -51,6 +51,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import {
+import { buildApiUrl } from '@/lib/config';
   Table,
   TableBody,
   TableCell,
@@ -345,7 +346,7 @@ export default function Membros() {
       const churchId = localStorage.getItem('churchId');
 
       // Upload para servidor local
-      const response = await fetch('http://localhost:3000/api/uploads/membro', {
+      const response = await fetch(buildApiUrl('/api/uploads/membro'), {
         method: 'POST',
         headers: {
           'x-church-id': churchId || ''
@@ -356,7 +357,7 @@ export default function Membros() {
       const data = await response.json();
 
       if (data.success && data.data.photoUrl) {
-        const fullPhotoUrl = `http://localhost:3000${data.data.photoUrl}`;
+        const fullPhotoUrl = buildApiUrl(data.data.photoUrl);
         setFormData({ ...formData, photo_url: fullPhotoUrl });
         setPhotoPreview(fullPhotoUrl);
         toast.success('Foto carregada com sucesso!', {
@@ -420,7 +421,7 @@ export default function Membros() {
 
       console.log('🔍 Buscando membros com params:', params.toString());
 
-      const response = await fetch(`http://localhost:3000/api/members?${params}`);
+      const response = await fetch(buildApiUrl(`/api/members?${params}`));
       const result = await response.json();
 
       console.log('📦 Resultado da API:', result);
@@ -441,7 +442,7 @@ export default function Membros() {
   const loadStats = async () => {
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch(`http://localhost:3000/api/members/stats/overview?church_id=${churchId}`);
+      const response = await fetch(buildApiUrl(`/api/members/stats/overview?church_id=${churchId}`));
       const result = await response.json();
 
       if (result.success) {
@@ -463,7 +464,7 @@ export default function Membros() {
   // Exportar membros em CSV
   const handleExportCSV = () => {
     const churchId = localStorage.getItem('churchId');
-    const url = `http://localhost:3000/api/members/export-csv?church_id=${churchId}`;
+    const url = buildApiUrl(`/api/members/export-csv?church_id=${churchId}`);
     
     // Criar link temporário para download
     const link = document.createElement('a');
@@ -479,7 +480,7 @@ export default function Membros() {
   // Backup completo dos dados
   const handleBackup = () => {
     const churchId = localStorage.getItem('churchId');
-    const url = `http://localhost:3000/api/members/backup?church_id=${churchId}`;
+    const url = buildApiUrl(`/api/members/backup?church_id=${churchId}`);
     
     // Criar link temporário para download
     const link = document.createElement('a');
@@ -606,8 +607,8 @@ export default function Membros() {
       };
 
       const url = editingMember
-        ? `http://localhost:3000/api/members/${editingMember.id}?church_id=${churchId}`
-        : `http://localhost:3000/api/members?church_id=${churchId}`;
+        ? buildApiUrl(`/api/members/${editingMember.id}?church_id=${churchId}`)
+        : buildApiUrl(`/api/members?church_id=${churchId}`);
 
       const method = editingMember ? 'PUT' : 'POST';
 
@@ -638,7 +639,7 @@ export default function Membros() {
 
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch(`http://localhost:3000/api/members/${memberId}?church_id=${churchId}`, {
+      const response = await fetch(buildApiUrl(`/api/members/${memberId}?church_id=${churchId}`), {
         method: 'DELETE'
       });
 
@@ -664,7 +665,7 @@ export default function Membros() {
     setProfileDialogOpen(true);
 
     try {
-      const response = await fetch(`http://localhost:3000/api/members/${memberId}/profile`);
+      const response = await fetch(buildApiUrl(`/api/members/${memberId}/profile`));
       const result = await response.json();
 
       if (result.success) {
@@ -724,7 +725,7 @@ export default function Membros() {
   const handleToggleStatus = async (member: Member) => {
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch(`http://localhost:3000/api/members/${member.id}?church_id=${churchId}`, {
+      const response = await fetch(buildApiUrl(`/api/members/${member.id}?church_id=${churchId}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

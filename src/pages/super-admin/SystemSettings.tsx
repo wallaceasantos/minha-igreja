@@ -50,6 +50,7 @@ import {
   X,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { buildApiUrl } from '@/lib/config';
 
 export default function SuperAdminSettings() {
   const navigate = useNavigate();
@@ -79,7 +80,7 @@ export default function SuperAdminSettings() {
   const loadSettings = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3000/api/admin/settings', {
+      const response = await fetch(buildApiUrl('/api/admin/settings'), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -302,7 +303,7 @@ export default function SuperAdminSettings() {
         });
       }
 
-      const response = await fetch('http://localhost:3000/api/admin/settings/bulk', {
+      const response = await fetch(buildApiUrl('/api/admin/settings/bulk'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -341,7 +342,7 @@ export default function SuperAdminSettings() {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/api/admin/settings/test-email', {
+      const response = await fetch(buildApiUrl('/api/admin/settings/test-email'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -365,7 +366,7 @@ export default function SuperAdminSettings() {
 
   const handleTestSmtp = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/settings/test-smtp', {
+      const response = await fetch(buildApiUrl('/api/admin/settings/test-smtp'), {
         method: 'POST',
         headers: {
           'x-user-role': 'super_admin',

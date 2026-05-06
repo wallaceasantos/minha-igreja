@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { buildApiUrl } from '@/lib/config';
 
 export default function SuperAdminDelinquency() {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ export default function SuperAdminDelinquency() {
       setLoading(true);
 
       // Buscar estatísticas
-      const statsRes = await fetch('http://localhost:3000/api/admin/delinquency/stats', {
+      const statsRes = await fetch(buildApiUrl('/api/admin/delinquency/stats'), {
         headers: { 'x-user-role': 'super_admin' },
       });
       const statsData = await statsRes.json();
@@ -59,7 +60,7 @@ export default function SuperAdminDelinquency() {
       }
 
       // Buscar lista de inadimplentes
-      const churchesRes = await fetch(`http://localhost:3000/api/admin/delinquency?status=${filter}`, {
+      const churchesRes = await fetch(buildApiUrl(`/api/admin/delinquency?status=${filter}`), {
         headers: { 'x-user-role': 'super_admin' },
       });
       const churchesData = await churchesRes.json();
@@ -78,7 +79,7 @@ export default function SuperAdminDelinquency() {
 
   const handleSendReminder = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/delinquency/${selectedChurch.id}/send-reminder`, {
+      const response = await fetch(buildApiUrl(`/api/admin/delinquency/${selectedChurch.id}/send-reminder`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -109,7 +110,7 @@ export default function SuperAdminDelinquency() {
 
   const handleSuspend = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/delinquency/${selectedChurch.id}/suspend`, {
+      const response = await fetch(buildApiUrl(`/api/admin/delinquency/${selectedChurch.id}/suspend`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -140,7 +141,7 @@ export default function SuperAdminDelinquency() {
 
   const handleCancel = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/delinquency/${selectedChurch.id}/cancel`, {
+      const response = await fetch(buildApiUrl(`/api/admin/delinquency/${selectedChurch.id}/cancel`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

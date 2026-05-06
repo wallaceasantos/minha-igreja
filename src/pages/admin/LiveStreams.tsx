@@ -34,6 +34,7 @@ import {
   StopCircle
 } from 'lucide-react';
 import ReactPlayer from 'react-player/youtube';
+import { buildApiUrl } from '@/lib/config';
 
 interface LiveStream {
   id: number;
@@ -73,7 +74,7 @@ export default function AdminLiveStreams() {
       setLoading(true);
       const churchId = localStorage.getItem('churchId');
       
-      const response = await fetch(`http://localhost:3000/api/church/${churchId}/live-streams`);
+      const response = await fetch(buildApiUrl(`/api/church/${churchId}/live-streams`));
       const result = await response.json();
       
       if (result.success) {
@@ -99,7 +100,7 @@ export default function AdminLiveStreams() {
       // Extrair video ID do YouTube se tiver URL
       const videoId = youtubeUrl ? extractVideoId(youtubeUrl) : null;
 
-      const response = await fetch(`http://localhost:3000/api/church/admin/live-streams`, {
+      const response = await fetch(buildApiUrl(`/api/church/admin/live-streams`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -139,7 +140,7 @@ export default function AdminLiveStreams() {
     if (!confirm('Tem certeza que deseja excluir esta transmissão?')) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/church/admin/live-streams/${id}`, {
+      const response = await fetch(buildApiUrl(`/api/church/admin/live-streams/${id}`), {
         method: 'DELETE',
         headers: {
           'x-church-id': localStorage.getItem('churchId') || '',

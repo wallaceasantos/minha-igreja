@@ -43,6 +43,7 @@ import {
   MoveDown
 } from 'lucide-react';
 import { useDashboard } from '@/hooks/useDashboard';
+import { buildApiUrl } from '@/lib/config';
 
 interface GalleryImage {
   id: number;
@@ -80,7 +81,7 @@ export default function AdminChurchGallery() {
       const churchId = localStorage.getItem('churchId');
       
       // Usar rota de admin que retorna TODAS as imagens (ativas e inativas)
-      const response = await fetch(`http://localhost:3000/api/gallery/admin/church/gallery`, {
+      const response = await fetch(buildApiUrl(`/api/gallery/admin/church/gallery`), {
         headers: {
           'x-church-id': churchId || '',
         },
@@ -158,7 +159,7 @@ export default function AdminChurchGallery() {
         formData.append('title', title || file.name.split('.')[0]);
         formData.append('description', description || '');
 
-        const response = await fetch('http://localhost:3000/api/gallery/admin/church/gallery/upload', {
+        const response = await fetch(buildApiUrl('/api/gallery/admin/church/gallery/upload'), {
           method: 'POST',
           headers: {
             'x-church-id': churchId || '',
@@ -211,7 +212,7 @@ export default function AdminChurchGallery() {
 
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch(`http://localhost:3000/api/gallery/admin/church/gallery/${selectedImage.id}`, {
+      const response = await fetch(buildApiUrl(`/api/gallery/admin/church/gallery/${selectedImage.id}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -243,7 +244,7 @@ export default function AdminChurchGallery() {
 
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch(`http://localhost:3000/api/gallery/admin/church/gallery/${selectedImage.id}`, {
+      const response = await fetch(buildApiUrl(`/api/gallery/admin/church/gallery/${selectedImage.id}`), {
         method: 'DELETE',
         headers: {
           'x-church-id': churchId || '',
@@ -272,7 +273,7 @@ export default function AdminChurchGallery() {
       
       console.log('🔄 Toggle visibility:', { imageId: image.id, current: image.is_active, new: newStatus });
       
-      const response = await fetch(`http://localhost:3000/api/gallery/admin/church/gallery/${image.id}`, {
+      const response = await fetch(buildApiUrl(`/api/gallery/admin/church/gallery/${image.id}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -323,7 +324,7 @@ export default function AdminChurchGallery() {
       for (let i = 0; i < newImages.length; i++) {
         const image = newImages[i];
         if (!image) continue;
-        await fetch(`http://localhost:3000/api/gallery/admin/church/gallery/${image.id}`, {
+        await fetch(buildApiUrl(`/api/gallery/admin/church/gallery/${image.id}`), {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

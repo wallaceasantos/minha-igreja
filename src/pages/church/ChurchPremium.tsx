@@ -14,6 +14,7 @@ import { toast } from 'sonner';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 import {
+import { buildApiUrl } from '@/lib/config';
   Heart,
   Users,
   MapPin,
@@ -54,7 +55,7 @@ export default function ChurchPremium() {
     try {
       setLoading(true);
       
-      const churchRes = await fetch(`http://localhost:3000/api/church/slug/${slug}`);
+      const churchRes = await fetch(buildApiUrl(`/api/church/slug/${slug}`));
       const churchData = await churchRes.json();
       
       if (churchData.success) {
@@ -81,19 +82,19 @@ export default function ChurchPremium() {
   };
 
   const loadMinistries = async (churchId: number) => {
-    const res = await fetch(`http://localhost:3000/api/ministries?church_id=${churchId}`);
+    const res = await fetch(buildApiUrl(`/api/ministries?church_id=${churchId}`));
     const data = await res.json();
     if (data.success) setMinistries(data.data);
   };
 
   const loadServices = async (churchId: number) => {
-    const res = await fetch(`http://localhost:3000/api/services?church_id=${churchId}`);
+    const res = await fetch(buildApiUrl(`/api/services?church_id=${churchId}`));
     const data = await res.json();
     if (data.success) setServices(data.data);
   };
 
   const loadEvents = async (churchId: number) => {
-    const res = await fetch(`http://localhost:3000/api/events?church_id=${churchId}`);
+    const res = await fetch(buildApiUrl(`/api/events?church_id=${churchId}`));
     const data = await res.json();
     if (data.success) {
       setEvents(data.data);
@@ -103,18 +104,18 @@ export default function ChurchPremium() {
 
   const loadStats = async (churchId: number) => {
     // Carregar estatísticas
-    const membersRes = await fetch(`http://localhost:3000/api/members?church_id=${churchId}`);
+    const membersRes = await fetch(buildApiUrl(`/api/members?church_id=${churchId}`));
     const membersData = await membersRes.json();
     if (membersData.success) setMemberCount(membersData.data?.length || 0);
 
-    const prayersRes = await fetch(`http://localhost:3000/api/pedidos?church_id=${churchId}`);
+    const prayersRes = await fetch(buildApiUrl(`/api/pedidos?church_id=${churchId}`));
     const prayersData = await prayersRes.json();
     if (prayersData.success) setPrayerCount(prayersData.data?.length || 0);
   };
 
   const loadGallery = async (churchId: number) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/gallery/church/${churchId}/gallery`);
+      const res = await fetch(buildApiUrl(`/api/gallery/church/${churchId}/gallery`));
       const data = await res.json();
       if (data.success) {
         setGallery(data.data);
@@ -126,7 +127,7 @@ export default function ChurchPremium() {
 
   const loadLiveStreams = async (churchId: number) => {
     try {
-      const res = await fetch(`http://localhost:3000/api/church/${churchId}/live-streams`);
+      const res = await fetch(buildApiUrl(`/api/church/${churchId}/live-streams`));
       const data = await res.json();
       if (data.success) {
         // Filtrar apenas lives ativas e não encerradas

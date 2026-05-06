@@ -46,6 +46,7 @@ import {
   Trash,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { buildApiUrl } from '@/lib/config';
 
 // Mapeamento de ações para ícones e cores
 const actionConfig: Record<string, { icon: string; color: string; label: string }> = {
@@ -117,7 +118,7 @@ export default function SuperAdminAuditLogs() {
         }
       });
 
-      const response = await fetch(`http://localhost:3000/api/admin/audit-logs?${params}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/audit-logs?${params}`), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -144,7 +145,7 @@ export default function SuperAdminAuditLogs() {
 
   const loadStats = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/audit-logs/stats', {
+      const response = await fetch(buildApiUrl('/api/admin/audit-logs/stats'), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -162,7 +163,7 @@ export default function SuperAdminAuditLogs() {
 
   const handleExportCSV = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/audit-logs/export/csv', {
+      const response = await fetch(buildApiUrl('/api/admin/audit-logs/export/csv'), {
         headers: {
           'x-user-role': 'super_admin',
         },
@@ -244,7 +245,7 @@ export default function SuperAdminAuditLogs() {
 
     try {
       setIsDeleting(true);
-      const response = await fetch('http://localhost:3000/api/admin/audit-logs/bulk-delete', {
+      const response = await fetch(buildApiUrl('/api/admin/audit-logs/bulk-delete'), {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -278,7 +279,7 @@ export default function SuperAdminAuditLogs() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/audit-logs/${logId}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/audit-logs/${logId}`), {
         method: 'DELETE',
         headers: {
           'x-user-role': 'super_admin',
@@ -314,7 +315,7 @@ export default function SuperAdminAuditLogs() {
         }
       });
 
-      const response = await fetch(`http://localhost:3000/api/admin/audit-logs/export/pdf?${params}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/audit-logs/export/pdf?${params}`), {
         headers: {
           'x-user-role': 'super_admin',
         },

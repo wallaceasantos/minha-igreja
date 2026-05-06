@@ -25,6 +25,7 @@ import {
   LogOut
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { buildApiUrl } from '@/lib/config';
 
 export default function SuperAdminUserDetails() {
   const { id } = useParams();
@@ -46,7 +47,7 @@ export default function SuperAdminUserDetails() {
   const loadUser = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:3000/api/admin/users/${id}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/users/${id}`), {
         headers: { 'x-user-role': 'super_admin' },
       });
       const result = await response.json();
@@ -70,7 +71,7 @@ export default function SuperAdminUserDetails() {
   const handleSave = async () => {
     try {
       setSaving(true);
-      const response = await fetch(`http://localhost:3000/api/admin/users/${id}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/users/${id}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -95,7 +96,7 @@ export default function SuperAdminUserDetails() {
   const handleBan = async () => {
     try {
       const action = user.is_active ? 'ban' : 'reactivate';
-      const response = await fetch(`http://localhost:3000/api/admin/users/${id}/${action}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/users/${id}/${action}`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -119,7 +120,7 @@ export default function SuperAdminUserDetails() {
     const tempPassword = 'temp123456';
     
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/users/${id}/reset-password`, {
+      const response = await fetch(buildApiUrl(`/api/admin/users/${id}/reset-password`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -17,6 +17,7 @@ import { ModeToggle } from '@/components/mode-toggle';
 import PlanSelection from '@/components/PlanSelection';
 import { CheckCircle2, Loader2, Church, Mail, Phone, MapPin, User, Lock, Palette, Menu, X } from 'lucide-react';
 import { toast } from 'sonner';
+import { buildApiUrl } from '@/lib/config';
 
 interface AddressData {
   street: string;
@@ -179,7 +180,7 @@ export default function CreateChurch() {
   const checkSlugAvailability = async (slug: string) => {
     setCheckingSlug(true);
     try {
-      const response = await fetch(`http://localhost:3000/api/church/check-slug/${slug}`);
+      const response = await fetch(buildApiUrl(`/api/church/check-slug/${slug}`));
       const data = await response.json();
       setSlugAvailable(data.available);
     } catch {
@@ -230,7 +231,7 @@ export default function CreateChurch() {
         plan_type: selectedPlan,
       };
 
-      const response = await fetch('http://localhost:3000/api/church', {
+      const response = await fetch(buildApiUrl('/api/church'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

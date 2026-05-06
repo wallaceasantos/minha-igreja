@@ -67,6 +67,7 @@ import {
   XCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { buildApiUrl } from '@/lib/config';
 
 interface DelinquentChurch {
   id: number;
@@ -129,7 +130,7 @@ export default function SuperAdminDelinquency() {
 
   const loadChurches = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/billing/delinquent', {
+      const response = await fetch(buildApiUrl('/api/admin/billing/delinquent'), {
         headers: { 'x-user-role': 'super_admin' },
       });
       const result = await response.json();
@@ -144,7 +145,7 @@ export default function SuperAdminDelinquency() {
 
   const loadStats = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/billing/stats', {
+      const response = await fetch(buildApiUrl('/api/admin/billing/stats'), {
         headers: { 'x-user-role': 'super_admin' },
       });
       const result = await response.json();
@@ -166,7 +167,7 @@ export default function SuperAdminDelinquency() {
 
   const handleSendEmail = async (churchId: number, churchName: string, emailType: string) => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/billing/send-email', {
+      const response = await fetch(buildApiUrl('/api/admin/billing/send-email'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -192,7 +193,7 @@ export default function SuperAdminDelinquency() {
 
   const handleSendWhatsApp = async (churchId: number, churchName: string) => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/billing/send-whatsapp', {
+      const response = await fetch(buildApiUrl('/api/admin/billing/send-whatsapp'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -215,7 +216,7 @@ export default function SuperAdminDelinquency() {
 
   const handleRegisterCall = async (churchId: number, churchName: string) => {
     try {
-      const response = await fetch('http://localhost:3000/api/admin/billing/register-call', {
+      const response = await fetch(buildApiUrl('/api/admin/billing/register-call'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -243,7 +244,7 @@ export default function SuperAdminDelinquency() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/billing/suspend`, {
+      const response = await fetch(buildApiUrl(`/api/admin/billing/suspend`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -274,7 +275,7 @@ export default function SuperAdminDelinquency() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/billing/cancel`, {
+      const response = await fetch(buildApiUrl(`/api/admin/billing/cancel`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -298,7 +299,7 @@ export default function SuperAdminDelinquency() {
 
   const handleViewHistory = async (churchId: number) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/admin/billing/${churchId}/history`, {
+      const response = await fetch(buildApiUrl(`/api/admin/billing/${churchId}/history`), {
         headers: { 'x-user-role': 'super_admin' },
       });
       const result = await response.json();

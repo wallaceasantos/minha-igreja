@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CreditCard, Filter, ArrowLeft, Download } from 'lucide-react';
 import { toast } from 'sonner';
+import { buildApiUrl } from '@/lib/config';
 
 export default function SuperAdminPayments() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export default function SuperAdminPayments() {
     try {
       setLoading(true);
       const params = new URLSearchParams({ page: pagination.page.toString(), limit: '20', ...filters });
-      const response = await fetch(`http://localhost:3000/api/admin/billing/payments?${params}`, {
+      const response = await fetch(buildApiUrl(`/api/admin/billing/payments?${params}`), {
         headers: { 'x-user-role': 'super_admin' },
       });
       const result = await response.json();
@@ -44,7 +45,7 @@ export default function SuperAdminPayments() {
 
   const handleExportPdf = async () => {
     try {
-      const url = `http://localhost:3000/api/admin/billing/export-pdf/payments`;
+      const url = buildApiUrl(`/api/admin/billing/export-pdf/payments`);
       
       const response = await fetch(url, {
         headers: {

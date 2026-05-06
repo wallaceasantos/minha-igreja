@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/select';
 import { toast } from 'sonner';
 import {
+import { buildApiUrl } from '@/lib/config';
   Globe,
   CheckCircle,
   Clock,
@@ -66,7 +67,7 @@ export default function SuperAdminDomains() {
   const loadDomainRequests = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3000/api/super-admin/domains', {
+      const response = await fetch(buildApiUrl('/api/super-admin/domains'), {
         headers: { 'x-user-role': 'super_admin' },
       });
       const result = await response.json();
@@ -86,7 +87,7 @@ export default function SuperAdminDomains() {
 
   const handleConfigure = async (requestId: number, churchId: number) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/super-admin/domains/${requestId}/configure`, {
+      const response = await fetch(buildApiUrl(`/api/super-admin/domains/${requestId}/configure`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -112,7 +113,7 @@ export default function SuperAdminDomains() {
 
   const handleActivate = async (requestId: number) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/super-admin/domains/${requestId}/activate`, {
+      const response = await fetch(buildApiUrl(`/api/super-admin/domains/${requestId}/activate`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -138,7 +139,7 @@ export default function SuperAdminDomains() {
     if (!reason) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/super-admin/domains/${requestId}/reject`, {
+      const response = await fetch(buildApiUrl(`/api/super-admin/domains/${requestId}/reject`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

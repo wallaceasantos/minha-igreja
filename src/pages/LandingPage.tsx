@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ModeToggle } from '@/components/mode-toggle';
 import {
+import { buildApiUrl } from '@/lib/config';
   Church,
   Check,
   CheckCircle2,
@@ -282,7 +283,7 @@ export default function LandingPage() {
   useEffect(() => {
     const loadReviews = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/reviews?t=${Date.now()}`);
+        const res = await fetch(buildApiUrl(`/api/reviews?t=${Date.now()}`));
         const data = await res.json();
         if (data.success) {
           setReviews(data.data);

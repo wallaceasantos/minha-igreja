@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { Star, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useDashboard } from '@/hooks/useDashboard';
+import { buildApiUrl } from '@/lib/config';
 
 export default function AdminReviews() {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ export default function AdminReviews() {
     const checkReviewStatus = async () => {
       try {
         const churchId = localStorage.getItem('churchId');
-        const response = await fetch('http://localhost:3000/api/admin/reviews/me', {
+        const response = await fetch(buildApiUrl('/api/admin/reviews/me'), {
           headers: {
             'x-church-id': churchId || '',
           },
@@ -67,7 +68,7 @@ export default function AdminReviews() {
     setSending(true);
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch('http://localhost:3000/api/admin/reviews', {
+      const response = await fetch(buildApiUrl('/api/admin/reviews'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

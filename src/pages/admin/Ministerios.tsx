@@ -56,6 +56,7 @@ import {
 } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { buildApiUrl } from '@/lib/config';
 
 interface Ministry {
   id: number;
@@ -150,7 +151,7 @@ export default function Ministerios() {
   const loadMinistries = async () => {
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch(`http://localhost:3000/api/ministries?church_id=${churchId}`);
+      const response = await fetch(buildApiUrl(`/api/ministries?church_id=${churchId}`));
       const result = await response.json();
 
       if (result.success) {
@@ -218,8 +219,8 @@ export default function Ministerios() {
     try {
       const churchId = localStorage.getItem('churchId');
       const url = editingMinistry 
-        ? `http://localhost:3000/api/ministries/${editingMinistry.id}`
-        : `http://localhost:3000/api/ministries`;
+        ? buildApiUrl(`/api/ministries/${editingMinistry.id}`)
+        : buildApiUrl(`/api/ministries`);
       
       const params = new URLSearchParams({ church_id: churchId || '' });
       const method = editingMinistry ? 'PUT' : 'POST';
@@ -300,7 +301,7 @@ export default function Ministerios() {
   const handleToggleStatus = async (ministry: Ministry) => {
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch(`http://localhost:3000/api/ministries/${ministry.id}?church_id=${churchId}`, {
+      const response = await fetch(buildApiUrl(`/api/ministries/${ministry.id}?church_id=${churchId}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -329,7 +330,7 @@ export default function Ministerios() {
 
     try {
       const churchId = localStorage.getItem('churchId');
-      const response = await fetch(`http://localhost:3000/api/ministries/${ministryId}?church_id=${churchId}`, {
+      const response = await fetch(buildApiUrl(`/api/ministries/${ministryId}?church_id=${churchId}`), {
         method: 'DELETE'
       });
 

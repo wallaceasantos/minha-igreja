@@ -30,6 +30,7 @@ import {
 import { useDashboard } from '@/hooks/useDashboard';
 import { toast } from 'sonner';
 import {
+import { buildApiUrl } from '@/lib/config';
   Ticket,
   Plus,
   Search,
@@ -131,7 +132,7 @@ export default function Tickets() {
         params.append('status', filterStatus);
       }
 
-      const response = await fetch(`http://localhost:3000/api/tickets?${params}`, {
+      const response = await fetch(buildApiUrl(`/api/tickets?${params}`), {
         headers: {
           'x-church-id': String(churchId),
         },
@@ -162,7 +163,7 @@ export default function Tickets() {
       
       console.log('Carregando detalhes do ticket:', ticketId, 'para church_id:', churchId);
 
-      const response = await fetch(`http://localhost:3000/api/tickets/${ticketId}`, {
+      const response = await fetch(buildApiUrl(`/api/tickets/${ticketId}`), {
         headers: {
           'x-church-id': String(churchId),
         },
@@ -190,7 +191,7 @@ export default function Tickets() {
     setSendingReply(true);
 
     try {
-      const response = await fetch(`http://localhost:3000/api/tickets/${viewingTicket.id}/messages`, {
+      const response = await fetch(buildApiUrl(`/api/tickets/${viewingTicket.id}/messages`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -229,7 +230,7 @@ export default function Tickets() {
         return;
       }
 
-      const response = await fetch('http://localhost:3000/api/tickets/stats', {
+      const response = await fetch(buildApiUrl('/api/tickets/stats'), {
         headers: {
           'x-church-id': String(churchId),
         },
@@ -255,7 +256,7 @@ export default function Tickets() {
     setCreating(true);
 
     try {
-      const response = await fetch('http://localhost:3000/api/tickets', {
+      const response = await fetch(buildApiUrl('/api/tickets'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

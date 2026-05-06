@@ -36,6 +36,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import BirthdayCard from '@/components/BirthdayCard';
+import { buildApiUrl } from '@/lib/config';
 
 // Limites por plano
 const PLAN_LIMITS = {
@@ -109,7 +110,7 @@ export default function Dashboard() {
         return;
       }
 
-      const response = await fetch(`http://localhost:3000/api/admin/announcements/${announcementId}/read`, {
+      const response = await fetch(buildApiUrl(`/api/admin/announcements/${announcementId}/read`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -149,15 +150,15 @@ export default function Dashboard() {
         if (!churchId) return;
 
         // Carregar stats de membros, pedidos e admins
-        const statsResponse = await fetch(`http://localhost:3000/api/church/${churchId}/stats`);
+        const statsResponse = await fetch(buildApiUrl(`/api/church/${churchId}/stats`));
         const statsResult = await statsResponse.json();
 
         // Carregar eventos ativos
-        const eventsResponse = await fetch(`http://localhost:3000/api/events?church_id=${churchId}`);
+        const eventsResponse = await fetch(buildApiUrl(`/api/events?church_id=${churchId}`));
         const eventsResult = await eventsResponse.json();
 
         // Carregar membros para aniversariantes
-        const membersResponse = await fetch(`http://localhost:3000/api/members?church_id=${churchId}`);
+        const membersResponse = await fetch(buildApiUrl(`/api/members?church_id=${churchId}`));
         const membersResult = await membersResponse.json();
 
         if (statsResult.success && statsResult.data) {
@@ -177,7 +178,7 @@ export default function Dashboard() {
         }
 
         // Carregar pedidos pendentes antigos (> 7 dias)
-        const reminderStatsResponse = await fetch(`http://localhost:3000/api/pedidos/stats/reminders?church_id=${churchId}`);
+        const reminderStatsResponse = await fetch(buildApiUrl(`/api/pedidos/stats/reminders?church_id=${churchId}`));
         const reminderStatsResult = await reminderStatsResponse.json();
 
         if (reminderStatsResult.success && reminderStatsResult.data) {
@@ -188,7 +189,7 @@ export default function Dashboard() {
         }
 
         // Carregar comunicados ativos
-        const announcementsResponse = await fetch('http://localhost:3000/api/admin/announcements/active');
+        const announcementsResponse = await fetch(buildApiUrl('/api/admin/announcements/active'));
         const announcementsResult = await announcementsResponse.json();
 
         if (announcementsResult.success && announcementsResult.data) {
@@ -197,7 +198,7 @@ export default function Dashboard() {
         }
 
         // Carregar informações do trial
-        const trialResponse = await fetch('http://localhost:3000/api/admin/upgrade/status', {
+        const trialResponse = await fetch(buildApiUrl('/api/admin/upgrade/status'), {
           headers: {
             'x-church-id': churchId.toString(),
           },
