@@ -13,8 +13,8 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
-import {
 import { buildApiUrl } from '@/lib/config';
+import {
   Heart,
   Users,
   MapPin,

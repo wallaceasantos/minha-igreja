@@ -20,8 +20,8 @@ import { Badge } from '@/components/ui/badge';
 import { useDashboard } from '@/hooks/useDashboard';
 import DomainValidator from '@/components/DomainValidator';
 import { toast } from 'sonner';
-import {
 import { buildApiUrl } from '@/lib/config';
+import {
   Church,
   Upload,
   MapPin,
