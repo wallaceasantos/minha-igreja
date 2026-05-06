@@ -11,8 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ModeToggle } from '@/components/mode-toggle';
-import {
 import { buildApiUrl } from '@/lib/config';
+import {
   Church,
   Check,
   CheckCircle2,
