@@ -22,8 +22,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { ChurchHeader, ChurchFooter } from './church/ChurchBase';
 import emailjs from '@emailjs/browser';
-import {
 import { buildApiUrl } from '@/lib/config';
+import {
   Heart,
   Send,
   Shield,
