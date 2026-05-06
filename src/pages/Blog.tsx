@@ -15,7 +15,7 @@ const blogPosts = [
     id: 1,
     title: 'Como Engajar Membros da Igreja Através da Tecnologia',
     excerpt: 'Descubra ferramentas e estratégias para manter sua congregação conectada e participativa.',
-    author: 'Equipe Igreja Connect',
+    author: 'Equipe MinhaIgreja',
     date: '22 de Março, 2026',
     readTime: '5 min',
     category: 'Tecnologia',
@@ -42,7 +42,7 @@ const blogPosts = [
     id: 4,
     title: 'Segurança de Dados em Igrejas: Guia Completo',
     excerpt: 'Proteja as informações dos seus membros e esteja em conformidade com a LGPD.',
-    author: 'Equipe Igreja Connect',
+    author: 'Equipe MinhaIgreja',
     date: '15 de Março, 2026',
     readTime: '8 min',
     category: 'LGPD',
@@ -60,7 +60,7 @@ const blogPosts = [
     id: 6,
     title: 'Captando Novos Membros: Estratégias Digitais',
     excerpt: 'Use o marketing digital para atrair visitantes e convertê-los em membros.',
-    author: 'Equipe Igreja Connect',
+    author: 'Equipe MinhaIgreja',
     date: '5 de Março, 2026',
     readTime: '7 min',
     category: 'Crescimento',
@@ -77,7 +77,7 @@ export default function Blog() {
         <div className="container flex h-16 items-center px-4">
           <div className="flex items-center gap-2">
             <Church className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold text-primary">Igreja Connect</span>
+            <span className="text-xl font-bold text-primary">MinhaIgreja</span>
           </div>
 
           <nav className="hidden md:flex items-center gap-6 ml-auto">
@@ -161,7 +161,7 @@ export default function Blog() {
         <div className="container px-4 text-center">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Blog Igreja Connect
+              Blog MinhaIgreja
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
               Artigos, dicas e novidades para sua igreja
@@ -266,7 +266,7 @@ export default function Blog() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Church className="h-6 w-6" />
-                <span className="text-xl font-bold">Igreja Connect</span>
+                <span className="text-xl font-bold">MinhaIgreja</span>
               </div>
               <p className="text-sm text-gray-300 dark:text-muted-foreground">
                 Plataforma digital para igrejas que desejam se conectar com membros e visitantes.
@@ -302,7 +302,7 @@ export default function Blog() {
           </div>
 
           <div className="border-t border-gray-600 dark:border-border mt-8 pt-6 text-center text-sm text-gray-400 dark:text-muted-foreground">
-            <p>Copyright © {new Date().getFullYear()} Igreja Connect. Todos os direitos reservados.</p>
+            <p>Copyright © {new Date().getFullYear()} MinhaIgreja. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

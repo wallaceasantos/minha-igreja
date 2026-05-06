@@ -3,40 +3,58 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Igreja Connect - Plataforma Digital para Igrejas</title>
+    <title>MinhaIgreja - Plataforma Digital para Igrejas</title>
     <meta name="description" content="Crie o site da sua igreja em minutos. Plataforma completa com pedidos de oração, gestão de membros e muito mais." />
-    <meta name="author" content="Igreja Connect" />
+    <meta name="author" content="MinhaIgreja" />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Dark Mode Global -->
+    <link rel="stylesheet" href="/src/styles/dark-mode.css" />
+    <script>
+      // Carregar preferência de dark mode antes do site carregar
+      const saved = localStorage.getItem('darkMode');
+      if (saved === 'true') {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+
     <link rel="icon" type="image/jpeg" href="/assets/church-logo.jpg" />
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:title" content="Igreja Connect - Plataforma para Igrejas" />
+    <meta property="og:title" content="MinhaIgreja - Plataforma para Igrejas" />
     <meta property="og:description" content="Crie o site da sua igreja em minutos. Plataforma completa e fácil de usar." />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="/assets/hero-worship.jpg" />
     <meta property="og:url" content="https://plataforma.ccjv.com.br" />
-    <meta property="og:site_name" content="Igreja Connect" />
+    <meta property="og:site_name" content="MinhaIgreja" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Igreja Connect" />
+    <meta name="twitter:title" content="MinhaIgreja" />
     <meta name="twitter:description" content="Crie o site da sua igreja em minutos." />
 
     <!-- Google Analytics 4 (Configurável via .env) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=%VITE_GA_ID%"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '%VITE_GA_ID%', {
-        page_title: document.title,
-        page_location: window.location.href
-      });
+      // Only load GA if VITE_GA_ID is defined
+      const gaId = '%VITE_GA_ID%';
+      if (gaId && gaId !== '%VITE_GA_ID%' && gaId.trim() !== '') {
+        const gascript = document.createElement('script');
+        gascript.async = true;
+        gascript.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+        document.head.appendChild(gascript);
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', gaId, {
+          page_title: document.title,
+          page_location: window.location.href
+        });
+      }
     </script>
   </head>
 

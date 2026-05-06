@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ModeToggle } from '@/components/mode-toggle';
 import { Shield, Lock, User, Database, Eye, CheckCircle, AlertCircle, Church, Menu, X, LogIn } from 'lucide-react';
@@ -20,7 +20,7 @@ export default function LGPD() {
         <div className="container flex h-16 items-center px-4">
           <div className="flex items-center gap-2">
             <Church className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold text-primary">Igreja Connect</span>
+            <span className="text-xl font-bold text-primary">MinhaIgreja</span>
           </div>
 
           <nav className="hidden md:flex items-center gap-6 ml-auto">
@@ -111,7 +111,7 @@ export default function LGPD() {
                   LGPD - Lei Geral de Proteção de Dados
                 </h1>
                 <p className="text-lg text-muted-foreground">
-                  Como o Igreja Connect protege seus dados e está em conformidade com a Lei nº 13.709/2018
+                  Como o MinhaIgreja protege seus dados e está em conformidade com a Lei nº 13.709/2018
                 </p>
               </div>
 
@@ -370,8 +370,8 @@ export default function LGPD() {
                   <div className="bg-muted/50 p-4 rounded-lg space-y-2">
                     <div className="flex items-center gap-2">
                       <strong>Email:</strong>
-                      <a href="mailto:dpo@igrejaconnect.com.br" className="text-primary hover:underline">
-                        dpo@igrejaconnect.com.br
+                      <a href="mailto:dpo@minhaigreja.app" className="text-primary hover:underline">
+                        dpo@minhaigreja.app
                       </a>
                     </div>
                     <div className="flex items-center gap-2">
@@ -509,8 +509,8 @@ export default function LGPD() {
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <strong>Email:</strong>
-                      <a href="mailto:dpo@igrejaconnect.com.br" className="text-primary hover:underline">
-                        dpo@igrejaconnect.com.br
+                      <a href="mailto:dpo@minhaigreja.app" className="text-primary hover:underline">
+                        dpo@minhaigreja.app
                       </a>
                     </div>
                     <div className="flex items-center gap-2">
@@ -532,7 +532,7 @@ export default function LGPD() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Church className="h-6 w-6" />
-                <span className="text-xl font-bold">Igreja Connect</span>
+                <span className="text-xl font-bold">MinhaIgreja</span>
               </div>
               <p className="text-sm text-gray-300 dark:text-muted-foreground">
                 Plataforma digital para igrejas que desejam se conectar com membros e visitantes.
@@ -568,7 +568,7 @@ export default function LGPD() {
           </div>
 
           <div className="border-t border-gray-600 dark:border-border mt-8 pt-6 text-center text-sm text-gray-400 dark:text-muted-foreground">
-            <p>Copyright © {new Date().getFullYear()} Igreja Connect. Todos os direitos reservados.</p>
+            <p>Copyright © {new Date().getFullYear()} MinhaIgreja. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

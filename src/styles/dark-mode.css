@@ -1,0 +1,174 @@
+/**
+ * Dark Mode - Variáveis CSS Globais
+ * ============================================
+ * Sistema de tema claro/escuro para todo o site
+ * ATENÇÃO: Este arquivo APENAS adiciona dark mode, não modifica light mode!
+ */
+
+/* Tema Escuro - Aplicado SOMENTE quando .dark está ativo */
+.dark {
+  /* Cores de Fundo */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --bg-card: #1e293b;
+  --bg-gradient-from: #1e3a5f;
+  --bg-gradient-to: #4a192c;
+  
+  /* Cores de Texto */
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  --text-inverse: #0f172a;
+  
+  /* Cores de Borda */
+  --border-primary: #334155;
+  --border-secondary: #475569;
+  
+  /* Cores de Destaque */
+  --accent-primary: #3b82f6;
+  --accent-secondary: #60a5fa;
+  --accent-gradient: linear-gradient(to right, #3b82f6, #a78bfa);
+  
+  /* Cores Especiais */
+  --badge-bg: #1e3a5f;
+  --badge-text: #93c5fd;
+  --hover-bg: #334155;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Aplicar Dark Mode SOMENTE quando .dark está ativo */
+.dark body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Headers e Títulos no Dark Mode */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: var(--text-primary);
+}
+
+/* Textos Genéricos no Dark Mode */
+.dark p,
+.dark span,
+.dark label {
+  color: var(--text-secondary);
+}
+
+/* Cards e Containers no Dark Mode */
+.dark .bg-white,
+.dark .bg-card {
+  background-color: var(--bg-card) !important;
+}
+
+.dark .bg-gray-50 {
+  background-color: var(--bg-secondary) !important;
+}
+
+.dark section {
+  background-color: var(--bg-primary);
+}
+
+/* Gradientes no Dark Mode */
+.dark .bg-gradient-to-br {
+  background: var(--bg-gradient-from) !important;
+}
+
+/* Bordas no Dark Mode */
+.dark .border {
+  border-color: var(--border-primary) !important;
+}
+
+/* Inputs e Forms no Dark Mode */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Textos no Dark Mode */
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-gray-700 {
+  color: var(--text-primary) !important;
+}
+
+.dark .text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+.dark .text-gray-500,
+.dark .text-gray-400 {
+  color: var(--text-tertiary) !important;
+}
+
+/* Badges no Dark Mode */
+.dark .bg-blue-100 {
+  background-color: var(--badge-bg) !important;
+}
+
+.dark .text-blue-600 {
+  color: var(--badge-text) !important;
+}
+
+/* Hover no Dark Mode */
+.dark .hover\:bg-gray-100:hover {
+  background-color: var(--hover-bg) !important;
+}
+
+/* Links no Dark Mode */
+.dark a {
+  color: var(--accent-primary);
+}
+
+.dark a:hover {
+  color: var(--accent-secondary);
+}
+
+/* Scrollbar no Dark Mode */
+.dark ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--border-secondary);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* Cards com Sombra no Dark Mode */
+.dark .shadow-lg,
+.dark .shadow-2xl,
+.dark .shadow-md {
+  box-shadow: 0 10px 15px -3px var(--shadow-color);
+}
+
+/* Animação Suave */
+.dark body * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Preservar texto branco no Hero (sempre branco em ambos modos) */
+#início .text-white,
+.hero-section .text-white {
+  color: #ffffff !important;
+}
+
+.dark #início .text-white,
+.dark .hero-section .text-white {
+  color: #ffffff !important;
+}

@@ -7,15 +7,27 @@
 import express from 'express';
 import { query } from '../config/database.js';
 import bcrypt from 'bcrypt';
+import { 
+  checkBlockedIP, 
+  checkUserLocked, 
+  recordLoginAttempt,
+  createSession 
+} from '../middleware/security.js';
+import { rateLimits } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
 
-// POST /api/auth/login - Login
-router.post('/login', async (req, res) => {
+// Middleware de IP bloqueado para todas as rotas de auth
+router.use(checkBlockedIP);
+
+// Rate limiting para login (5 tentativas por 15 minutos)
+router.post('/login', rateLimits.login, async (req, res) => {
   try {
     const { email, password, church_id } = req.body;
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.connection?.remoteAddress;
 
     if (!email || !password) {
+      await recordLoginAttempt(email, ip, false, null, 'invalid_email');
       return res.status(400).json({ success: false, error: 'Email e senha são obrigatórios' });
     }
 
@@ -26,19 +38,57 @@ router.post('/login', async (req, res) => {
     );
 
     if (users.length === 0) {
+      await recordLoginAttempt(email, ip, false, null, 'invalid_email');
       return res.status(401).json({ success: false, error: 'Credenciais inválidas' });
     }
 
     const user = users[0];
 
+    // DEBUG: Log do hash da senha
+    console.log('[DEBUG] User password hash:', user.password.substring(0, 10) + '...');
+    console.log('[DEBUG] Password from request:', password);
+
+    // Verificar se usuário está bloqueado
+    if (user.locked_until && new Date(user.locked_until) > new Date()) {
+      await recordLoginAttempt(email, ip, false, user.id, 'account_locked');
+      return res.status(403).json({
+        success: false,
+        error: 'Conta temporariamente bloqueada',
+        lockedUntil: new Date(user.locked_until).toISOString(),
+        message: `Sua conta está bloqueada até ${new Date(user.locked_until).toLocaleString('pt-BR')}`,
+      });
+    }
+
     // Verificar senha
-    const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword) {
+    // Primeiro verificar se senha tem tamanho mínimo
+    if (!password || password.length < 1) {
+      await recordLoginAttempt(email, ip, false, user.id, 'invalid_password');
       return res.status(401).json({ success: false, error: 'Credenciais inválidas' });
     }
 
+    // Verificar formato do hash (deve começar com $2b$ ou $2y$)
+    if (!user.password.startsWith('$2b$') && !user.password.startsWith('$2y$')) {
+      console.error('[ERROR] Hash inválido no banco:', user.password.substring(0, 10));
+      await recordLoginAttempt(email, ip, false, user.id, 'invalid_password');
+      return res.status(500).json({ success: false, error: 'Erro interno de autenticação' });
+    }
+
+    const validPassword = await bcrypt.compare(password, user.password);
+    console.log('[DEBUG] Password valid:', validPassword);
+
+    if (!validPassword) {
+      await recordLoginAttempt(email, ip, false, user.id, 'invalid_password');
+      return res.status(401).json({ success: false, error: 'Credenciais inválidas' });
+    }
+
+    // Login bem-sucedido - registrar tentativa
+    await recordLoginAttempt(email, ip, true, user.id);
+
+    // Criar sessão
+    const sessionToken = await createSession(user.id, req);
+
     // Gerar token simples (em produção use JWT)
-    const token = Buffer.from(JSON.stringify({
+    const token = sessionToken || Buffer.from(JSON.stringify({
       id: user.id,
       email: user.email,
       church_id: user.church_id,

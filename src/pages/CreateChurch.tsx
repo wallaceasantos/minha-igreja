@@ -2,11 +2,11 @@
  * Landing Page: Criar Igreja
  * ===========================
  * Página de cadastro para novas igrejas
- * URL: https://igrejaconnect.com.br/criar
+ * URL: https://minhaigreja.app/criar
  */
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,6 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ModeToggle } from '@/components/mode-toggle';
+import PlanSelection from '@/components/PlanSelection';
 import { CheckCircle2, Loader2, Church, Mail, Phone, MapPin, User, Lock, Palette, Menu, X } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -69,7 +70,6 @@ const initialFormData: FormData = {
   name: '',
   slug: '',
   cnpj: '',
-  description: '',
   email: '',
   phone: '',
   whatsapp: '',
@@ -80,6 +80,17 @@ const initialFormData: FormData = {
 };
 
 export default function CreateChurch() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Pegar plano selecionado (vem da Landing Page)
+  const selectedPlanFromLocation = location.state?.selectedPlan;
+  
+  const [selectedPlan, setSelectedPlan] = useState<'free' | 'essencial'>(
+    selectedPlanFromLocation?.toLowerCase() === 'essencial' ? 'essencial' : 'free'
+  );
+  const [showPlanSelection, setShowPlanSelection] = useState(!selectedPlanFromLocation);
+  
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
@@ -111,12 +122,66 @@ export default function CreateChurch() {
     }
   };
 
+  // Máscara para CNPJ (00.000.000/0000-00)
+  const handleCNPJChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let digits = e.target.value.replace(/\D/g, '');
+    digits = digits.slice(0, 14); // Limita a 14 dígitos
+    
+    if (digits.length > 12) {
+      digits = `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8, 12)}-${digits.slice(12)}`;
+    } else if (digits.length > 8) {
+      digits = `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8)}-`;
+    } else if (digits.length > 5) {
+      digits = `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5)}`;
+    } else if (digits.length > 2) {
+      digits = `${digits.slice(0, 2)}.${digits.slice(2)}`;
+    }
+    
+    setFormData(prev => ({ ...prev, cnpj: digits }));
+  };
+
+  // Máscara para Telefone ((00) 0000-0000)
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let digits = e.target.value.replace(/\D/g, '');
+    digits = digits.slice(0, 10); // Limita a 10 dígitos (telefone fixo)
+    
+    if (digits.length > 8) {
+      digits = `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+    } else if (digits.length > 6) {
+      digits = `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+    } else if (digits.length > 2) {
+      digits = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    } else if (digits.length > 0) {
+      digits = `(${digits}`;
+    }
+    
+    setFormData(prev => ({ ...prev, phone: digits }));
+  };
+
+  // Máscara para WhatsApp ((00) 00000-0000)
+  const handleWhatsAppChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let digits = e.target.value.replace(/\D/g, '');
+    digits = digits.slice(0, 11); // Limita a 11 dígitos (celular)
+    
+    if (digits.length > 10) {
+      digits = `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+    } else if (digits.length > 6) {
+      digits = `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+    } else if (digits.length > 2) {
+      digits = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    } else if (digits.length > 0) {
+      digits = `(${digits}`;
+    }
+    
+    setFormData(prev => ({ ...prev, whatsapp: digits }));
+  };
+
   const checkSlugAvailability = async (slug: string) => {
     setCheckingSlug(true);
     try {
-      const response = await fetch(`/api/church/${slug}.php`);
+      const response = await fetch(`http://localhost:3000/api/church/check-slug/${slug}`);
       const data = await response.json();
-      setSlugAvailable(!data.success);
+      setSlugAvailable(data.available);
     } catch {
       setSlugAvailable(null);
     } finally {
@@ -159,12 +224,18 @@ export default function CreateChurch() {
     }
 
     try {
-      const response = await fetch('/api/criar-igreja.php', {
+      // Adicionar plano selecionado ao formData
+      const formDataWithPlan = {
+        ...formData,
+        plan_type: selectedPlan,
+      };
+
+      const response = await fetch('http://localhost:3000/api/church', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formDataWithPlan),
       });
 
       const data = await response.json();
@@ -173,15 +244,16 @@ export default function CreateChurch() {
         throw new Error(data.message || data.error || 'Erro ao criar igreja');
       }
 
-      // Sucesso!
-      toast.success('Igreja criada com sucesso!', {
-        description: `Redirecionando para ${data.data.url}...`,
+      // Sucesso! Redirecionar para página de sucesso
+      navigate('/sucesso', {
+        state: {
+          churchData: data.data,
+        },
       });
 
-      // Redireciona para a nova igreja
-      setTimeout(() => {
-        window.location.href = data.data.url;
-      }, 2000);
+      toast.success('Igreja criada com sucesso!', {
+        description: 'Redirecionando...',
+      });
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
@@ -201,7 +273,7 @@ export default function CreateChurch() {
         <div className="container flex h-16 items-center px-4">
           <div className="flex items-center gap-2">
             <Church className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold text-primary">Igreja Connect</span>
+            <span className="text-xl font-bold text-primary">MinhaIgreja</span>
           </div>
 
           <nav className="hidden md:flex items-center gap-6 ml-auto">
@@ -291,6 +363,17 @@ export default function CreateChurch() {
           </div>
         </div>
       </section>
+
+      {/* Tela de Seleção de Planos */}
+      {showPlanSelection && (
+        <section className="py-12 bg-background">
+          <PlanSelection
+            selectedPlan={selectedPlan}
+            onSelectPlan={setSelectedPlan}
+            onContinue={() => setShowPlanSelection(false)}
+          />
+        </section>
+      )}
 
       {/* Benefícios */}
       <section className="py-12 bg-background">
@@ -406,21 +489,9 @@ export default function CreateChurch() {
                           )}
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          Seu site será: https://{formData.slug || '...'}.ccjv.com.br
+                          Seu site será: https://{formData.slug || '...'}.plataforma.minhaigreja.com.br
                         </p>
                       </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="description">Descrição da Igreja</Label>
-                      <Textarea
-                        id="description"
-                        name="description"
-                        value={formData.description}
-                        onChange={handleInputChange}
-                        placeholder="Conte um pouco sobre a visão e missão da sua igreja..."
-                        rows={3}
-                      />
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4">
@@ -430,7 +501,7 @@ export default function CreateChurch() {
                           id="cnpj"
                           name="cnpj"
                           value={formData.cnpj}
-                          onChange={handleInputChange}
+                          onChange={handleCNPJChange}
                           placeholder="00.000.000/0000-00"
                         />
                       </div>
@@ -462,7 +533,7 @@ export default function CreateChurch() {
                             id="phone"
                             name="phone"
                             value={formData.phone}
-                            onChange={handleInputChange}
+                            onChange={handlePhoneChange}
                             placeholder="(00) 0000-0000"
                             className="pl-10"
                           />
@@ -477,7 +548,7 @@ export default function CreateChurch() {
                             id="whatsapp"
                             name="whatsapp"
                             value={formData.whatsapp}
-                            onChange={handleInputChange}
+                            onChange={handleWhatsAppChange}
                             placeholder="(00) 00000-0000"
                             className="pl-10"
                           />
@@ -501,7 +572,7 @@ export default function CreateChurch() {
                           name="address.street"
                           value={formData.address.street}
                           onChange={handleInputChange}
-                          placeholder="Ex: Rua Principal"
+                          placeholder="Ex: Rua Principal (Opcional)"
                         />
                       </div>
 
@@ -512,7 +583,7 @@ export default function CreateChurch() {
                           name="address.number"
                           value={formData.address.number}
                           onChange={handleInputChange}
-                          placeholder="1000"
+                          placeholder="1000 (Opcional)"
                         />
                       </div>
                     </div>
@@ -525,7 +596,7 @@ export default function CreateChurch() {
                           name="address.neighborhood"
                           value={formData.address.neighborhood}
                           onChange={handleInputChange}
-                          placeholder="Centro"
+                          placeholder="Centro (Opcional)"
                         />
                       </div>
 
@@ -536,7 +607,7 @@ export default function CreateChurch() {
                           name="address.city"
                           value={formData.address.city}
                           onChange={handleInputChange}
-                          placeholder="São Paulo"
+                          placeholder="São Paulo (Opcional)"
                         />
                       </div>
 
@@ -546,7 +617,13 @@ export default function CreateChurch() {
                           id="address.state"
                           name="address.state"
                           value={formData.address.state}
-                          onChange={handleInputChange}
+                          onChange={(e) => {
+                            const value = e.target.value.toUpperCase().slice(0, 2);
+                            setFormData(prev => ({
+                              ...prev,
+                              address: { ...prev.address, state: value }
+                            }));
+                          }}
                           placeholder="SP"
                           maxLength={2}
                         />
@@ -555,14 +632,27 @@ export default function CreateChurch() {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="address.zip">CEP</Label>
+                        <Label htmlFor="address.zip">CEP (Opcional)</Label>
                         <Input
                           id="address.zip"
                           name="address.zip"
                           value={formData.address.zip}
-                          onChange={handleInputChange}
-                          placeholder="00000-000"
+                          onChange={(e) => {
+                            let digits = e.target.value.replace(/\D/g, '');
+                            digits = digits.slice(0, 8);
+                            if (digits.length > 5) {
+                              digits = `${digits.slice(0, 5)}-${digits.slice(5)}`;
+                            }
+                            setFormData(prev => ({
+                              ...prev,
+                              address: { ...prev.address, zip: digits }
+                            }));
+                          }}
+                          placeholder="00000-000 - Ajuda na localização do Google Maps"
                         />
+                        <p className="text-xs text-muted-foreground">
+                          Opcional - Preencha para facilitar a localização no mapa
+                        </p>
                       </div>
 
                       <div className="space-y-2">
@@ -572,7 +662,7 @@ export default function CreateChurch() {
                           name="address.complement"
                           value={formData.address.complement}
                           onChange={handleInputChange}
-                          placeholder="Opcional"
+                          placeholder="Apto, Sala, Bloco (Opcional)"
                         />
                       </div>
                     </div>
@@ -748,7 +838,7 @@ export default function CreateChurch() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Church className="h-6 w-6" />
-                <span className="text-xl font-bold">Igreja Connect</span>
+                <span className="text-xl font-bold">MinhaIgreja</span>
               </div>
               <p className="text-sm text-gray-300 dark:text-muted-foreground">
                 Plataforma digital para igrejas que desejam se conectar com membros e visitantes.
@@ -784,7 +874,7 @@ export default function CreateChurch() {
           </div>
 
           <div className="border-t border-gray-600 dark:border-border mt-8 pt-6 text-center text-sm text-gray-400 dark:text-muted-foreground">
-            <p>Copyright © {new Date().getFullYear()} Igreja Connect. Todos os direitos reservados.</p>
+            <p>Copyright © {new Date().getFullYear()} MinhaIgreja. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

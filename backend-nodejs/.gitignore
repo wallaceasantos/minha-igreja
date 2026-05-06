@@ -1,13 +1,40 @@
-node_modules
+# Dependencies
+node_modules/
+
+# Environment
 .env
 .env.local
+.env.production.local
+
+# Logs
 *.log
+
+# OS
 .DS_Store
-dist
-build
-coverage
-.vscode
-.idea
-*.swp
-*.swo
-*~
+
+# Old backends
+backend-python/
+
+# Editor
+.vscode/
+.idea/
+
+# Old deploy docs (already moved to docs/)
+DEPLOY_*.md
+SUPORTE_*.md
+README_FINAL.md
+BACKEND_COMPARATIVO.md
+SEPARAR_REPOSITORIOS.md
+
+# Old deploy scripts
+deploy-*.ps1
+upload-*.ps1
+
+# Old diagnostics
+diagnostico.php
+
+# Database scripts (keep for reference, don't commit to Git)
+scripts/
+
+# Backend docs (keep for reference, don't commit to Git)
+docs/

@@ -1,55 +1,192 @@
-# ============================================
-# VARIÁVEIS DE AMBIENTE
-# ============================================
+# ===========================================
+# MinhaIgreja - .gitignore
+# ===========================================
+
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+jspm_packages/
+
+# Testing
+/coverage
+.nyc_output
+
+# Production
+/dist
+/build
+*.tsbuildinfo
+
+# Environment (CRÍTICO: Nunca commitar secrets!)
 .env
 .env.local
-.env.*.local
-.env.production
-.env.development
+.env.development.local
+.env.test.local
+.env.production.local
+.env.backup
 
-# ============================================
-# LOGS
-# ============================================
-logs
+# Logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+pm2-debug.log*
 
-# ============================================
-# DEPENDÊNCIAS
-# ============================================
-node_modules
-dist
-dist-ssr
-build
-
-# ============================================
-# EDITOR
-# ============================================
+# Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.sublime-*
 
-# ============================================
-# ARQUIVOS TEMPORÁRIOS
-# ============================================
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ===========================================
+# Backend Node.js
+# ===========================================
+backend-nodejs/node_modules/
+backend-nodejs/.env
+backend-nodejs/logs/
+backend-nodejs/uploads/
+backend-nodejs/tmp/
+backend-nodejs/*.pid
+
+# ===========================================
+# Database
+# ===========================================
+# Database dumps e backups (NÃO incluir)
+*.sql.backup
+backup_*.json
+*_backup*.sql
+dump*.sql
+*.sql.dump
+
+# Arquivos de teste de banco
+*_test*.json
+teste_*.csv
+
+# ===========================================
+# Temporary files
+# ===========================================
+$null
 *.tmp
 *.temp
-.cache
-.parcel-cache
+*.cache
+*.swp
+*.swo
+*~
 
-# ============================================
-# SISTEMA OPERACIONAL
-# ============================================
-Thumbs.db
-.DS_Store
-._*
+# ===========================================
+# Qwen Code / AI Assistant (OCULTAR)
+# ===========================================
+.qwen/
+.qwenignore
+subagents/
+agent-*.jsonl
+*.agent.*
+memory/
+
+# ===========================================
+# Lovable / AI Code Generators (OCULTAR)
+# ===========================================
+lovable-tagger
+.vite/
+.lovable/
+
+# ===========================================
+# Documentation pessoal (OCULTAR)
+# ===========================================
+# docs-archive/ (toda documentação arquivada)
+docs-archive/
+
+# Arquivos soltos de documentação
+ADICIONAR_DOMAIN_CARD.md
+ANALISE_PLANO_ESSENCIAL.md
+ANALISE_PLANO_FREE.md
+ANALISE_SUPER_ADMIN.md
+ATIVAR_LEMBRETES.md
+AUDIT_LOGS_QUICKSTART.md
+AUDIT_LOGS_README.md
+BACKUP_README.md
+CORRECAO_PEDIDOS_DASHBOARD.md
+CSV_EXPORT_README.md
+CSV_IMPORT_README.md
+DARK_MODE_PEDIDOS.md
+DESENVOLVIMENTO_LOCAL.md
+DOMINIO_PROPRIO_IMPLEMENTACAO.md
+EMAIL_TEMPLATE.md
+EMAILJS_CONFIG.md
+EMAILJS_TROUBLESHOOTING.md
+EXPLICACAO_PEDIDOS.md
+GUIA_TESTES_COMPLETO.md
+HEADER_FOOTER_PEDIDOS.md
+HEADER_PEDIDOS_ORACAO.md
+IMPLEMENTACAO_CONCLUIDA.md
+IMPLEMENTACAO_INADIMPLENCIA.md
+LIVES_MULTIPLATAFORMA_README.md
+MUDANCA_NOME_README.md
+MYSQL_WORKBENCH_MIGRATION.md
+PEDIDOS_ORACAO_SITE_PUBLICO.md
+PLANS_DYNAMIC_README.md
+PLANS_MANAGEMENT_README.md
+PLANS_SIMPLE_README.md
+PRAYER_REMINDERS_README.md
+RESUMO_FINAL.md
+SYSTEM_SETTINGS_README.md
+
+# ===========================================
+# Backup files
+# ===========================================
+backup_final.json
+backup_test.json
+backup_test2.json
+
+# ===========================================
+# Test files
+# ===========================================
+teste_export.csv
+
+# ===========================================
+# Optional npm cache
+# ===========================================
+.npm
+
+# ===========================================
+# Optional REPL directories
+# ===========================================
+.repl_history
+
+# ===========================================
+# ESLint cache
+# ===========================================
+.eslintcache
+
+# ===========================================
+# Vite cache
+# ===========================================
+node_modules/.vite/
+
+# ===========================================
+# Tailwind cache
+# ===========================================
+.tailwindcache/
+
+# ===========================================
+# Git hooks (se usar husky)
+# ===========================================
+.husky/

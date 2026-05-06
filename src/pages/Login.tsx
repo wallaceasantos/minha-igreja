@@ -39,27 +39,68 @@ export default function Login() {
     setError(null);
 
     try {
-      // TODO: Implementar login real com API
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Chamar API de login
+      const response = await fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
 
-      // Simulação de login
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || 'Credenciais inválidas');
+      }
+
+      // Login bem-sucedido - salvar dados
+      localStorage.setItem('isAdminAuthenticated', 'true');
+      localStorage.setItem('adminEmail', formData.email);
+      localStorage.setItem('userRole', result.data.user.role);
+      localStorage.setItem('user', JSON.stringify(result.data.user));
+      localStorage.setItem('token', result.data.token);
+      
+      // Salvar churchId se existir (para pastores)
+      if (result.data.user.church_id) {
+        localStorage.setItem('churchId', String(result.data.user.church_id));
+      }
+
+      // Detectar se é super admin
+      if (formData.email === 'admin@igreja-connect.com') {
+        localStorage.setItem('userRole', 'super_admin');
+      }
+
+      // Login realizado
       toast.success('Login realizado com sucesso!', {
         description: 'Redirecionando para o painel...',
       });
 
+      // Verificar se havia uma página salva para redirecionamento
+      const redirectPath = localStorage.getItem('redirectAfterLogin');
+      localStorage.removeItem('redirectAfterLogin');
+
       // Redirecionar para o dashboard apropriado
       if (isMainDomain) {
         // Login na plataforma (super admin)
-        navigate('/admin/dashboard');
+        const userRole = localStorage.getItem('userRole');
+        if (userRole === 'super_admin') {
+          navigate(redirectPath || '/super-admin/dashboard');
+        } else {
+          navigate(redirectPath || '/admin/dashboard');
+        }
       } else {
-        // Login na igreja (admin local)
-        navigate('/admin/pedidos');
+        // Login na igreja (admin local) - vai direto para configurações
+        navigate(redirectPath || '/admin/configuracoes');
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Erro ao fazer login';
       setError(errorMessage);
       toast.error('Erro ao fazer login', {
-        description: 'Verifique suas credenciais e tente novamente.',
+        description: errorMessage,
       });
     } finally {
       setLoading(false);
@@ -73,7 +114,7 @@ export default function Login() {
         <div className="container flex h-16 items-center px-4">
           <div className="flex items-center gap-2">
             <Church className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold text-primary">Igreja Connect</span>
+            <span className="text-xl font-bold text-primary">MinhaIgreja</span>
           </div>
 
           <nav className="hidden md:flex items-center gap-6 ml-auto">
@@ -176,7 +217,7 @@ export default function Login() {
                 )}
                 
                 <h1 className="text-2xl font-bold text-primary">
-                  {isMainDomain ? 'Igreja Connect' : church?.name || 'Área Administrativa'}
+                  {isMainDomain ? 'MinhaIgreja' : church?.name || 'Área Administrativa'}
                 </h1>
                 <p className="text-muted-foreground mt-2">
                   {isMainDomain 
@@ -227,7 +268,7 @@ export default function Login() {
                           autoComplete="email"
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          placeholder={isMainDomain ? "admin@igrejaconnect.com.br" : "pastor@igreja.com"}
+                          placeholder={isMainDomain ? "pastor@minhaigreja.app" : "pastor@igreja.com"}
                           className="pl-10"
                           required
                         />
@@ -321,7 +362,7 @@ export default function Login() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Church className="h-6 w-6" />
-                <span className="text-xl font-bold">Igreja Connect</span>
+                <span className="text-xl font-bold">MinhaIgreja</span>
               </div>
               <p className="text-sm text-gray-300 dark:text-muted-foreground">
                 Plataforma digital para igrejas que desejam se conectar com membros e visitantes.
@@ -357,7 +398,7 @@ export default function Login() {
           </div>
 
           <div className="border-t border-gray-600 dark:border-border mt-8 pt-6 text-center text-sm text-gray-400 dark:text-muted-foreground">
-            <p>Copyright © {new Date().getFullYear()} Igreja Connect. Todos os direitos reservados.</p>
+            <p>Copyright © {new Date().getFullYear()} MinhaIgreja. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

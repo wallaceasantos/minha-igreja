@@ -1,5 +1,5 @@
 /**
- * Página: Contato Institucional - Igreja Connect (Plataforma SaaS)
+ * Página: Contato Institucional - MinhaIgreja (Plataforma SaaS)
  * Formulário de contato e informações sobre a plataforma
  */
 
@@ -57,7 +57,7 @@ export default function ContatoInstitucional() {
         <div className="container flex h-16 items-center px-4">
           <div className="flex items-center gap-2">
             <Church className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold text-primary">Igreja Connect</span>
+            <span className="text-xl font-bold text-primary">MinhaIgreja</span>
           </div>
 
           <nav className="hidden md:flex items-center gap-6 ml-auto">
@@ -145,7 +145,7 @@ export default function ContatoInstitucional() {
               Entre em Contato
             </h1>
             <p className="text-xl text-muted-foreground">
-              Tire suas dúvidas sobre a plataforma Igreja Connect
+              Tire suas dúvidas sobre a plataforma MinhaIgreja
             </p>
           </div>
         </div>
@@ -290,8 +290,8 @@ export default function ContatoInstitucional() {
                           <Mail className="h-5 w-5 text-primary mt-0.5" />
                           <div>
                             <p className="font-semibold">Email Comercial</p>
-                            <a href="mailto:comercial@igrejaconnect.com.br" className="text-muted-foreground hover:text-primary">
-                              comercial@igrejaconnect.com.br
+                            <a href="mailto:comercial@minhaigreja.app" className="text-muted-foreground hover:text-primary">
+                              comercial@minhaigreja.app
                             </a>
                           </div>
                         </div>
@@ -304,8 +304,8 @@ export default function ContatoInstitucional() {
                           <Headphones className="h-5 w-5 text-primary mt-0.5" />
                           <div>
                             <p className="font-semibold">Suporte Técnico</p>
-                            <a href="mailto:suporte@igrejaconnect.com.br" className="text-muted-foreground hover:text-primary">
-                              suporte@igrejaconnect.com.br
+                            <a href="mailto:suporte@minhaigreja.app" className="text-muted-foreground hover:text-primary">
+                              suporte@minhaigreja.app
                             </a>
                           </div>
                         </div>
@@ -443,7 +443,7 @@ export default function ContatoInstitucional() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Church className="h-6 w-6" />
-                <span className="text-xl font-bold">Igreja Connect</span>
+                <span className="text-xl font-bold">MinhaIgreja</span>
               </div>
               <p className="text-sm text-gray-300 dark:text-muted-foreground">
                 Plataforma digital para igrejas que desejam se conectar com membros e visitantes.
@@ -479,7 +479,7 @@ export default function ContatoInstitucional() {
           </div>
 
           <div className="border-t border-gray-600 dark:border-border mt-8 pt-6 text-center text-sm text-gray-400 dark:text-muted-foreground">
-            <p>Copyright © {new Date().getFullYear()} Igreja Connect. Todos os direitos reservados.</p>
+            <p>Copyright © {new Date().getFullYear()} MinhaIgreja. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

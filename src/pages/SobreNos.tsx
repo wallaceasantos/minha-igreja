@@ -1,6 +1,6 @@
 /**
- * Página: Sobre Nós - Igreja Connect (Plataforma SaaS)
- * Informações sobre a plataforma Igreja Connect
+ * Página: Sobre Nós - MinhaIgreja (Plataforma SaaS)
+ * Informações sobre a plataforma MinhaIgreja
  */
 
 import { useState } from 'react';
@@ -20,7 +20,7 @@ export default function SobreNos() {
         <div className="container flex h-16 items-center px-4">
           <div className="flex items-center gap-2">
             <Church className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold text-primary">Igreja Connect</span>
+            <span className="text-xl font-bold text-primary">MinhaIgreja</span>
           </div>
 
           <nav className="hidden md:flex items-center gap-6 ml-auto">
@@ -105,7 +105,7 @@ export default function SobreNos() {
           <div className="max-w-4xl mx-auto">
             <Church className="h-20 w-20 text-primary mx-auto mb-6" />
             <h1 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Sobre o Igreja Connect
+              Sobre o MinhaIgreja
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
               A plataforma que está transformando a gestão de igrejas em todo o Brasil
@@ -123,7 +123,7 @@ export default function SobreNos() {
             </h2>
             <div className="prose prose-lg mx-auto text-muted-foreground">
               <p className="mb-4">
-                O <strong>Igreja Connect</strong> nasceu em 2024 da necessidade de democratizar 
+                O <strong>MinhaIgreja</strong> nasceu em 2024 da necessidade de democratizar 
                 o acesso à tecnologia para igrejas de todos os tamanhos no Brasil.
               </p>
               <p className="mb-4">
@@ -288,7 +288,7 @@ export default function SobreNos() {
         <div className="container px-4">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold text-primary mb-12 text-center">
-              Por Que Escolher o Igreja Connect?
+              Por Que Escolher o MinhaIgreja?
             </h2>
             <div className="grid md:grid-cols-2 gap-6">
               <Card className="hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
@@ -443,7 +443,7 @@ export default function SobreNos() {
             Quer Fazer Parte Dessa Transformação?
           </h2>
           <p className="text-lg mb-8 opacity-90">
-            Junte-se a centenas de igrejas que já estão usando o Igreja Connect
+            Junte-se a centenas de igrejas que já estão usando o MinhaIgreja
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <a
@@ -469,7 +469,7 @@ export default function SobreNos() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Church className="h-6 w-6" />
-                <span className="text-xl font-bold">Igreja Connect</span>
+                <span className="text-xl font-bold">MinhaIgreja</span>
               </div>
               <p className="text-sm text-gray-300 dark:text-muted-foreground">
                 Plataforma digital para igrejas que desejam se conectar com membros e visitantes.
@@ -505,7 +505,7 @@ export default function SobreNos() {
           </div>
 
           <div className="border-t border-gray-600 dark:border-border mt-8 pt-6 text-center text-sm text-gray-400 dark:text-muted-foreground">
-            <p>Copyright © {new Date().getFullYear()} Igreja Connect. Todos os direitos reservados.</p>
+            <p>Copyright © {new Date().getFullYear()} MinhaIgreja. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

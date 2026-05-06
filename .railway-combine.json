@@ -1,0 +1,17 @@
+{
+  "services": [
+    {
+      "name": "backend-api",
+      "rootDirectory": "backend-nodejs",
+      "port": 3000,
+      "healthcheckPath": "/api/health"
+    },
+    {
+      "name": "frontend",
+      "rootDirectory": ".",
+      "port": 5173,
+      "buildCommand": "npm install && npm run build",
+      "startCommand": "npm run preview"
+    }
+  ]
+}

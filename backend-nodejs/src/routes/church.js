@@ -1,19 +1,18 @@
 /**
  * Rotas: Church (Igreja)
- * GET /api/church - Listar
- * GET /api/church/:slug - Buscar por slug
- * POST /api/church - Criar igreja
+ * Backend Node.js simplificado
  */
 
 import express from 'express';
-import { query } from '../config/database.js';
+import { getPool } from '../config/database.js';
 
 const router = express.Router();
 
 // GET /api/church - Listar todas
 router.get('/', async (req, res) => {
   try {
-    const churches = await query('SELECT * FROM churches WHERE is_active = 1 ORDER BY name');
+    const pool = getPool();
+    const [churches] = await pool.query('SELECT * FROM churches WHERE is_active = 1 ORDER BY name');
     res.json({ success: true, data: churches });
   } catch (error) {
     console.error('Error listing churches:', error);
@@ -21,19 +20,24 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/church/:slug - Buscar por slug
-router.get('/:slug', async (req, res) => {
+// GET /api/church/:id - Buscar por ID
+router.get('/:id', async (req, res) => {
   try {
-    const { slug } = req.params;
-    const churches = await query(
-      'SELECT * FROM churches WHERE slug = ? AND is_active = 1 LIMIT 1',
-      [slug]
+    const churchId = req.params.id;
+    console.log(`Buscando igreja por ID: ${churchId}`);
+
+    const pool = getPool();
+    const [churches] = await pool.query(
+      'SELECT * FROM churches WHERE id = ? LIMIT 1',
+      [churchId]
     );
-    
+
+    console.log('Resultado:', churches);
+
     if (churches.length === 0) {
       return res.status(404).json({ success: false, error: 'Church not found' });
     }
-    
+
     res.json({ success: true, data: churches[0] });
   } catch (error) {
     console.error('Error fetching church:', error);
@@ -41,21 +45,161 @@ router.get('/:slug', async (req, res) => {
   }
 });
 
+// GET /api/church/:id/stats - Buscar estatísticas (DEPOIS DO SLUG!)
+router.get('/:id/stats', async (req, res) => {
+  try {
+    const churchId = req.params.id;
+    console.log(`Buscando stats da igreja: ${churchId}`);
+
+    const pool = getPool();
+
+    // Buscar contadores em paralelo
+    const [members, prayers, events, admins] = await Promise.all([
+      // Total de membros
+      pool.query(
+        'SELECT COUNT(*) as count FROM church_members WHERE church_id = ?',
+        [churchId]
+      ),
+
+      // Pedidos de oração (últimos 30 dias - rolling)
+      pool.query(
+        `SELECT COUNT(*) as count FROM pedidos
+         WHERE church_id = ?
+         AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)`,
+        [churchId]
+      ),
+
+      // Eventos ativos
+      pool.query(
+        'SELECT COUNT(*) as count FROM church_events WHERE church_id = ?',
+        [churchId]
+      ),
+
+      // Total de admins
+      pool.query(
+        'SELECT COUNT(*) as count FROM usuarios_admin WHERE church_id = ? AND is_active = 1',
+        [churchId]
+      ),
+    ]);
+
+    const stats = {
+      members: Array.isArray(members[0]) ? members[0][0].count : 0,
+      prayers: Array.isArray(prayers[0]) ? prayers[0][0].count : 0,
+      events: Array.isArray(events[0]) ? events[0][0].count : 0,
+      admins: Array.isArray(admins[0]) ? admins[0][0].count : 0,
+    };
+
+    console.log('Stats encontrados:', stats);
+
+    res.json({
+      success: true,
+      data: stats,
+    });
+  } catch (error) {
+    console.error('Error fetching stats:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// GET /api/church/:slug - Buscar por slug (DEVE VIR ANTES DE /:id)
+router.get('/slug/:slug', async (req, res) => {
+  try {
+    const { slug } = req.params;
+    console.log(`Buscando igreja por slug: ${slug}`);
+
+    const pool = getPool();
+    const [churches] = await pool.query(
+      'SELECT * FROM churches WHERE slug = ? AND is_active = 1 LIMIT 1',
+      [slug]
+    );
+
+    console.log('Resultado:', churches);
+
+    if (churches.length === 0) {
+      return res.status(404).json({ success: false, error: 'Church not found' });
+    }
+
+    const church = churches[0];
+
+    // Buscar trial da tabela subscriptions
+    const [subscriptions] = await pool.query(
+      'SELECT trial_end_date, is_trial, status FROM subscriptions WHERE church_id = ? LIMIT 1',
+      [church.id]
+    );
+
+    console.log('Subscriptions found:', subscriptions);
+    
+    const subscription = subscriptions[0];
+    if (subscription) {
+      church.trial_end_date = subscription.trial_end_date;
+      church.is_trial = subscription.is_trial;
+      church.subscription_status = subscription.status;
+      console.log('Subscription data:', { trial_end_date: subscription.trial_end_date, is_trial: subscription.is_trial, status: subscription.status });
+    } else {
+      console.log('No subscription found for church:', church.id);
+    }
+
+    res.json({ success: true, data: church });
+  } catch (error) {
+    console.error('Error fetching church:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// GET /api/church/check-slug/:slug - Verificar disponibilidade de slug
+router.get('/check-slug/:slug', async (req, res) => {
+  try {
+    const { slug } = req.params;
+    console.log(`Verificando slug: ${slug}`);
+
+    const pool = getPool();
+    const [churches] = await pool.query(
+      'SELECT id FROM churches WHERE slug = ? LIMIT 1',
+      [slug]
+    );
+
+    const isAvailable = churches.length === 0;
+    console.log('Slug disponível:', isAvailable);
+
+    res.json({ 
+      success: true, 
+      available: isAvailable,
+      slug: slug
+    });
+  } catch (error) {
+    console.error('Error checking slug:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // POST /api/church - Criar igreja
 router.post('/', async (req, res) => {
+  const pool = getPool();
+  let connection;
+
   try {
+    console.log('=== [CREATE CHURCH] Recebendo request ===');
+    console.log('Body:', JSON.stringify(req.body, null, 2));
+
     const {
       name, slug, description, email, phone, whatsapp,
       address, facebook_url, instagram_url, youtube_url,
-      theme_primary_color, theme_secondary_color,
-      admin
+      plan_type, admin
     } = req.body;
 
-    // Validações
+    console.log('Dados extraídos:', { 
+      name, 
+      slug, 
+      email, 
+      plan_type,
+      admin: admin ? { name: admin.name, email: admin.email } : 'UNDEFINED'
+    });
+
+    // Validações básicas
     const errors = [];
 
     if (!name || name.length < 5) {
-      errors.push('Nome deve ter pelo menos 5 caracteres');
+      errors.push('Nome da igreja deve ter pelo menos 5 caracteres');
     }
 
     if (!slug || slug.length < 3) {
@@ -63,19 +207,21 @@ router.post('/', async (req, res) => {
     }
 
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
-      errors.push('Subdomínio inválido');
+      errors.push('Subdomínio deve conter apenas letras minúsculas, números e hífens');
     }
 
     if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-      errors.push('Email inválido');
+      errors.push('Email válido é obrigatório');
     }
 
     if (!admin?.name) {
       errors.push('Nome do administrador é obrigatório');
+      console.error('[CREATE CHURCH] admin.name está faltando!');
     }
 
     if (!admin?.email || !/^\S+@\S+\.\S+$/.test(admin.email)) {
-      errors.push('Email do administrador inválido');
+      errors.push('Email do administrador é obrigatório');
+      console.error('[CREATE CHURCH] admin.email está faltando ou é inválido!');
     }
 
     if (!admin?.password || admin.password.length < 6) {
@@ -86,24 +232,108 @@ router.post('/', async (req, res) => {
       errors.push('Senhas não conferem');
     }
 
-    if (errors.length > 0) {
-      return res.status(400).json({ success: false, errors });
-    }
+    console.log('Erros de validação:', errors);
 
-    // Verificar slug duplicado
-    const existing = await query('SELECT id FROM churches WHERE slug = ? LIMIT 1', [slug]);
-    if (existing.length > 0) {
-      return res.status(409).json({ 
-        success: false, 
-        error: 'Este subdomínio já está em uso' 
+    if (errors.length > 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Erro de validação',
+        details: errors
       });
     }
 
-    // Inserir igreja (transação)
-    await query('START TRANSACTION');
+    // Verificar duplicidades ANTES de criar
+    if (errors.length === 0) {
+      // Verificar slug duplicado
+      const [existingSlug] = await pool.query(
+        'SELECT id FROM churches WHERE slug = ? LIMIT 1',
+        [slug]
+      );
 
+      if (existingSlug.length > 0) {
+        errors.push('Este subdomínio já está em uso. Escolha outro.');
+      }
+
+      // Verificar email da igreja duplicado
+      const [existingChurchEmail] = await pool.query(
+        'SELECT id FROM churches WHERE email = ? LIMIT 1',
+        [email]
+      );
+
+      if (existingChurchEmail.length > 0) {
+        errors.push('Esta igreja já está cadastrada com este email.');
+      }
+
+      // Verificar email do administrador duplicado
+      const [existingAdminEmail] = await pool.query(
+        'SELECT id FROM usuarios_admin WHERE email = ? LIMIT 1',
+        [admin.email]
+      );
+
+      if (existingAdminEmail.length > 0) {
+        errors.push('Este email de administrador já está cadastrado. Use outro email ou faça login.');
+      }
+
+      // CNPJ removido - coluna não existe na tabela
+      // if (req.body.cnpj) {
+      //   const [existingCNPJ] = await pool.query(
+      //     'SELECT id FROM churches WHERE cnpj = ? LIMIT 1',
+      //     [req.body.cnpj]
+      //   );
+      //   if (existingCNPJ.length > 0) {
+      //     errors.push('Este CNPJ já está cadastrado.');
+      //   }
+      // }
+    }
+
+    if (errors.length > 0) {
+      console.error('[CREATE CHURCH] Erros de validação:', errors);
+      return res.status(400).json({
+        success: false,
+        error: 'Erros de validação',
+        errors: errors
+      });
+    }
+
+    console.log('[CREATE CHURCH] Validação OK, iniciando transação...');
+
+    // Obter conexão para transação
+    connection = await pool.getConnection();
+    console.log('[CREATE CHURCH] Conexão obtida:', connection ? 'OK' : 'FAIL');
+    
     try {
-      const churchResult = await query(`
+      await connection.beginTransaction();
+      console.log('[CREATE CHURCH] Transação iniciada');
+
+      // Dados da igreja
+      const churchData = {
+        name,
+        slug,
+        description: description || null,
+        email,
+        phone: phone || null,
+        whatsapp: whatsapp || null,
+        address_street: address?.street || null,
+        address_number: address?.number || null,
+        address_complement: address?.complement || null,
+        address_neighborhood: address?.neighborhood || null,
+        address_city: address?.city || null,
+        address_state: address?.state || null,
+        address_zip: address?.zip || null,
+        facebook_url: facebook_url || null,
+        instagram_url: instagram_url || null,
+        youtube_url: youtube_url || null,
+        theme_primary_color: theme_primary_color || '#1e40af',
+        theme_secondary_color: theme_secondary_color || '#f59e0b',
+        plan_type: plan_type || 'free',
+        is_active: 1,
+        is_verified: 0
+      };
+
+      console.log('[CREATE CHURCH] Dados da igreja:', churchData);
+
+      // Inserir igreja
+      const [churchResult] = await connection.execute(`
         INSERT INTO churches (
           name, slug, description, email, phone, whatsapp,
           address_street, address_number, address_complement,
@@ -111,54 +341,104 @@ router.post('/', async (req, res) => {
           facebook_url, instagram_url, youtube_url,
           theme_primary_color, theme_secondary_color,
           plan_type, is_active, is_verified, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 0, NOW())
+        ) VALUES (
+          ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
+        )
       `, [
-        name, slug, description || null, email, phone || null, whatsapp || null,
-        address?.street || null, address?.number || null, address?.complement || null,
-        address?.neighborhood || null, address?.city || null, address?.state || null, address?.zip || null,
-        facebook_url || null, instagram_url || null, youtube_url || null,
-        theme_primary_color || '#1e40af', theme_secondary_color || '#f59e0b',
+        churchData.name,
+        churchData.slug,
+        churchData.description,
+        churchData.email,
+        churchData.phone,
+        churchData.whatsapp,
+        churchData.address_street,
+        churchData.address_number,
+        churchData.address_complement,
+        churchData.address_neighborhood,
+        churchData.address_city,
+        churchData.address_state,
+        churchData.address_zip,
+        churchData.facebook_url,
+        churchData.instagram_url,
+        churchData.youtube_url,
+        churchData.theme_primary_color,
+        churchData.theme_secondary_color,
+        churchData.plan_type,
+        churchData.is_active,
+        churchData.is_verified
       ]);
 
       const churchId = churchResult.insertId;
+      console.log('✅ Igreja criada com ID:', churchId);
 
-      // Inserir administrador
+      // Hash da senha
       const bcrypt = await import('bcrypt');
       const hashedPassword = await bcrypt.hash(admin.password, 10);
 
-      await query(`
+      // Inserir administrador
+      await connection.execute(`
         INSERT INTO usuarios_admin (church_id, name, email, password, role, is_active, created_at)
         VALUES (?, ?, ?, ?, 'admin', 1, NOW())
       `, [churchId, admin.name, admin.email, hashedPassword]);
 
-      // Inserir assinatura (trial 30 dias)
-      await query(`
-        INSERT INTO subscriptions (church_id, plan_type, status, current_period_start, current_period_end, trial_end_date, created_at)
-        VALUES (?, 'free', 'trial', DATE(NOW()), DATE_ADD(NOW(), INTERVAL 30 DAY), DATE_ADD(NOW(), INTERVAL 30 DAY), NOW())
-      `, [churchId]);
+      console.log('✅ Admin criado');
 
-      await query('COMMIT');
+      // Criar subscription
+      await connection.execute(`
+        INSERT INTO subscriptions (church_id, plan_type, status, current_period_start, current_period_end, created_at)
+        VALUES (?, ?, 'trial', CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY), NOW())
+      `, [churchId, plan_type]);
 
-      res.status(201).json({
+      console.log('✅ Subscription criada');
+
+      await connection.commit();
+      console.log('✅ Transação completada com sucesso!');
+
+      res.json({
         success: true,
         message: 'Igreja criada com sucesso!',
         data: {
           church_id: churchId,
           slug: slug,
-          url: `https://${slug}.ccjv.com.br`,
-          admin_url: `https://${slug}.ccjv.com.br/login`,
-          trial_days: 30
+          name: name,
+          email: email,
+          url: `https://${slug}.plataforma.minhaigreja.com.br`,
+          admin_url: `https://${slug}.plataforma.minhaigreja.com.br/login`,
+          trial_days: 30,
+          admin: {
+            name: admin.name,
+            email: admin.email
+          }
         }
       });
 
-    } catch (error) {
-      await query('ROLLBACK');
-      throw error;
+    } catch (dbError) {
+      console.error('[CREATE CHURCH] Erro na transação:', dbError);
+      console.error('[CREATE CHURCH] SQL Error:', dbError.message);
+      console.error('[CREATE CHURCH] SQL Code:', dbError.code);
+      
+      if (connection) {
+        await connection.rollback();
+        console.log('[CREATE CHURCH] Transação revertida (rollback)');
+      }
+      
+      res.status(500).json({
+        success: false,
+        error: 'Erro ao criar igreja',
+        message: dbError.message
+      });
+    } finally {
+      if (connection) {
+        connection.release();
+        console.log('[CREATE CHURCH] Conexão liberada');
+      }
     }
-
   } catch (error) {
-    console.error('Error creating church:', error);
-    res.status(500).json({ success: false, error: error.message });
+    console.error('[CREATE CHURCH] Erro geral:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
   }
 });
 

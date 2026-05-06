@@ -1,302 +1,223 @@
-# ⛪ Igreja Connect
+# ⛪ MinhaIgreja - Platform SaaS
 
-> **Plataforma SaaS Multi-Tenant para Igrejas**
+Plataforma completa e segura para igrejas que desejam se conectar com membros e visitantes de forma profissional e eficiente.
 
-[![Status do Projeto](https://img.shields.io/badge/status-produção-success)]()
-[![Versão](https://img.shields.io/badge/versão-2.0.0-blue)]()
-[![React](https://img.shields.io/badge/React-18.3.1-61dafb?logo=react)]()
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178c6?logo=typescript)]()
-
----
-
-## 📖 Sobre o Projeto
-
-O **Igreja Connect** é uma plataforma SaaS que permite que qualquer igreja tenha um site profissional em minutos. Cada igreja possui seu próprio subdomínio (ex: `igreja.igrejaconnect.com.br`) com dados completamente isolados e personalizáveis.
-
-### Funcionalidades
-
-- ✅ **Multi-Tenant** - Múltiplas igrejas na mesma plataforma
-- ✅ **Subdomínios Automáticos** - Cada igreja com seu próprio URL
-- ✅ **Site Personalizável** - Cores, logo e conteúdo dinâmico
-- ✅ **Pedidos de Oração** - Formulário online para membros
-- ✅ **Painel Administrativo** - Gestão completa para cada igreja
-- ✅ **Planos Flexíveis** - Free, Essential, Premium e Enterprise
+**[Deploy to Railway](https://railway.com/new)** | **[Demo](https://minhaigreja.app)** | **[Documentation](RAILWAY_DEPLOY.md)**
 
 ---
 
 ## 🚀 Quick Start
 
-### Pré-requisitos
-
-- Node.js 18+
-- npm ou bun
-- PHP 8.3+ (backend)
-- MySQL 5.7+ (banco de dados)
-
-### Desenvolvimento
+### Local Development
 
 ```bash
-# 1. Instalar dependências
+# 1. Clone repository
+git clone https://github.com/YOUR-USERNAME/minhaigreja.git
+cd minhaigreja
+
+# 2. Install dependencies
 npm install
+cd backend-nodejs && npm install
+cd ..
 
-# 2. Configurar variáveis de ambiente
-cp .env.example .env.local
+# 3. Setup environment
+cp backend-nodejs/.env.example backend-nodejs/.env
+# Edit .env with your database credentials
 
-# 3. Executar script do banco de dados
-mysql -u root -p igreja_connect < database/multi_tenant_schema.sql
+# 4. Run migrations
+mysql -u root -p igreja_connect < database/migrations/001_initial.sql
+# ... (run all migrations in order)
 
-# 4. Iniciar servidor de desenvolvimento
+# 5. Start servers
+# Terminal 1 - Backend
+cd backend-nodejs && npm run dev
+
+# Terminal 2 - Frontend
 npm run dev
-
-# 5. Acessar http://localhost:5173
 ```
 
-### Build de Produção
+**Access:**
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:3000
+- API Docs: http://localhost:3000/health
+
+---
+
+## 📦 Tech Stack
+
+### Frontend
+- **React 18** with TypeScript
+- **Vite** for build tooling
+- **TailwindCSS** for styling
+- **shadcn/ui** component library
+- **React Router** for routing
+- **React Query** for data fetching
+
+### Backend
+- **Node.js** + Express
+- **MySQL** database
+- **JWT** authentication
+- **Multer** for file uploads
+- **Nodemailer** for emails
+
+### Deployment
+- **Railway** for backend hosting + database
+- **Vercel** for frontend hosting (recommended)
+
+---
+
+## 🗂️ Project Structure
+
+```
+minhaigreja/
+├── backend-nodejs/              # Backend API
+│   ├── src/
+│   │   ├── server.js           # Entry point
+│   │   ├── routes/             # API routes
+│   │   ├── middleware/         # Auth, CORS, validation
+│   │   ├── schedulers/         # Cron jobs
+│   │   └── db/                 # Database connection
+│   ├── package.json
+│   └── .env.example
+├── src/                         # Frontend
+│   ├── pages/                  # All pages
+│   ├── components/             # Reusable components
+│   ├── hooks/                  # Custom hooks
+│   └── lib/                    # Utilities
+├── database/
+│   └── migrations/             # SQL migrations
+├── public/                     # Static assets
+├── package.json
+├── railway.json                # Railway config
+├── RAILWAY_DEPLOY.md          # Deploy guide
+└── README.md                  # This file
+```
+
+---
+
+## ✨ Features
+
+### ✅ Implemented
+
+- **Authentication** - Login, registration, trial system
+- **Dashboard** - Admin panel with stats and limits
+- **Church Management** - Members, events, ministries
+- **Prayer Requests** - 3 types, 15 themes, email confirmation
+- **Live Streams** - Multi-platform (YouTube, Facebook, Instagram, Twitch)
+- **Image Gallery** - Multiple upload, lightbox, reorder
+- **Reviews System** - Pastor evaluations, published testimonials
+- **Settings** - Logo upload, address, social media, custom domain
+- **Dark Mode** - Global theme toggle
+- **Responsive Design** - Mobile, tablet, desktop
+- **Landing Page** - Public site with animations
+- **Plans System** - Free and Essential tiers
+
+### 🎯 Planned
+
+- Tithes & Offerings Online
+- Event Registration
+- Blog/News
+- Image Crop/Resize
+- EmailJS Integration
+
+---
+
+## 🚀 Deploy to Railway
+
+See complete guide: **[RAILWAY_DEPLOY.md](RAILWAY_DEPLOY.md)**
+
+**Quick Deploy:**
+
+1. Push to GitHub
+2. Connect repo to Railway
+3. Add MySQL database
+4. Configure environment variables
+5. Run migrations
+6. Deploy!
+
+---
+
+## 📊 Environment Variables
+
+### Backend (Railway)
 
 ```bash
+# Required
+DB_HOST=              # MySQL host
+DB_USER=              # MySQL user
+DB_PASSWORD=          # MySQL password
+DB_NAME=igreja_connect
+JWT_SECRET=           # Generate: openssl rand -base64 32
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=            # Your email
+SMTP_PASS=            # App password
+CORS_ORIGINS=         # Frontend domains
+```
+
+### Frontend (Vercel)
+
+```bash
+VITE_API_URL=         # Backend URL
+VITE_CLOUDINARY_CLOUD_NAME=
+VITE_CLOUDINARY_UPLOAD_PRESET=
+VITE_GA_ID=           # Optional
+```
+
+---
+
+## 🧪 Testing
+
+```bash
+# Frontend
+npm run test
+
+# Backend
+cd backend-nodejs
+npm test
+
+# Build
 npm run build
 ```
 
 ---
 
-## 🏗️ Arquitetura
+## 📝 Database Migrations
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    IGREJA CONNECT PLATFORM                  │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  🌐 Frontend (React + TypeScript)                           │
-│     ├── Landing Page Institucional                          │
-│     ├── Cadastro de Igrejas                                 │
-│     └── Sites Dinâmicos por Igreja                          │
-│                                                             │
-│  🔧 Subdomínios:                                            │
-│     ├── igreja1.igrejaconnect.com.br                        │
-│     ├── igreja2.igrejaconnect.com.br                        │
-│     └── ... (ilimitado)                                     │
-│                                                             │
-│  🗄️ Backend (PHP + MySQL)                                   │
-│     ├── Tenant Middleware                                   │
-│     ├── APIs RESTful                                        │
-│     └── Isolamento por church_id                            │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 📁 Estrutura do Projeto
-
-```
-src/
-├── components/          # Componentes UI reutilizáveis
-│   └── layout/          # Header, Footer, Layout
-├── hooks/               # React Hooks
-│   └── useChurch.ts     # Hook para dados da igreja
-├── pages/               # Páginas da aplicação
-│   ├── LandingPage.tsx  # Home institucional
-│   ├── CreateChurch.tsx # Cadastro de igrejas
-│   ├── Home.tsx         # Home genérica da igreja
-│   ├── Sobre.tsx        # Sobre a igreja
-│   ├── Contato.tsx      # Contato
-│   ├── PedidosOracao.tsx# Pedidos de oração
-│   ├── Login.tsx        # Login admin
-│   └── admin/           # Painel administrativo
-├── services/            # Serviços de API
-└── lib/                 # Utilitários
-
-api/                     # Backend PHP
-├── criar-igreja.php     # Cadastro de igrejas
-├── church/
-│   └── slug.php         # Dados da igreja
-└── ...
-
-database/
-├── Database.php         # Classe de conexão
-└── multi_tenant_schema.sql
-```
-
----
-
-## 💾 Banco de Dados
-
-### Tabelas Principais
-
-**churches** - Dados das igrejas
-- `id`, `name`, `slug`
-- `logo_url`, `theme_colors`
-- `address_*`, `phone`, `email`
-- `plan_type`, `is_active`
-
-**subscriptions** - Assinaturas e planos
-- `church_id`, `plan_type`, `status`
-- `stripe_*`, `current_period_*`
-
-**usuarios_admin** - Administradores por igreja
-- `church_id`, `name`, `email`, `password`
-- `role`, `permissions`
-
-**pedidos** - Pedidos de oração
-- `church_id`, `title`, `description`
-- `status`, `created_at`
-
----
-
-## 💰 Planos
-
-| Plano | Preço | Membros | Recursos |
-|-------|-------|---------|----------|
-| **Free** | R$ 0 | 100 | Site básico, 50 pedidos/mês |
-| **Essential** | R$ 29,90 | 500 | Domínio próprio, pedidos ∞ |
-| **Premium** | R$ 79,90 | 2.000 | App mobile, dízimos |
-| **Enterprise** | R$ 199,90 | ∞ | API, multi-unidades |
-
----
-
-## 🎯 Como Funciona
-
-### 1. Cadastro de Igreja
-
-```
-Pastor → igrejaconnect.com.br/criar
-       → Preenche formulário
-       → Sistema cria:
-           - Registro no banco
-           - Subdomínio: igreja.igrejaconnect.com.br
-           - Usuário admin
-           - Plano Free (trial 30 dias)
-```
-
-### 2. Acesso ao Site
-
-```
-Visitante → igreja.igrejaconnect.com.br
-          → Site carrega com:
-              - Logo da igreja
-              - Cores personalizadas
-              - Endereço e horários
-              - Formulário de contato
-```
-
-### 3. Isolamento de Dados
-
-```sql
--- Cada igreja vê APENAS seus dados
-SELECT * FROM pedidos WHERE church_id = 123;
-```
-
----
-
-## 🔧 Configuração
-
-### Variáveis de Ambiente
+Run in order:
 
 ```bash
-# .env.local
-VITE_API_URL=https://api.igrejaconnect.com.br
-DB_HOST=localhost
-DB_NAME=igreja_connect
-DB_USER=root
-DB_PASS=sua_senha
-```
-
-### Servidor Web (Nginx)
-
-```nginx
-server {
-    server_name .igrejaconnect.com.br;
-    root /var/www/igrejaconnect/public;
-    
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
-    }
-    
-    location ~ \.php$ {
-        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    }
-}
-```
-
-### SSL Wildcard
-
-```bash
-# Certificado para todos os subdomínios
-sudo certbot --nginx -d igrejaconnect.com.br -d *.igrejaconnect.com.br
+database/migrations/
+├── 001_initial.sql
+├── 002_...
+├── ...
+└── 010_church_reviews.sql
 ```
 
 ---
 
-## 📚 Documentação
+## 🤝 Contributing
 
-- [MULTI_TENANT_IMPLEMENTACAO.md](./MULTI_TENANT_IMPLEMENTACAO.md) - Guia completo de implementação
-- [RESUMO_MULTI_TENANT.md](./RESUMO_MULTI_TENANT.md) - Resumo da transformação
-
----
-
-## 🛠️ Tecnologias
-
-| Frontend | Backend | Infra |
-|----------|---------|-------|
-| React 18 | PHP 8.3 | Nginx |
-| TypeScript | MySQL 5.7+ | Let's Encrypt |
-| Tailwind CSS | PDO | Certbot |
-| shadcn/ui | Rate Limiter | VPS |
-| TanStack Query | | |
-
----
-
-## 🚀 Roadmap
-
-### Fase 1: ✅ Base Multi-Tenant
-
-- [x] Estrutura do banco de dados
-- [x] Middleware de identificação
-- [x] API de cadastro
-- [x] Hook useChurch()
-- [x] Componentes dinâmicos
-- [x] Landing page
-
-### Fase 2: Pagamentos
-
-- [ ] Integração Stripe/Mercado Pago
-- [ ] Gestão de assinaturas
-- [ ] Webhooks de cancelamento
-- [ ] Inadimplência automática
-
-### Fase 3: Recursos Avançados
-
-- [ ] Upload de logo
-- [ ] App mobile white-label
-- [ ] Dízimos e ofertas
-- [ ] WhatsApp integration
-- [ ] CRM pastoral
-
----
-
-## 🤝 Contribuindo
-
-1. Fork o projeto
-2. Crie uma branch (`git checkout -b feature/nova-feature`)
-3. Commit (`git commit -m 'Adiciona nova feature'`)
-4. Push (`git push origin feature/nova-feature`)
-5. Pull Request
-
----
-
-## 📞 Suporte
-
-- **Email:** suporte@igrejaconnect.com.br
-- **Docs:** https://igrejaconnect.com.br/docs
+1. Fork repository
+2. Create feature branch (`git checkout -b feature/amazing`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing`)
+5. Open Pull Request
 
 ---
 
 ## 📄 License
 
-MIT - ver arquivo [LICENSE](LICENSE)
+MIT License - see LICENSE file for details.
 
 ---
 
-**Criado com ❤️ para transformar igrejas no Brasil**
+## 📞 Support
+
+- **Email**: suporte@minhaigreja.app
+- **Docs**: [RAILWAY_DEPLOY.md](RAILWAY_DEPLOY.md)
+- **Issues**: https://github.com/YOUR-USERNAME/minhaigreja/issues
+
+---
+
+**Built with ❤️ for churches everywhere**

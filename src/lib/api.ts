@@ -1,18 +1,28 @@
 /**
  * API Endpoints
  * Centraliza todas as URLs da API para facilitar manutenção
+ * Backend: Node.js + Express
  */
 
 import { config } from './config';
 
 export const api = Object.freeze({
-  // Endpoints da API
-  pedidos: `${config.apiUrl}/pedidos.php`,
-  login: `${config.apiUrl}/login.php`,
-  telegram: `${config.apiUrl}/enviar_telegram.php`,
-  relatorio: `${config.apiUrl}/enviar_relatorio.php`,
-  liveStatus: `${config.apiUrl}/live_status.php`,
-
+  // Igrejas (Church)
+  churches: `${config.apiUrl}/church`,
+  churchBySlug: (slug: string) => `${config.apiUrl}/church/${slug}`,
+  createChurch: `${config.apiUrl}/church`,
+  
+  // Contato
+  contact: `${config.apiUrl}/contact`,
+  
+  // Autenticação
+  login: `${config.apiUrl}/auth/login`,
+  register: `${config.apiUrl}/auth/register`,
+  
+  // Testes
+  health: `${config.apiUrl}/health`,
+  testDb: `${config.apiUrl}/test-db`,
+  
   // URLs externas
   youtube: {
     channel: config.youtubeChannel,

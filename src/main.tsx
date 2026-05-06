@@ -3,6 +3,12 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import './index.css'
+import emailjs from '@emailjs/browser';
+
+// Inicializar EmailJS - MinhaIgreja
+emailjs.init({
+  publicKey: 'MOEqq3oDF5D5NTN7M', // ✅ Public Key CORRETA do Dashboard
+});
 
 // Fallback UI para erros
 function ErrorFallback() {

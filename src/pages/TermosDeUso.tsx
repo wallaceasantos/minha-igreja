@@ -20,7 +20,7 @@ export default function TermosDeUso() {
         <div className="container flex h-16 items-center px-4">
           <div className="flex items-center gap-2">
             <Church className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold text-primary">Igreja Connect</span>
+            <span className="text-xl font-bold text-primary">MinhaIgreja</span>
           </div>
 
           <nav className="hidden md:flex items-center gap-6 ml-auto">
@@ -116,7 +116,7 @@ export default function TermosDeUso() {
                   <CardContent className="pt-6">
                     <h2 className="text-2xl font-bold mb-4">1. Aceitação dos Termos</h2>
                     <p className="text-muted-foreground">
-                      Ao acessar e usar a plataforma Igreja Connect, você aceita e concorda
+                      Ao acessar e usar a plataforma MinhaIgreja, você aceita e concorda
                       com estes Termos de Uso. Se não concordar com algum termo, por favor
                       não utilize nossos serviços.
                     </p>
@@ -127,7 +127,7 @@ export default function TermosDeUso() {
                   <CardContent className="pt-6">
                     <h2 className="text-2xl font-bold mb-4">2. Descrição do Serviço</h2>
                     <p className="text-muted-foreground mb-4">
-                      O Igreja Connect é uma plataforma SaaS (Software as a Service) que
+                      O MinhaIgreja é uma plataforma SaaS (Software as a Service) que
                       fornece ferramentas para gestão de igrejas, incluindo:
                     </p>
                     <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
@@ -195,7 +195,7 @@ export default function TermosDeUso() {
                     <h2 className="text-2xl font-bold mb-4">6. Propriedade Intelectual</h2>
                     <p className="text-muted-foreground">
                       Todo o conteúdo da plataforma, incluindo código, design, logotipos e
-                      documentação, é de propriedade do Igreja Connect e protegido por leis
+                      documentação, é de propriedade do MinhaIgreja e protegido por leis
                       de propriedade intelectual.
                     </p>
                   </CardContent>
@@ -205,7 +205,7 @@ export default function TermosDeUso() {
                   <CardContent className="pt-6">
                     <h2 className="text-2xl font-bold mb-4">7. Limitação de Responsabilidade</h2>
                     <p className="text-muted-foreground">
-                      O Igreja Connect não se responsabiliza por:
+                      O MinhaIgreja não se responsabiliza por:
                     </p>
                     <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
                       <li>Conteúdo publicado pelos usuários</li>
@@ -233,7 +233,7 @@ export default function TermosDeUso() {
                       Dúvidas sobre estes termos? Entre em contato:
                     </p>
                     <p className="text-muted-foreground mt-2">
-                      Email: juridico@igrejaconnect.com.br<br />
+                      Email: juridico@minhaigreja.app<br />
                       Telefone: (11) 99999-9999
                     </p>
                   </CardContent>
@@ -251,7 +251,7 @@ export default function TermosDeUso() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Church className="h-6 w-6" />
-                <span className="text-xl font-bold">Igreja Connect</span>
+                <span className="text-xl font-bold">MinhaIgreja</span>
               </div>
               <p className="text-sm text-gray-300 dark:text-muted-foreground">
                 Plataforma digital para igrejas que desejam se conectar com membros e visitantes.
@@ -287,7 +287,7 @@ export default function TermosDeUso() {
           </div>
 
           <div className="border-t border-gray-600 dark:border-border mt-8 pt-6 text-center text-sm text-gray-400 dark:text-muted-foreground">
-            <p>Copyright © {new Date().getFullYear()} Igreja Connect. Todos os direitos reservados.</p>
+            <p>Copyright © {new Date().getFullYear()} MinhaIgreja. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

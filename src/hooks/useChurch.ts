@@ -24,6 +24,7 @@ export interface ChurchData {
   name: string;
   slug: string;
   description: string | null;
+  about_content: string | null;
   logo_url: string | null;
   favicon_url: string | null;
   hero_image_url: string | null;
@@ -34,6 +35,8 @@ export interface ChurchData {
   address_city: string | null;
   address_state: string | null;
   address_zip: string | null;
+  latitude: string | null;
+  longitude: string | null;
   phone: string | null;
   whatsapp: string | null;
   email: string | null;
@@ -57,27 +60,35 @@ interface UseChurchReturn {
  * Extrai o slug/subdomínio da URL atual
  */
 function extractSlug(): string {
+  // Em desenvolvimento (localhost), usa parâmetro da URL
+  if (window.location.hostname === 'localhost') {
+    const params = new URLSearchParams(window.location.search);
+    const churchParam = params.get('church');
+    return churchParam || '';
+  }
+  
+  // Em produção, usa subdomínio
   const hostname = window.location.hostname;
   const parts = hostname.split('.');
-  
+
   // Remove www se existir
   if (parts[0] === 'www') {
     parts.shift();
   }
-  
+
   // Se tiver mais de 2 partes, tem subdomínio
-  // Ex: igreja1.igrejaconnect.com.br → 4 partes
+  // Ex: igreja1.minhaigreja.app.br → 4 partes
   if (parts.length > 2) {
-    return parts[0];
+    return parts[0] || '';
   }
-  
+
   // Se tiver exatamente 2 partes, é domínio principal
-  // Ex: igrejaconnect.com.br → 3 partes (ou 2 sem www)
+  // Ex: minhaigreja.app.br → 3 partes (ou 2 sem www)
   // Retorna slug padrão ou vazio para landing page
   if (parts.length === 2 || parts.length === 3) {
     return ''; // Domínio principal
   }
-  
+
   // Fallback
   return parts[0] || '';
 }
@@ -85,13 +96,15 @@ function extractSlug(): string {
 /**
  * Aplica as cores do tema no documento
  */
-function applyTheme(primary: string, secondary: string): void {
-  const root = document.documentElement;
+function applyTheme(primary: string | undefined, secondary: string | undefined): void {
+  if (!primary || !secondary) return;
   
+  const root = document.documentElement;
+
   // Aplica cores CSS custom properties
   root.style.setProperty('--theme-primary', primary);
   root.style.setProperty('--theme-secondary', secondary);
-  
+
   // Aplica classe de tema
   root.setAttribute('data-theme-primary', primary);
   root.setAttribute('data-theme-secondary', secondary);
@@ -117,7 +130,7 @@ export function useChurch(): UseChurchReturn {
       }
       
       // Busca dados da igreja na API
-      const response = await fetch(`/api/church/${slug}.php`);
+      const response = await fetch(`/api/church/${slug}`);
       
       if (!response.ok) {
         if (response.status === 404) {
@@ -188,7 +201,7 @@ export function useSubdomainUrl(slug: string): string {
  * Obtém o domínio principal da plataforma
  */
 function getMainDomain(): string {
-  // Em produção: igrejaconnect.com.br
+  // Em produção: minhaigreja.app
   // Em desenvolvimento: localhost
   const hostname = window.location.hostname;
   
