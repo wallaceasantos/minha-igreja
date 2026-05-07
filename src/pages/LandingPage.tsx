@@ -726,20 +726,20 @@ export default function LandingPage() {
 
           {/* Stats de confiança */}
           <div className={`mt-16 text-center testimonials-stats ${isTestimonialsInView ? 'animate' : ''}`}>
-            <div className="inline-flex items-center gap-8 px-8 py-4 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
+            <div className="grid grid-cols-3 gap-3 sm:inline-flex sm:gap-8 sm:px-8 px-4 py-4 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 max-w-full mx-auto sm:mx-0">
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">500+</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">Igrejas Ativas</div>
+                <div className="text-2xl sm:text-3xl font-bold text-blue-600 dark:text-blue-400">500+</div>
+                <div className="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400">Igrejas Ativas</div>
               </div>
               <div className="w-px h-12 bg-gray-200 dark:bg-gray-700"></div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-600 dark:text-green-400">98%</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">Satisfação</div>
+                <div className="text-2xl sm:text-3xl font-bold text-green-600 dark:text-green-400">98%</div>
+                <div className="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400">Satisfação</div>
               </div>
               <div className="w-px h-12 bg-gray-200 dark:bg-gray-700"></div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">24/7</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">Suporte</div>
+                <div className="text-2xl sm:text-3xl font-bold text-purple-600 dark:text-purple-400">24/7</div>
+                <div className="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400">Suporte</div>
               </div>
             </div>
           </div>
