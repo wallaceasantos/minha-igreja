@@ -236,22 +236,22 @@ export default function Blog() {
       </section>
 
       {/* Newsletter */}
-      <section className="py-20 bg-primary text-primary-foreground dark:bg-primary/90">
+      <section className="py-20 bg-gradient-to-b from-primary to-primary/80 text-primary-foreground dark:from-gray-900 dark:to-gray-800 dark:text-white">
         <div className="container px-4 text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold mb-4">
               Receba Novidades no Seu Email
             </h2>
-            <p className="text-lg mb-8 opacity-90">
+            <p className="text-lg mb-8 text-primary-foreground/90 dark:text-gray-300">
               Assine nossa newsletter e receba conteúdos exclusivos sobre gestão de igrejas
             </p>
             <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input
                 type="email"
                 placeholder="Seu melhor email"
-                className="flex-1 px-4 py-3 rounded-md text-foreground"
+                className="flex-1 px-4 py-3 rounded-md text-foreground bg-white/10 border border-primary-foreground/20 placeholder:text-primary-foreground/50 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:placeholder:text-gray-500"
               />
-              <Button variant="secondary" size="lg">
+              <Button variant="secondary" size="lg" className="dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100">
                 Assinar
               </Button>
             </div>
