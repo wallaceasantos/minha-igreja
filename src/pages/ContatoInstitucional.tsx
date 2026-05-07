@@ -137,14 +137,14 @@ export default function ContatoInstitucional() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+      <section className="py-12 sm:py-20 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
         <div className="container px-4 text-center">
           <div className="max-w-4xl mx-auto">
-            <MessageCircle className="h-20 w-20 text-primary mx-auto mb-6" />
-            <h1 className="text-4xl md:text-5xl font-bold text-primary mb-6">
+            <MessageCircle className="h-14 w-14 sm:h-20 sm:w-20 text-primary mx-auto mb-4 sm:mb-6" />
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-4 sm:mb-6">
               Entre em Contato
             </h1>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-lg sm:text-xl text-muted-foreground">
               Tire suas dúvidas sobre a plataforma MinhaIgreja
             </p>
           </div>
@@ -152,10 +152,10 @@ export default function ContatoInstitucional() {
       </section>
 
       {/* Conteúdo Principal */}
-      <section className="py-20 bg-background">
+      <section className="py-12 sm:py-20 bg-background">
         <div className="container px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-12">
+            <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
               {/* Formulário */}
               <div>
                 <Card>
@@ -190,7 +190,7 @@ export default function ContatoInstitucional() {
                         />
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="phone">Telefone</Label>
                           <Input
@@ -207,7 +207,7 @@ export default function ContatoInstitucional() {
                             id="churchSize"
                             value={formData.churchSize}
                             onChange={(e) => setFormData({ ...formData, churchSize: e.target.value })}
-                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm min-w-0"
                           >
                             <option value="">Selecione</option>
                             <option value="ate-50">Até 50 membros</option>
@@ -280,12 +280,12 @@ export default function ContatoInstitucional() {
               {/* Informações de Contato */}
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-primary mb-6">
+                  <h2 className="text-xl sm:text-2xl font-bold text-primary mb-4 sm:mb-6">
                     Informações de Contato
                   </h2>
                   <div className="space-y-4">
                     <Card>
-                      <CardContent className="pt-6">
+                      <CardContent className="pt-4 sm:pt-6">
                         <div className="flex items-start gap-3">
                           <Mail className="h-5 w-5 text-primary mt-0.5" />
                           <div>
@@ -299,7 +299,7 @@ export default function ContatoInstitucional() {
                     </Card>
 
                     <Card>
-                      <CardContent className="pt-6">
+                      <CardContent className="pt-4 sm:pt-6">
                         <div className="flex items-start gap-3">
                           <Headphones className="h-5 w-5 text-primary mt-0.5" />
                           <div>
@@ -313,7 +313,7 @@ export default function ContatoInstitucional() {
                     </Card>
 
                     <Card>
-                      <CardContent className="pt-6">
+                      <CardContent className="pt-4 sm:pt-6">
                         <div className="flex items-start gap-3">
                           <Phone className="h-5 w-5 text-primary mt-0.5" />
                           <div>
@@ -327,7 +327,7 @@ export default function ContatoInstitucional() {
                     </Card>
 
                     <Card>
-                      <CardContent className="pt-6">
+                      <CardContent className="pt-4 sm:pt-6">
                         <div className="flex items-start gap-3">
                           <MapPin className="h-5 w-5 text-primary mt-0.5" />
                           <div>
@@ -342,7 +342,7 @@ export default function ContatoInstitucional() {
                     </Card>
 
                     <Card>
-                      <CardContent className="pt-6">
+                      <CardContent className="pt-4 sm:pt-6">
                         <div className="flex items-start gap-3">
                           <Clock className="h-5 w-5 text-primary mt-0.5" />
                           <div>
@@ -392,7 +392,7 @@ export default function ContatoInstitucional() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex gap-4">
+                    <div className="flex flex-wrap gap-3 sm:gap-4">
                       <a href="#" className="text-muted-foreground hover:text-primary">
                         LinkedIn
                       </a>
@@ -415,14 +415,14 @@ export default function ContatoInstitucional() {
       </section>
 
       {/* Mapa */}
-      <section className="py-20 bg-muted/50">
+      <section className="py-12 sm:py-20 bg-muted/50">
         <div className="container px-4">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-primary mb-8 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-6 sm:mb-8 text-center">
               Nossa Localização
             </h2>
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="pt-4 sm:pt-6">
                 <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
                   <div className="text-center text-muted-foreground">
                     <MapPin className="h-16 w-16 mx-auto mb-4 opacity-50" />
