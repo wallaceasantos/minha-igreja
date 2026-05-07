@@ -323,8 +323,6 @@ router.post('/', async (req, res) => {
         facebook_url: facebook_url || null,
         instagram_url: instagram_url || null,
         youtube_url: youtube_url || null,
-        theme_primary_color: theme_primary_color || '#1e40af',
-        theme_secondary_color: theme_secondary_color || '#f59e0b',
         plan_type: plan_type || 'free',
         is_active: 1,
         is_verified: 0
@@ -339,10 +337,9 @@ router.post('/', async (req, res) => {
           address_street, address_number, address_complement,
           address_neighborhood, address_city, address_state, address_zip,
           facebook_url, instagram_url, youtube_url,
-          theme_primary_color, theme_secondary_color,
           plan_type, is_active, is_verified, created_at
         ) VALUES (
-          ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
+          ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
         )
       `, [
         churchData.name,
@@ -361,8 +358,6 @@ router.post('/', async (req, res) => {
         churchData.facebook_url,
         churchData.instagram_url,
         churchData.youtube_url,
-        churchData.theme_primary_color,
-        churchData.theme_secondary_color,
         churchData.plan_type,
         churchData.is_active,
         churchData.is_verified
