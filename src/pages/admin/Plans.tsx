@@ -153,24 +153,25 @@ export default function Plans() {
   }
 
   return (
-    <div className="container px-4 py-8">
+    <div className="container px-4 py-4 sm:py-8">
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-4 sm:mb-8">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => navigate('/admin/dashboard')}
-          className="gap-2 mb-4"
+          className="gap-2 mb-4 min-h-[44px]"
         >
           <ArrowLeft className="w-4 h-4" />
-          Voltar ao Dashboard
+          <span className="hidden sm:inline">Voltar ao Dashboard</span>
+          <span className="sm:hidden">Voltar</span>
         </Button>
 
         <div className="flex items-center gap-2 mb-2">
-          <Crown className="w-8 h-8 text-primary" />
-          <h1 className="text-4xl font-bold">Planos e Preços</h1>
+          <Crown className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+          <h1 className="text-2xl sm:text-4xl font-bold">Planos e Preços</h1>
         </div>
-        <p className="text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Escolha o plano ideal para sua igreja e tenha acesso a mais recursos
         </p>
       </div>
@@ -191,13 +192,13 @@ export default function Plans() {
       )}
 
       {/* Cards de Planos */}
-      <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto">
         {plans.map((plan) => (
           <Card
             key={plan.name}
             className={`relative ${
               plan.recommended
-                ? 'border-primary shadow-lg scale-105'
+                ? 'border-primary shadow-lg scale-100 sm:scale-105'
                 : 'border-border'
             }`}
           >
@@ -323,10 +324,10 @@ export default function Plans() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-2 gap-4 mb-6">
-            <Button 
-              variant="outline" 
-              className="h-auto py-4 gap-3 bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/30 border-green-200"
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
+            <Button
+              variant="outline"
+              className="h-auto py-4 gap-3 bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/30 border-green-200 min-h-[44px]"
               onClick={() => {
                 const message = encodeURIComponent(
                   `Olá! Gostaria de saber mais sobre o plano Essencial.\n\n` +

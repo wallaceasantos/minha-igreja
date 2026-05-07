@@ -271,34 +271,35 @@ export default function Cultos() {
   };
 
   return (
-    <div className="container px-4 py-8">
+    <div className="container px-4 py-4 sm:py-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate('/admin/dashboard')}
-            className="gap-2"
+            className="gap-2 min-h-[44px]"
           >
             <ArrowLeft className="w-4 h-4" />
-            Voltar
+            <span className="hidden sm:inline">Voltar</span>
           </Button>
           <div>
-            <h1 className="text-3xl font-bold mb-2">🙏 Cultos Fixos</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2">🙏 Cultos Fixos</h1>
+            <p className="text-sm text-muted-foreground">
               Gerencie os horários dos cultos semanais da igreja
             </p>
           </div>
         </div>
-        <Button onClick={handleOpenCreate}>
+        <Button onClick={handleOpenCreate} className="min-h-[44px]">
           <Plus className="w-4 h-4 mr-2" />
-          Adicionar Culto
+          <span className="hidden sm:inline">Adicionar Culto</span>
+          <span className="sm:hidden">Novo</span>
         </Button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total de Cultos</CardTitle>
@@ -357,6 +358,7 @@ export default function Cultos() {
               </p>
             </div>
           ) : (
+            <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -373,9 +375,9 @@ export default function Cultos() {
                   const dias = services.map(s => s.day_of_week);
                   const periodo = getPeriodoLabel(dias);
                   const firstService = services[0];
-                  
+
                   if (!firstService) return null;
-                  
+
                   return (
                     <TableRow key={key}>
                       <TableCell className="font-medium">
@@ -383,14 +385,14 @@ export default function Cultos() {
                           {periodo}
                         </Badge>
                       </TableCell>
-                      <TableCell>{firstService.service_name}</TableCell>
+                      <TableCell className="text-sm">{firstService.service_name}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Clock className="w-4 h-4 text-muted-foreground" />
                           {formatTime(firstService.service_time)}
                         </div>
                       </TableCell>
-                      <TableCell className="max-w-xs truncate">
+                      <TableCell className="max-w-xs truncate text-sm">
                         {firstService.description || '-'}
                       </TableCell>
                       <TableCell>
@@ -409,12 +411,13 @@ export default function Cultos() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
+                        <div className="flex justify-end gap-1 sm:gap-2">
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => firstService && handleToggleStatus(firstService)}
                             title={firstService?.is_active ? 'Inativar culto' : 'Reativar culto'}
+                            className="min-h-[44px] min-w-[44px]"
                           >
                             {firstService?.is_active ? (
                               <XCircle className="w-4 h-4" />
@@ -426,6 +429,7 @@ export default function Cultos() {
                             variant="ghost"
                             size="sm"
                             onClick={() => firstService && handleOpenEdit(firstService)}
+                            className="min-h-[44px] min-w-[44px]"
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
@@ -433,10 +437,9 @@ export default function Cultos() {
                             variant="ghost"
                             size="sm"
                             onClick={() => {
-                              // Excluir todos os cultos do grupo
                               if (confirm(`Excluir todos os ${services.length} cultos?`)) {
                                 Promise.all(
-                                  services.map(s => 
+                                  services.map(s =>
                                     fetch(buildApiUrl(`/api/services/${s.id}?church_id=${localStorage.getItem('churchId')}`), {
                                       method: 'DELETE'
                                     })
@@ -447,6 +450,7 @@ export default function Cultos() {
                                 });
                               }
                             }}
+                            className="min-h-[44px] min-w-[44px]"
                           >
                             <Trash2 className="w-4 h-4 text-red-600" />
                           </Button>
@@ -457,22 +461,23 @@ export default function Cultos() {
                 })}
               </TableBody>
             </Table>
+            </div>
           )}
         </CardContent>
       </Card>
 
       {/* Dialog de Cadastro/Edição */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl w-full max-h-[90vh] overflow-y-auto sm:rounded-lg">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-lg sm:text-xl">
               {editingService ? 'Editar Culto' : 'Novo Culto'}
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="text-sm font-medium mb-2 block">Dias da Semana *</label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2">
                 {diasSemanaOrdem.map((day) => (
                   <Button
                     key={day}
@@ -480,12 +485,12 @@ export default function Cultos() {
                     variant={formData.days_of_week.includes(day) ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => toggleDiaSemana(day)}
-                    className="justify-start"
+                    className="justify-start min-h-[44px] text-sm"
                   >
                     {formData.days_of_week.includes(day) && (
-                      <CheckCircle className="w-3 h-3 mr-1" />
+                      <CheckCircle className="w-3 h-3 mr-1 flex-shrink-0" />
                     )}
-                    {diasSemana[day]}
+                    <span className="truncate">{diasSemana[day]}</span>
                   </Button>
                 ))}
               </div>
@@ -493,7 +498,7 @@ export default function Cultos() {
                 Selecione um ou mais dias para este culto
               </p>
             </div>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-medium mb-2 block">Horário *</label>
                 <Input
@@ -501,7 +506,7 @@ export default function Cultos() {
                   value={formData.service_time}
                   onChange={(e) => setFormData({ ...formData, service_time: e.target.value })}
                   required
-                  className="[&::-webkit-calendar-picker-indicator]:opacity-100"
+                  className="min-h-[44px] [&::-webkit-calendar-picker-indicator]:opacity-100"
                 />
                 <p className="text-xs text-muted-foreground mt-1">
                   💡 Formato 24 horas (ex: 06:00, 14:30, 19:00)
@@ -542,11 +547,11 @@ export default function Cultos() {
                 Culto ativo
               </label>
             </div>
-            <div className="flex gap-2 justify-end pt-4">
-              <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+            <div className="flex flex-col sm:flex-row gap-2 justify-end pt-4">
+              <Button type="button" variant="outline" onClick={() => setDialogOpen(false)} className="min-h-[44px]">
                 Cancelar
               </Button>
-              <Button type="submit">
+              <Button type="submit" className="min-h-[44px]">
                 {editingService ? 'Salvar Alterações' : `Cadastrar ${formData.days_of_week.length > 0 ? `${formData.days_of_week.length} Culto(s)` : 'Culto'}`}
               </Button>
             </div>

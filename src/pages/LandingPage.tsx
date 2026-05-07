@@ -29,6 +29,7 @@ import {
   Star,
   Info,
   Menu,
+  X,
   Share2,
   MapPin,
   MessageCircle,
@@ -159,6 +160,7 @@ export default function LandingPage() {
   const [selectedPlanForDetails, setSelectedPlanForDetails] = useState<typeof plans[0] | null>(null);
   const [isAnnual, setIsAnnual] = useState(false);
   const [reviews, setReviews] = useState<any[]>([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Scroll Reveal State - Pricing
   const pricingRef = useRef<HTMLElement | null>(null);
@@ -330,12 +332,34 @@ export default function LandingPage() {
           {/* Mobile menu button */}
           <div className="flex items-center gap-2 md:hidden">
             <ModeToggle />
-            <Button variant="ghost" size="sm">
-              <Menu size={24} />
+            <Button variant="ghost" size="sm" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </Button>
           </div>
         </div>
       </header>
+
+
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t bg-background px-4 py-4 space-y-3 animate-in slide-in-from-top">
+          <a href="#funcionalidades" className="block py-2 text-sm" onClick={() => setMobileMenuOpen(false)}>
+            Funcionalidades
+          </a>
+          <a href="#planos" className="block py-2 text-sm" onClick={() => setMobileMenuOpen(false)}>
+            Planos
+          </a>
+          <a href="#depoimentos" className="block py-2 text-sm" onClick={() => setMobileMenuOpen(false)}>
+            Depoimentos
+          </a>
+          <Link to="/login" className="block py-2" onClick={() => setMobileMenuOpen(false)}>
+            <Button variant="ghost" className="w-full justify-start">Entrar</Button>
+          </Link>
+          <Link to="/criar" className="block py-2" onClick={() => setMobileMenuOpen(false)}>
+            <Button className="w-full">Criar Minha Igreja</Button>
+          </Link>
+        </div>
+      )}
 
       {/* Hero Section */}
       <section className="relative py-24 md:py-32 overflow-hidden">

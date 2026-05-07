@@ -245,34 +245,35 @@ export default function Eventos() {
   };
 
   return (
-    <div className="container px-4 py-8">
+    <div className="container px-4 py-4 sm:py-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate('/admin/dashboard')}
-            className="gap-2"
+            className="gap-2 min-h-[44px]"
           >
             <ArrowLeft className="w-4 h-4" />
-            Voltar
+            <span className="hidden sm:inline">Voltar</span>
           </Button>
           <div>
-            <h1 className="text-3xl font-bold mb-2">📅 Eventos</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2">📅 Eventos</h1>
+            <p className="text-sm text-muted-foreground">
               Crie e gerencie eventos e cultos
             </p>
           </div>
         </div>
-        <Button onClick={handleOpenCreate}>
+        <Button onClick={handleOpenCreate} className="min-h-[44px]">
           <Plus className="w-4 h-4 mr-2" />
-          Novo Evento
+          <span className="hidden sm:inline">Novo Evento</span>
+          <span className="sm:hidden">Novo</span>
         </Button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 sm:mb-8 mb-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total de Eventos</CardTitle>
@@ -316,7 +317,7 @@ export default function Eventos() {
       {/* Filters */}
       <Card className="mb-6">
         <CardContent className="pt-6">
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -324,10 +325,10 @@ export default function Eventos() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                className="pl-10"
+                className="pl-10 min-h-[44px]"
               />
             </div>
-            <Button variant="outline" onClick={handleSearch}>
+            <Button variant="outline" onClick={handleSearch} className="min-h-[44px]">
               <Search className="w-4 h-4 mr-2" />
               Buscar
             </Button>
@@ -355,6 +356,7 @@ export default function Eventos() {
               </p>
             </div>
           ) : (
+            <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -369,21 +371,20 @@ export default function Eventos() {
               <TableBody>
                 {events.map((event) => (
                   <TableRow key={event.id}>
-                    <TableCell className="font-medium">{event.title}</TableCell>
-                    <TableCell>{formatDate(event.start_datetime)}</TableCell>
-                    <TableCell>{event.location || '-'}</TableCell>
+                    <TableCell className="font-medium text-sm">{event.title}</TableCell>
+                    <TableCell className="text-xs whitespace-nowrap">{formatDate(event.start_datetime)}</TableCell>
+                    <TableCell className="text-sm">{event.location || '-'}</TableCell>
                     <TableCell>
                       {getStatusBadge(event.status)}
                     </TableCell>
-                    <TableCell>
-                      {new Date(event.created_at).toLocaleDateString('pt-BR')}
-                    </TableCell>
+                    <TableCell className="text-xs">{new Date(event.created_at).toLocaleDateString('pt-BR')}</TableCell>
                     <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
+                      <div className="flex justify-end gap-1 sm:gap-2">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleOpenEdit(event)}
+                          className="min-h-[44px] min-w-[44px]"
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
@@ -391,6 +392,7 @@ export default function Eventos() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDelete(event.id)}
+                          className="min-h-[44px] min-w-[44px]"
                         >
                           <Trash2 className="w-4 h-4 text-red-600" />
                         </Button>
@@ -400,15 +402,16 @@ export default function Eventos() {
                 ))}
               </TableBody>
             </Table>
+            </div>
           )}
         </CardContent>
       </Card>
 
       {/* Dialog de Cadastro/Edição */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl w-full max-h-[90vh] overflow-y-auto sm:rounded-lg">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-lg sm:text-xl">
               {editingEvent ? 'Editar Evento' : 'Novo Evento'}
             </DialogTitle>
           </DialogHeader>
@@ -420,6 +423,7 @@ export default function Eventos() {
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 placeholder="Ex: Culto de Celebração"
                 required
+                className="min-h-[44px]"
               />
             </div>
             <div>
@@ -431,7 +435,7 @@ export default function Eventos() {
                 className="w-full min-h-[80px] border rounded-md px-3 py-2 text-sm"
               />
             </div>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-medium mb-2 block">Data de Início *</label>
                 <Input
@@ -476,13 +480,14 @@ export default function Eventos() {
                 <option value="outro">Outro</option>
               </select>
             </div>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-medium mb-2 block">Local</label>
                 <Input
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                   placeholder="Ex: Templo Principal"
+                  className="min-h-[44px]"
                 />
               </div>
               <div>
@@ -491,6 +496,7 @@ export default function Eventos() {
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   placeholder="Ex: Rua das Flores, 123"
+                  className="min-h-[44px]"
                 />
               </div>
             </div>
@@ -499,7 +505,7 @@ export default function Eventos() {
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                className="w-full border rounded-md px-3 py-2 text-sm"
+                className="w-full border rounded-md px-3 py-2 text-sm min-h-[44px]"
               >
                 <option value="scheduled">Agendado</option>
                 <option value="active">Ativo</option>
@@ -507,11 +513,11 @@ export default function Eventos() {
                 <option value="cancelled">Cancelado</option>
               </select>
             </div>
-            <div className="flex gap-2 justify-end pt-4">
-              <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+            <div className="flex flex-col sm:flex-row gap-2 justify-end pt-4">
+              <Button type="button" variant="outline" onClick={() => setDialogOpen(false)} className="min-h-[44px]">
                 Cancelar
               </Button>
-              <Button type="submit">
+              <Button type="submit" className="min-h-[44px]">
                 {editingEvent ? 'Salvar Alterações' : 'Cadastrar Evento'}
               </Button>
             </div>

@@ -307,17 +307,17 @@ export default function SuperAdminDashboard() {
       </header>
 
       {/* Conteúdo Principal */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-4 sm:py-8">
         {/* Header do Dashboard */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Dashboard da Plataforma</h1>
-          <p className="text-muted-foreground">
+        <div className="mb-4 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Dashboard da Plataforma</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Visão geral do MinhaIgreja
           </p>
         </div>
 
         {/* Cards de Métricas */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* Total de Igrejas */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -387,13 +387,13 @@ export default function SuperAdminDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
               {stats?.plans && Object.entries(stats.plans).map(([plan, data]: [string, any]) => (
-                <div key={plan} className="text-center p-4 border rounded-lg">
-                  <Badge className={`${planColors[plan as keyof typeof planColors]} mb-2`}>
+                <div key={plan} className="text-center p-3 sm:p-4 border rounded-lg">
+                  <Badge className={`${planColors[plan as keyof typeof planColors]} mb-2 text-xs`}>
                     {plan.charAt(0).toUpperCase() + plan.slice(1)}
                   </Badge>
-                  <div className="text-2xl font-bold">{(data as any).active}</div>
+                  <div className="text-xl sm:text-2xl font-bold">{(data as any).active}</div>
                   <p className="text-xs text-muted-foreground">
                     {(data as any).total} total
                   </p>
@@ -404,7 +404,7 @@ export default function SuperAdminDashboard() {
         </Card>
 
         {/* Grid: Igrejas Recentes e Trials */}
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {/* Últimas Igrejas Criadas */}
           <Card>
             <CardHeader>
@@ -424,14 +424,14 @@ export default function SuperAdminDashboard() {
               <div className="space-y-4">
                 {recentChurches.length > 0 ? (
                   recentChurches.map((church) => (
-                    <div key={church.id} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div key={church.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 border rounded-lg gap-2">
                       <div>
-                        <p className="font-semibold">{church.name}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="font-semibold text-sm sm:text-base">{church.name}</p>
+                        <p className="text-xs text-muted-foreground truncate">
                           {church.slug}.plataforma.ccjv.com.br
                         </p>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right w-full sm:w-auto">
                         <Badge className={planColors[church.plan_type as keyof typeof planColors]} variant="outline">
                           {church.plan_type}
                         </Badge>
@@ -470,14 +470,14 @@ export default function SuperAdminDashboard() {
               <div className="space-y-4">
                 {trialsEnding.length > 0 ? (
                   trialsEnding.map((church) => (
-                    <div key={church.id} className="flex items-center justify-between p-3 border rounded-lg bg-amber-50 dark:bg-amber-900/20">
+                    <div key={church.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 border rounded-lg bg-amber-50 dark:bg-amber-900/20 gap-2">
                       <div>
-                        <p className="font-semibold">{church.name}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="font-semibold text-sm sm:text-base">{church.name}</p>
+                        <p className="text-xs text-muted-foreground truncate">
                           {church.email}
                         </p>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right w-full sm:w-auto">
                         <Badge variant="outline" className="text-amber-600 border-amber-600">
                           <Clock className="w-3 h-3 mr-1" />
                           {church.days_remaining} dias
