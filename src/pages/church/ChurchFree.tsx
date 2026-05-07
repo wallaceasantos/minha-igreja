@@ -19,6 +19,7 @@ export default function ChurchFree() {
   const [ministries, setMinistries] = useState<Ministry[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
+  const [memberCount, setMemberCount] = useState(0);
 
   useEffect(() => {
     loadChurchData();
@@ -40,6 +41,7 @@ export default function ChurchFree() {
           loadMinistries(churchData.data.id),
           loadServices(churchData.data.id),
           loadEvents(churchData.data.id),
+          loadStats(churchData.data.id),
         ]);
       } else {
         toast.error('Igreja não encontrada');
@@ -104,7 +106,7 @@ export default function ChurchFree() {
           {/* Stats Simples */}
           <div className="mt-12">
             <div className="inline-block bg-white rounded-lg shadow-md px-8 py-4">
-              <p className="text-3xl font-bold text-blue-600">50+</p>
+              <p className="text-3xl font-bold text-blue-600">{memberCount > 0 ? `${memberCount}+` : '0'}</p>
               <p className="text-gray-600">Membros</p>
             </div>
           </div>
