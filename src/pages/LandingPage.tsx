@@ -337,7 +337,6 @@ export default function LandingPage() {
             </Button>
           </div>
         </div>
-      </header>
 
         {/* Mobile Menu Dropdown */}
         {mobileMenuOpen && (
@@ -359,7 +358,7 @@ export default function LandingPage() {
             </Link>
           </div>
         )}
-
+      </header>
 
       {/* Hero Section */}
       <section className="relative py-24 md:py-32 overflow-hidden">
