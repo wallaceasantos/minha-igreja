@@ -69,6 +69,7 @@ const initialFormData: FormData = {
   name: '',
   slug: '',
   cnpj: '',
+  description: '',
   email: '',
   phone: '',
   whatsapp: '',
@@ -771,7 +772,7 @@ export default function CreateChurch() {
                           <p className="text-sm text-muted-foreground">
                             {selectedPlan === 'essencial' 
                               ? '30 dias grátis • Depois R$ 49,90/mês' 
-                              : 'Grátis para sempre • Sem cartão de crédito'}
+                              : 'Grátis ilimitado • Sem cartão de crédito'}
                           </p>
                         </div>
                       </div>
