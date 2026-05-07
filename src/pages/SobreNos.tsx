@@ -123,7 +123,7 @@ export default function SobreNos() {
             </h2>
             <div className="prose prose-lg mx-auto text-muted-foreground">
               <p className="mb-4">
-                O <strong>MinhaIgreja</strong> nasceu em 2024 da necessidade de democratizar 
+                O <strong>MinhaIgreja</strong> nasceu em 2026 da necessidade de democratizar 
                 o acesso à tecnologia para igrejas de todos os tamanhos no Brasil.
               </p>
               <p className="mb-4">

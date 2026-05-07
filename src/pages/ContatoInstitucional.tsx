@@ -319,7 +319,7 @@ export default function ContatoInstitucional() {
                           <div>
                             <p className="font-semibold">Telefone / WhatsApp</p>
                             <a href="tel:+5511999999999" className="text-muted-foreground hover:text-primary">
-                              (11) 99999-9999
+                              (92) 98421-3885
                             </a>
                           </div>
                         </div>
@@ -333,8 +333,8 @@ export default function ContatoInstitucional() {
                           <div>
                             <p className="font-semibold">Endereço Comercial</p>
                             <p className="text-muted-foreground">
-                              Avenida Paulista, 1000 - Bela Vista<br />
-                              São Paulo - SP, 01310-100
+                              Avenida Urucará, 1275 - Cachoeirinha<br />
+                              Manaus - AM, 69065-180
                             </p>
                           </div>
                         </div>
