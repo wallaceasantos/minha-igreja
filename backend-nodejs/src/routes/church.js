@@ -380,10 +380,19 @@ router.post('/', async (req, res) => {
       console.log('✅ Admin criado');
 
       // Criar subscription
+      // Se o plano for 'essencial', cria um Trial de 30 dias.
+      // Se o plano for 'free' (ou outro), cria uma assinatura ativa sem trial.
+      const isTrial = plan_type === 'essencial';
+      const status = isTrial ? 'trial' : 'active';
+      // Define a data de fim do trial (30 dias) ou null para plano free
+      const trialEndDate = isTrial ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : null;
+      // Define o fim do período atual (fim do trial ou 1 ano)
+      const periodEndDate = isTrial ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+
       await connection.execute(`
-        INSERT INTO subscriptions (church_id, plan_type, status, current_period_start, current_period_end, created_at)
-        VALUES (?, ?, 'trial', CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY), NOW())
-      `, [churchId, plan_type]);
+        INSERT INTO subscriptions (church_id, plan_type, status, current_period_start, current_period_end, trial_end_date, created_at)
+        VALUES (?, ?, ?, CURDATE(), ?, ?, NOW())
+      `, [churchId, plan_type, status, periodEndDate, trialEndDate]);
 
       console.log('✅ Subscription criada');
 
