@@ -46,8 +46,6 @@ interface FormData {
   whatsapp: string;
   address: AddressData;
   admin: AdminData;
-  theme_primary_color: string;
-  theme_secondary_color: string;
 }
 
 const initialAddress: AddressData = {
@@ -76,8 +74,6 @@ const initialFormData: FormData = {
   whatsapp: '',
   address: initialAddress,
   admin: initialAdmin,
-  theme_primary_color: '#1e40af',
-  theme_secondary_color: '#f59e0b',
 };
 
 export default function CreateChurch() {
@@ -736,56 +732,6 @@ export default function CreateChurch() {
                             placeholder="Repita a senha"
                             className="pl-10"
                             required
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Personalização */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <Palette className="h-5 w-5" />
-                      Personalização (Opcional)
-                    </h3>
-
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="theme_primary_color">Cor Primária</Label>
-                        <div className="flex gap-2">
-                          <Input
-                            id="theme_primary_color"
-                            name="theme_primary_color"
-                            type="color"
-                            value={formData.theme_primary_color}
-                            onChange={handleInputChange}
-                            className="w-20 h-10"
-                          />
-                          <Input
-                            type="text"
-                            value={formData.theme_primary_color}
-                            onChange={(e) => setFormData(prev => ({ ...prev, theme_primary_color: e.target.value }))}
-                            className="flex-1"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="theme_secondary_color">Cor Secundária</Label>
-                        <div className="flex gap-2">
-                          <Input
-                            id="theme_secondary_color"
-                            name="theme_secondary_color"
-                            type="color"
-                            value={formData.theme_secondary_color}
-                            onChange={handleInputChange}
-                            className="w-20 h-10"
-                          />
-                          <Input
-                            type="text"
-                            value={formData.theme_secondary_color}
-                            onChange={(e) => setFormData(prev => ({ ...prev, theme_secondary_color: e.target.value }))}
-                            className="flex-1"
                           />
                         </div>
                       </div>
