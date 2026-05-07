@@ -753,6 +753,73 @@ export default function CreateChurch() {
                     </p>
                   </div>
 
+                  {/* Resumo do Plano Selecionado */}
+                  <Card className={`border-2 ${
+                    selectedPlan === 'essencial' 
+                      ? 'border-primary/50 bg-primary/5' 
+                      : 'border-green-500/50 bg-green-500/5'
+                  }`}>
+                    <CardContent className="pt-6">
+                      <div className="flex items-center gap-3 mb-3">
+                        <CheckCircle2 className={`h-6 w-6 ${
+                          selectedPlan === 'essencial' ? 'text-primary' : 'text-green-600'
+                        }`} />
+                        <div>
+                          <h3 className="font-bold text-lg">
+                            {selectedPlan === 'essencial' ? 'Plano Essencial' : 'Plano Livre'} Selecionado
+                          </h3>
+                          <p className="text-sm text-muted-foreground">
+                            {selectedPlan === 'essencial' 
+                              ? '30 dias grátis • Depois R$ 49,90/mês' 
+                              : 'Grátis para sempre • Sem cartão de crédito'}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        {selectedPlan === 'essencial' ? (
+                          <>
+                            <div className="flex items-center gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-primary" />
+                              <span>Até 200 membros</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-primary" />
+                              <span>Pedidos ilimitados</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-primary" />
+                              <span>3 administradores</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-primary" />
+                              <span>Domínio próprio</span>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="flex items-center gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-600" />
+                              <span>Até 50 membros</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-600" />
+                              <span>20 pedidos/mês</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-600" />
+                              <span>1 administrador</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-600" />
+                              <span>Site profissional</span>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+
                   {/* Botão Submit */}
                   <Button
                     type="submit"
