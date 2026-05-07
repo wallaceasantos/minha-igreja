@@ -5,6 +5,7 @@
 
 import express from 'express';
 import { getPool } from '../config/database.js';
+import nodemailer from 'nodemailer';
 
 const router = express.Router();
 
@@ -388,6 +389,95 @@ router.post('/', async (req, res) => {
 
       await connection.commit();
       console.log('✅ Transação completada com sucesso!');
+
+      // Enviar Email de Confirmação
+      try {
+        const smtpHost = process.env.SMTP_HOST;
+        const smtpPort = process.env.SMTP_PORT;
+        const smtpUser = process.env.SMTP_USER;
+        const smtpPass = process.env.SMTP_PASS;
+        const smtpFrom = process.env.SMTP_FROM || 'MinhaIgreja <noreply@minhaigreja.app>';
+
+        if (smtpHost && smtpUser && smtpPass) {
+          const transporter = nodemailer.createTransport({
+            host: smtpHost,
+            port: smtpPort || 587,
+            secure: smtpPort == 465,
+            auth: {
+              user: smtpUser,
+              pass: smtpPass
+            }
+          });
+
+          const churchUrl = `https://${slug}.plataforma.minhaigreja.com.br`;
+          const dashboardUrl = `${churchUrl}/login`;
+
+          const htmlContent = `
+            <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333333; background-color: #f9fafb; padding: 20px;">
+              <div style="background-color: #ffffff; border-radius: 12px; padding: 40px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <h1 style="color: #1e40af; text-align: center; font-size: 28px; margin-top: 0;">🎉 Parabéns!</h1>
+                <h2 style="text-align: center; color: #111827; font-size: 22px; margin-bottom: 30px;">Sua Igreja Está no Ar!</h2>
+                <p style="font-size: 16px; color: #4b5563; text-align: center; margin-bottom: 30px;">
+                  A igreja <strong style="color: #1e40af;">${name}</strong> foi criada com sucesso.
+                </p>
+                
+                <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #1e40af;">
+                  <h3 style="margin-top: 0; color: #1f2937;">Detalhes da Igreja:</h3>
+                  <p style="margin: 5px 0;"><strong>Nome:</strong> ${name}</p>
+                  <p style="margin: 5px 0;"><strong>Subdomínio:</strong> ${slug}</p>
+                  <p style="margin: 5px 0;"><strong>Plano:</strong> Trial (30 dias grátis)</p>
+                </div>
+
+                <p style="font-size: 16px;">Seu site está acessível em:</p>
+                <p style="text-align: center; margin: 10px 0 30px;">
+                  <a href="${churchUrl}" style="color: #1e40af; font-weight: bold; text-decoration: none; font-size: 18px;">${churchUrl}</a>
+                </p>
+
+                <div style="background: #e0f2fe; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #bae6fd;">
+                  <h3 style="margin-top: 0; color: #0369a1;">🔐 Credenciais de Acesso:</h3>
+                  <p style="margin: 5px 0;"><strong>Email:</strong> ${admin.email}</p>
+                  <p style="margin: 5px 0;"><strong>Senha:</strong> •••••••• (a que você cadastrou)</p>
+                  <p style="margin: 15px 0 5px; font-style: italic; color: #6b7280; font-size: 14px;">💡 Importante: Anote sua senha! Você vai precisar dela para acessar o dashboard.</p>
+                </div>
+
+                <h3 style="color: #1f2937; margin-top: 30px;">🚀 Próximos Passos:</h3>
+                <ul style="color: #4b5563; line-height: 1.8;">
+                  <li>Fazer login no dashboard</li>
+                  <li>Configurar sua igreja (logo, cores, etc.)</li>
+                  <li>Adicionar membros</li>
+                  <li>Criar primeiros cultos</li>
+                </ul>
+
+                <div style="text-align: center; margin-top: 40px;">
+                  <a href="${dashboardUrl}" style="background-color: #1e40af; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">Ir para Dashboard</a>
+                  <div style="margin-top: 15px;">
+                    <a href="${churchUrl}" style="color: #1e40af; text-decoration: none; font-weight: bold;">Ver Meu Site →</a>
+                  </div>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 40px 0;">
+                <p style="text-align: center; color: #9ca3af; font-size: 12px;">
+                  Email enviado por MinhaIgreja - Plataforma Digital para Igrejas.<br>
+                  Você pode acessar seu dashboard a qualquer momento em <a href="${dashboardUrl}" style="color: #6b7280;">${dashboardUrl}</a>.
+                </p>
+              </div>
+            </div>
+          `;
+
+          await transporter.sendMail({
+            from: smtpFrom,
+            to: admin.email,
+            subject: '🎉 Parabéns! Sua Igreja Está no Ar!',
+            html: htmlContent
+          });
+
+          console.log(`📧 Email de confirmação enviado para ${admin.email}`);
+        } else {
+          console.warn('⚠️ Configuração de SMTP ausente. Email não enviado.');
+        }
+      } catch (emailError) {
+        console.error('❌ Erro ao enviar email de confirmação:', emailError);
+      }
 
       res.json({
         success: true,
