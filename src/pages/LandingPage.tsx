@@ -747,18 +747,18 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Final */}
-      <section ref={ctaRef} className="py-20 bg-primary text-primary-foreground dark:bg-primary/90">
+      <section ref={ctaRef} className="py-20 bg-gradient-to-b from-primary to-primary/80 text-primary-foreground dark:from-gray-900 dark:to-gray-800 dark:text-white">
         <div className="container px-4 text-center">
           <div className="max-w-3xl mx-auto space-y-6">
             <h2 className={`text-3xl md:text-4xl font-bold cta-title ${isCtaInView ? 'animate' : ''}`}>
               Pronto para Começar?
             </h2>
-            <p className={`text-lg opacity-90 cta-subtitle ${isCtaInView ? 'animate' : ''}`}>
+            <p className={`text-lg text-primary-foreground/90 dark:text-gray-300 cta-subtitle ${isCtaInView ? 'animate' : ''}`}>
               Junte-se a centenas de igrejas que já estão usando o MinhaIgreja
               para se conectar com seus membros.
             </p>
             <div className={`flex flex-col sm:flex-row gap-4 justify-center mt-8 cta-buttons ${isCtaInView ? 'animate' : ''}`}>
-              <Button size="lg" variant="secondary" asChild className="cta-button-primary text-lg h-12 px-8">
+              <Button size="lg" variant="secondary" asChild className="cta-button-primary text-lg h-12 px-8 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100">
                 <Link to="/criar">
                   Criar Minha Igreja Grátis
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -768,12 +768,12 @@ export default function LandingPage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="cta-button-primary text-lg h-12 px-8 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10"
+                className="cta-button-primary text-lg h-12 px-8 bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 dark:border-white dark:text-white dark:hover:bg-white/10"
               >
                 Falar com Consultor
               </Button>
             </div>
-            <p className="text-sm opacity-75 mt-4">
+            <p className="text-sm text-primary-foreground/75 dark:text-gray-400 mt-4">
               30 dias de teste no Essencial • Plano Grátis ilimitado • Não requer cartão de crédito
             </p>
           </div>
