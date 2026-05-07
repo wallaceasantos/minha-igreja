@@ -437,24 +437,24 @@ export default function SobreNos() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-primary text-primary-foreground dark:bg-primary/90">
+      <section className="py-20 bg-gradient-to-b from-primary to-primary/80 text-primary-foreground dark:from-gray-900 dark:to-gray-800 dark:text-white">
         <div className="container px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Quer Fazer Parte Dessa Transformação?
           </h2>
-          <p className="text-lg mb-8 opacity-90">
+          <p className="text-lg mb-8 text-primary-foreground/90 dark:text-gray-300">
             Junte-se a centenas de igrejas que já estão usando o MinhaIgreja
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <a
               href="/criar"
-              className="inline-flex items-center px-6 py-3 bg-secondary text-secondary-foreground rounded-md font-semibold hover:bg-secondary/90 transition-colors"
+              className="inline-flex items-center px-6 py-3 bg-secondary text-secondary-foreground rounded-md font-semibold hover:bg-secondary/90 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 transition-colors"
             >
               Começar Grátis Agora
             </a>
             <a
               href="/contato-institucional"
-              className="inline-flex items-center px-6 py-3 bg-transparent border-2 border-primary-foreground rounded-md font-semibold hover:bg-primary-foreground/10 transition-colors"
+              className="inline-flex items-center px-6 py-3 bg-transparent border-2 border-primary-foreground rounded-md font-semibold hover:bg-primary-foreground/10 dark:border-white dark:text-white dark:hover:bg-white/10 transition-colors"
             >
               Fale Conosco
             </a>
