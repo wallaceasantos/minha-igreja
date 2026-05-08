@@ -101,7 +101,7 @@ export default function SuperAdminChurchPlans() {
     {
       id: 'essencial',
       name: 'Essencial',
-      price: 'R$ 49,90/mês',
+      price: 'R$ 149,90/mês',
       description: 'Para igrejas em crescimento',
       features: ['200 membros', 'Pedidos ILIMITADOS', '3 admins', 'Domínio próprio', 'Logo', 'Analytics'],
       color: 'bg-blue-500',

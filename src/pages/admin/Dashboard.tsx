@@ -470,7 +470,7 @@ export default function Dashboard() {
               </Button>
             </div>
             <p className="text-center text-xs text-muted-foreground mt-4">
-              💰 Apenas R$ 49,90/mês • Cancele quando quiser
+              💰 Apenas R$ 149,90/mês • Cancele quando quiser
             </p>
           </CardContent>
         </Card>
@@ -533,7 +533,7 @@ export default function Dashboard() {
                   Após o trial:
                 </p>
                 <p className="text-3xl font-bold text-green-700 dark:text-green-400">
-                  R$ 49,90<span className="text-sm font-normal">/mês</span>
+                  R$ 149,90<span className="text-sm font-normal">/mês</span>
                 </p>
                 <Button onClick={() => navigate('/admin/plans')} className="w-full gap-2 bg-green-600 hover:bg-green-700">
                   <Crown className="w-4 h-4" />

@@ -771,7 +771,7 @@ export default function CreateChurch() {
                           </h3>
                           <p className="text-sm text-muted-foreground">
                             {selectedPlan === 'essencial' 
-                              ? '30 dias grátis • Depois R$ 49,90/mês' 
+                              ? '30 dias grátis • Depois R$ 149,90/mês' 
                               : 'Grátis ilimitado • Sem cartão de crédito'}
                           </p>
                         </div>

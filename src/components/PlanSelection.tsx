@@ -94,7 +94,7 @@ export default function PlanSelection({ selectedPlan, onSelectPlan, onContinue }
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-4xl font-bold">
-              R$ 49,90
+              R$ 149,90
               <span className="text-sm font-normal text-muted-foreground">/mês</span>
             </div>
             <ul className="space-y-2 text-left">

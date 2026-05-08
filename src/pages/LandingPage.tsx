@@ -119,9 +119,9 @@ const plans = [
   },
   {
     name: 'Essencial',
-    price: 'R$ 99,90',
+    price: 'R\$ 149,90',
     period: '/mês',
-    annualPrice: 'R$ 1.198,80',
+    annualPrice: 'R\$ 1.798,80',
     description: 'Para igrejas em crescimento',
     features: [
       'TUDO do Free +',
@@ -621,7 +621,7 @@ export default function LandingPage() {
                   </div>
                   <div className="flex items-baseline gap-1">
                     <span className="text-sm text-muted-foreground">R$</span>
-                    <span className="text-5xl font-bold tracking-tight text-foreground">{isAnnual ? '499' : '49,90'}</span>
+                    <span className="text-5xl font-bold tracking-tight text-foreground">{isAnnual ? '1499' : '149,90'}</span>
                     <span className="text-muted-foreground self-end mb-1">/{isAnnual ? 'ano' : 'mês'}</span>
                   </div>
                   

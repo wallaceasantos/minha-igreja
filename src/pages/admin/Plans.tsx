@@ -68,7 +68,7 @@ export default function Plans() {
     },
     {
       name: 'Essencial',
-      price: 'R$ 49,90',
+      price: 'R$ 149,90',
       period: '/mês',
       description: 'Para igrejas em crescimento que precisam de mais recursos',
       features: [
@@ -97,7 +97,7 @@ export default function Plans() {
       `✅ 30 dias de teste grátis\n` +
       `✅ Acesso a todos os recursos do Essencial\n` +
       `✅ Sem compromisso - cancele quando quiser\n\n` +
-      `Após 30 dias: R$ 49,90/mês`
+      `Após 30 dias: R$ 149,90/mês`
     );
 
     if (!confirm) return;
