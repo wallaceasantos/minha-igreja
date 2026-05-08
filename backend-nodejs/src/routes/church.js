@@ -390,9 +390,8 @@ router.post('/', async (req, res) => {
       const periodEndDate = isTrial ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
 
       await connection.execute(`
-        INSERT INTO subscriptions (church_id, plan_type, status, current_period_start, current_period_end, trial_end_date, created_at)
-        VALUES (?, ?, ?, CURDATE(), ?, ?, NOW())
-      `, [churchId, plan_type, status, periodEndDate, trialEndDate]);
+        INSERT INTO subscriptions (church_id, plan_type, status, is_trial, current_period_start, current_period_end, trial_end_date, created_at)\n        VALUES (?, ?, ?, ?, CURDATE(), ?, ?, NOW())
+      `, [churchId, plan_type, status, plan_type === 'essencial' ? 1 : 0, periodEndDate, trialEndDate]);
 
       console.log('✅ Subscription criada');
 
