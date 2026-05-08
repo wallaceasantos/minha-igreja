@@ -52,7 +52,8 @@ export default function AdminConfiguracoes() {
   const [domainValidated, setDomainValidated] = useState(false);
 
   // Verificar se está no plano Free ou trial
-  const isTrialActive = localStorage.getItem('isTrialActive') === 'true';
+  const trialEndDate = church?.trial_end_date ? new Date(church.trial_end_date) : null;
+  const isTrialActive = trialEndDate && trialEndDate > new Date();
   const planType: string = church?.plan_type || 'free';
   const isFreePlan = planType === 'free' && !isTrialActive;
   const isEssentialOrHigher = ['essencial', 'premium', 'enterprise'].includes(planType) || isTrialActive;

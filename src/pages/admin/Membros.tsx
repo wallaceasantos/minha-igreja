@@ -586,7 +586,8 @@ export default function Membros() {
 
       // Verificar limite do plano Free antes de cadastrar
       // Permitir se: trial ativo OU plano essencial OU menos de 50 membros
-      const isTrialActive = localStorage.getItem('isTrialActive') === 'true';
+      const trialEndDate = church?.trial_end_date ? new Date(church.trial_end_date) : null;
+      const isTrialActive = trialEndDate && trialEndDate > new Date();
       const isEssentialPlan = church?.plan_type === 'essencial';
       const isUnderFreeLimit = stats.total < 50;
 

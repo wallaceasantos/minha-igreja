@@ -78,12 +78,12 @@ export default function AdminChurchGallery() {
   const loadGallery = async () => {
     try {
       setLoading(true);
-      const churchId = localStorage.getItem('churchId');
-      
+      const churchId = localStorage.getItem('churchId') || '';
+
       // Usar rota de admin que retorna TODAS as imagens (ativas e inativas)
       const response = await fetch(buildApiUrl(`/api/gallery/admin/church/gallery`), {
         headers: {
-          'x-church-id': churchId || '',
+          'x-church-id': churchId,
         },
       });
       const result = await response.json();
@@ -147,7 +147,7 @@ export default function AdminChurchGallery() {
 
     try {
       setUploading(true);
-      const churchId = localStorage.getItem('churchId');
+      const churchId = localStorage.getItem('churchId') || '';
       const totalFiles = selectedFiles.length;
       let uploadedCount = 0;
 
@@ -155,14 +155,14 @@ export default function AdminChurchGallery() {
       for (const [index, file] of selectedFiles.entries()) {
         const formData = new FormData();
         formData.append('image', file);
-        formData.append('church_id', churchId || '');
+        formData.append('church_id', churchId);
         formData.append('title', title || file.name.split('.')[0]);
         formData.append('description', description || '');
 
         const response = await fetch(buildApiUrl('/api/gallery/admin/church/gallery/upload'), {
           method: 'POST',
           headers: {
-            'x-church-id': churchId || '',
+            'x-church-id': churchId,
           },
           body: formData,
         });
@@ -211,12 +211,12 @@ export default function AdminChurchGallery() {
     if (!selectedImage) return;
 
     try {
-      const churchId = localStorage.getItem('churchId');
+      const churchId = localStorage.getItem('churchId') || '';
       const response = await fetch(buildApiUrl(`/api/gallery/admin/church/gallery/${selectedImage.id}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'x-church-id': churchId || '',
+          'x-church-id': churchId,
         },
         body: JSON.stringify({
           title,
@@ -243,11 +243,11 @@ export default function AdminChurchGallery() {
     if (!selectedImage) return;
 
     try {
-      const churchId = localStorage.getItem('churchId');
+      const churchId = localStorage.getItem('churchId') || '';
       const response = await fetch(buildApiUrl(`/api/gallery/admin/church/gallery/${selectedImage.id}`), {
         method: 'DELETE',
         headers: {
-          'x-church-id': churchId || '',
+          'x-church-id': churchId,
         },
       });
 
@@ -268,16 +268,16 @@ export default function AdminChurchGallery() {
 
   const handleToggleVisibility = async (image: GalleryImage) => {
     try {
-      const churchId = localStorage.getItem('churchId');
+      const churchId = localStorage.getItem('churchId') || '';
       const newStatus = image.is_active === 1 ? 0 : 1;
-      
+
       console.log('🔄 Toggle visibility:', { imageId: image.id, current: image.is_active, new: newStatus });
-      
+
       const response = await fetch(buildApiUrl(`/api/gallery/admin/church/gallery/${image.id}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'x-church-id': churchId || '',
+          'x-church-id': churchId,
         },
         body: JSON.stringify({
           is_active: newStatus,
@@ -311,7 +311,7 @@ export default function AdminChurchGallery() {
 
   const reorderImages = async (fromIndex: number, toIndex: number) => {
     try {
-      const churchId = localStorage.getItem('churchId');
+      const churchId = localStorage.getItem('churchId') || '';
       const newImages = [...images];
       const [moved] = newImages.splice(fromIndex, 1);
       if (!moved) {
@@ -328,7 +328,7 @@ export default function AdminChurchGallery() {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            'x-church-id': churchId || '',
+            'x-church-id': churchId,
           },
           body: JSON.stringify({
             display_order: i,

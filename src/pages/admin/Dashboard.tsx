@@ -255,7 +255,8 @@ export default function Dashboard() {
 
   // Calcular porcentagens e limites
   // Verificar se está em trial OU se o plano é essencial
-  const isTrialActive = trialInfo?.isTrial === true || localStorage.getItem('isTrialActive') === 'true';
+  const trialEndDate = church?.trial_end_date ? new Date(church.trial_end_date) : null;
+  const isTrialActive = trialEndDate && trialEndDate > new Date();
   const planType: string = church?.plan_type || 'free';
   const plan = isTrialActive || planType === 'essencial' || planType === 'premium'
     ? 'essencial'
@@ -289,8 +290,7 @@ export default function Dashboard() {
     return null; // Sem alerta
   };
 
-  // Calcular dias restantes do trial
-  const trialEndDate = church?.trial_end_date ? new Date(church.trial_end_date) : null;
+  // Calcular dias restantes do trial (trialEndDate já declarado acima)
   const daysRemaining = trialEndDate 
     ? Math.ceil((trialEndDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
     : 30;
