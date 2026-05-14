@@ -91,8 +91,8 @@ export default function SuperAdminChurchPlans() {
 
   const plans = [
     {
-      id: 'free',
-      name: 'Free',
+      id: 'essencial',
+      name: 'Essencial',
       price: 'Grátis',
       description: 'Para igrejas iniciantes',
       features: ['50 membros', '20 pedidos/mês', '1 admin', 'Subdomínio'],
@@ -101,7 +101,7 @@ export default function SuperAdminChurchPlans() {
     {
       id: 'essencial',
       name: 'Essencial',
-      price: 'R$ 149,90/mês',
+      price: 'R$ 79,90/mês',
       description: 'Para igrejas em crescimento',
       features: ['200 membros', 'Pedidos ILIMITADOS', '3 admins', 'Domínio próprio', 'Logo', 'Analytics'],
       color: 'bg-blue-500',
@@ -174,7 +174,7 @@ export default function SuperAdminChurchPlans() {
                 {plan.popular && (
                   <Badge className="absolute top-2 right-2">
                     <Crown className="w-3 h-3 mr-1" />
-                    Mais Popular
+                    
                   </Badge>
                 )}
                 <div className={`w-12 h-12 rounded-full ${plan.color} flex items-center justify-center mb-4`}>

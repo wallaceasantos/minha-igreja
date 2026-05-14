@@ -32,7 +32,8 @@ import {
   Mail,
   Image,
   Video,
-  Star
+  Star,
+  BookOpen
 } from 'lucide-react';
 import { toast } from 'sonner';
 import BirthdayCard from '@/components/BirthdayCard';
@@ -257,7 +258,7 @@ export default function Dashboard() {
   // Verificar se está em trial OU se o plano é essencial
   const trialEndDate = church?.trial_end_date ? new Date(church.trial_end_date) : null;
   const isTrialActive = trialEndDate && trialEndDate > new Date();
-  const planType: string = church?.plan_type || 'free';
+  const planType: string = church?.plan_type || 'essencial';
   const plan = isTrialActive || planType === 'essencial' || planType === 'premium'
     ? 'essencial'
     : planType;
@@ -418,7 +419,7 @@ export default function Dashboard() {
       </div>
 
       {/* Alerta de Limite Atingido - Upgrade */}
-      {(memberPercent >= 100 || safePrayerPercent >= 100 || adminPercent >= 100) && plan === 'free' && (
+      {(memberPercent >= 100 || safePrayerPercent >= 100 || adminPercent >= 100) && plan === 'essencial' && (
         <Card className="mb-8 border-2 border-primary bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-primary">
@@ -426,7 +427,7 @@ export default function Dashboard() {
               🎉 Sua igreja está crescendo!
             </CardTitle>
             <CardDescription className="text-primary/80">
-              Você atingiu o limite do plano Free. Faça upgrade para o plano Essencial e desbloqueie recursos ilimitados!
+              Você atingiu o limite do plano Essencial. Faça upgrade para o plano Essencial e desbloqueie recursos ilimitados!
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -470,7 +471,7 @@ export default function Dashboard() {
               </Button>
             </div>
             <p className="text-center text-xs text-muted-foreground mt-4">
-              💰 Apenas R$ 149,90/mês • Cancele quando quiser
+              💰 Apenas R$ 79,90/mês • Cancele quando quiser
             </p>
           </CardContent>
         </Card>
@@ -533,7 +534,7 @@ export default function Dashboard() {
                   Após o trial:
                 </p>
                 <p className="text-3xl font-bold text-green-700 dark:text-green-400">
-                  R$ 149,90<span className="text-sm font-normal">/mês</span>
+                  R$ 79,90<span className="text-sm font-normal">/mês</span>
                 </p>
                 <Button onClick={() => navigate('/admin/plans')} className="w-full gap-2 bg-green-600 hover:bg-green-700">
                   <Crown className="w-4 h-4" />
@@ -887,6 +888,27 @@ export default function Dashboard() {
             <CardContent>
               <p className="text-sm text-muted-foreground">
                 Lives do YouTube
+              </p>
+              {church?.plan_type === 'essencial' && (
+                <Badge className="mt-2 bg-green-500 text-xs">
+                  Incluído no Essencial
+                </Badge>
+              )}
+            </CardContent>
+          </Link>
+        </Card>
+
+        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Link to="/admin/verses" className="block h-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-purple-600" />
+                📖 Versículos da Live
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Gerencie versículos para exibição na live
               </p>
               {church?.plan_type === 'essencial' && (
                 <Badge className="mt-2 bg-green-500 text-xs">

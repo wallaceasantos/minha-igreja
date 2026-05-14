@@ -35,6 +35,7 @@ const SuperAdminAnnouncements = lazy(() => import("./pages/super-admin/Announcem
 const SuperAdminReports = lazy(() => import("./pages/super-admin/Reports"));
 const SuperAdminSecurity = lazy(() => import("./pages/super-admin/SecurityDashboard"));
 const ChurchPreview = lazy(() => import("./pages/church/ChurchPreview"));
+const ChurchLive = lazy(() => import("./pages/church/ChurchLive"));
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
 const PoliticaPrivacidade = lazy(() => import("./pages/PoliticaPrivacidade"));
@@ -105,6 +106,7 @@ const LazyAdminTickets = lazy(() => import("./pages/admin/Tickets"));
 const LazyAdminChurchGallery = lazy(() => import("./pages/admin/ChurchGallery"));
 const LazyAdminLiveStreams = lazy(() => import("./pages/admin/LiveStreams"));
 const LazyAdminReviews = lazy(() => import("./pages/admin/Reviews"));
+const LazyAdminVerses = lazy(() => import("./pages/admin/Verses"));
 
 const queryClient = new QueryClient();
 
@@ -149,6 +151,7 @@ const App = () => (
               
               {/* Preview da Igreja (localhost) */}
               <Route path="/church/:slug" element={<ChurchPreview />} />
+              <Route path="/church/:slug/ao-vivo" element={<ChurchLive />} />
               <Route path="/church" element={<ChurchPreview />} />
 
               {/* Páginas Institucionais (FORA DO LAYOUT) */}
@@ -169,6 +172,7 @@ const App = () => (
                 <Route path="/admin/dashboard" element={<LazyAdminDashboard />} />
                 <Route path="/admin/galeria" element={<LazyAdminChurchGallery />} />
                 <Route path="/admin/live-streams" element={<LazyAdminLiveStreams />} />
+                <Route path="/admin/verses" element={<LazyAdminVerses />} />
                 <Route path="/admin/avaliar" element={<LazyAdminReviews />} />
                 <Route path="/admin/configuracoes" element={<LazyAdminConfig />} />
                 <Route path="/admin/pedidos" element={<LazyAdminPedidos />} />

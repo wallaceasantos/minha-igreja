@@ -51,11 +51,11 @@ export default function AdminConfiguracoes() {
   const [domain, setDomain] = useState('');
   const [domainValidated, setDomainValidated] = useState(false);
 
-  // Verificar se está no plano Free ou trial
+  // Verificar se está no plano Essencial ou trial
   const trialEndDate = church?.trial_end_date ? new Date(church.trial_end_date) : null;
   const isTrialActive = trialEndDate && trialEndDate > new Date();
-  const planType: string = church?.plan_type || 'free';
-  const isFreePlan = planType === 'free' && !isTrialActive;
+  const planType: string = church?.plan_type || 'essencial';
+  const isFreePlan = planType === 'essencial' && !isTrialActive;
   const isEssentialOrHigher = ['essencial', 'premium', 'enterprise'].includes(planType) || isTrialActive;
 
   // Estado para configurações
@@ -276,7 +276,7 @@ export default function AdminConfiguracoes() {
 
   // Handler para upload de logo
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Bloquear upload no plano Free
+    // Bloquear upload no plano Essencial
     if (isFreePlan) {
       toast.error('Recurso não disponível', {
         description: 'O upload de logo está disponível apenas nos planos Essencial, Premium e Enterprise.',
@@ -366,17 +366,17 @@ export default function AdminConfiguracoes() {
 
         {/* Tab: Informações Gerais */}
         <TabsContent value="general" className="space-y-6">
-          {/* Aviso para plano Free */}
+          {/* Aviso para plano Essencial */}
           {isFreePlan && (
             <Alert variant="destructive" className="bg-amber-50 border-amber-200 text-amber-900">
               <Crown className="h-4 w-4 text-amber-600" />
               <AlertDescription>
-                <strong className="font-semibold">⚠️ Recurso indisponível no plano Free</strong>
+                <strong className="font-semibold">⚠️ Recurso indisponível no plano Essencial</strong>
                 <p className="mt-2 text-sm">
                   O upload de logo da igreja está disponível apenas no plano <strong>Essencial</strong>.
                 </p>
                 <p className="text-sm mt-1">
-                  No plano Free, você pode usar uma URL externa para a logo, mas o upload direto está bloqueado.
+                  No plano Essencial, você pode usar uma URL externa para a logo, mas o upload direto está bloqueado.
                 </p>
                 <Button
                   variant="outline"

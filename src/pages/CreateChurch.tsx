@@ -84,8 +84,8 @@ export default function CreateChurch() {
   // Pegar plano selecionado (vem da Landing Page)
   const selectedPlanFromLocation = location.state?.selectedPlan;
   
-  const [selectedPlan, setSelectedPlan] = useState<'free' | 'essencial'>(
-    selectedPlanFromLocation?.toLowerCase() === 'essencial' ? 'essencial' : 'free'
+  const [selectedPlan, setSelectedPlan] = useState<'essencial'>(
+    'essencial'
   );
   const [showPlanSelection, setShowPlanSelection] = useState(!selectedPlanFromLocation);
   
@@ -767,11 +767,11 @@ export default function CreateChurch() {
                         }`} />
                         <div>
                           <h3 className="font-bold text-lg">
-                            {selectedPlan === 'essencial' ? 'Plano Essencial' : 'Plano Livre'} Selecionado
+                            {selectedPlan === 'essencial' ? 'Plano Essencial' : 'Plano Essencial'} Selecionado
                           </h3>
                           <p className="text-sm text-muted-foreground">
                             {selectedPlan === 'essencial' 
-                              ? '30 dias grátis • Depois R$ 149,90/mês' 
+                              ? '30 dias grátis • Depois R$ 79,90/mês' 
                               : 'Grátis ilimitado • Sem cartão de crédito'}
                           </p>
                         </div>

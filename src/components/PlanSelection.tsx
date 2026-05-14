@@ -8,8 +8,8 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle2 } from 'lucide-react';
 
 interface PlanSelectionProps {
-  selectedPlan: 'free' | 'essencial';
-  onSelectPlan: (plan: 'free' | 'essencial') => void;
+  selectedPlan: 'essencial';
+  onSelectPlan: (plan: 'essencial') => void;
   onContinue: () => void;
 }
 
@@ -24,58 +24,6 @@ export default function PlanSelection({ selectedPlan, onSelectPlan, onContinue }
       </div>
 
       <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-        {/* Plano Free */}
-        <Card 
-          className={`cursor-pointer hover:shadow-lg transition-all ${
-            selectedPlan === 'free' ? 'border-2 border-primary ring-2 ring-primary' : ''
-          }`}
-          onClick={() => onSelectPlan('free')}
-        >
-          <CardHeader>
-            <CardTitle className="text-2xl">Free</CardTitle>
-            <CardDescription>Para igrejas iniciantes</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="text-4xl font-bold">
-              Grátis
-              <span className="text-sm font-normal text-muted-foreground">/mês</span>
-            </div>
-            <ul className="space-y-2 text-left">
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-green-600" />
-                <span>Até 50 membros</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-green-600" />
-                <span>20 pedidos de oração/mês</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-green-600" />
-                <span>1 administrador</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-green-600" />
-                <span>Site em subdomínio</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-green-600" />
-                <span>Cores personalizadas</span>
-              </li>
-            </ul>
-            <Button 
-              className="w-full" 
-              size="lg"
-              variant={selectedPlan === 'free' ? 'default' : 'outline'}
-              onClick={(e) => {
-                e.stopPropagation();
-                onContinue();
-              }}
-            >
-              {selectedPlan === 'free' ? 'Selecionado' : 'Selecionar Free'}
-            </Button>
-          </CardContent>
-        </Card>
-
         {/* Plano Essencial */}
         <Card 
           className={`cursor-pointer hover:shadow-lg transition-all ${
@@ -87,14 +35,14 @@ export default function PlanSelection({ selectedPlan, onSelectPlan, onContinue }
             <div className="flex items-center justify-between">
               <CardTitle className="text-2xl">Essencial</CardTitle>
               <span className="text-xs font-bold bg-primary text-primary-foreground px-2 py-1 rounded-full">
-                MAIS POPULAR
+                
               </span>
             </div>
             <CardDescription>Para igrejas em crescimento</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-4xl font-bold">
-              R$ 149,90
+              R$ 79,90
               <span className="text-sm font-normal text-muted-foreground">/mês</span>
             </div>
             <ul className="space-y-2 text-left">

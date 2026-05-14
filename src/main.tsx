@@ -2,7 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
-import './index.css'
+import './index.css';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import emailjs from '@emailjs/browser';
 
 // Inicializar EmailJS - MinhaIgreja
@@ -51,8 +52,10 @@ function ErrorFallback() {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ErrorBoundary fallback={<ErrorFallback />}>
-      <App />
-    </ErrorBoundary>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || 'placeholder'}>
+      <ErrorBoundary fallback={<ErrorFallback />}>
+        <App />
+      </ErrorBoundary>
+    </GoogleOAuthProvider>
   </StrictMode>,
 );

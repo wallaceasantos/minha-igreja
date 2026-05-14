@@ -16,6 +16,7 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 import adminReviewsRoutes from './routes/admin-reviews.js';
 import churchRoutes from './routes/church.js';
+import memberLiveRoutes from './routes/member-live.js';
 import contactRoutes from './routes/contact.js';
 import authRoutes from './routes/auth.js';
 import testDbRoutes from './routes/test-db.js';
@@ -43,6 +44,8 @@ import ticketsRoutes from './routes/tickets.js';
 import uploadRoutes from './routes/upload.js';
 import churchGalleryRoutes from './routes/church-gallery.js';
 import liveStreamsRoutes from './routes/live-streams.js';
+import liveNotificationsRoutes from './routes/live-notifications.js';
+import churchVersesRoutes from './routes/church-verses.js';
 import { startScheduler } from './schedulers/announcement-scheduler.js';
 import { startScheduler as startPrayerReminderScheduler } from './schedulers/prayer-reminder-scheduler.js';
 import { startBillingScheduler } from './schedulers/billing-scheduler.js';
@@ -87,6 +90,7 @@ app.get('/health', (req, res) => {
 // Rotas
 app.use('/api/test-db', testDbRoutes);
 app.use('/api/church', churchRoutes);
+app.use('/api/member/live', memberLiveRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/church', configRoutes);
@@ -114,7 +118,9 @@ app.use('/api/services', servicesRoutes); // Cultos Fixos routes
 app.use('/api/ministries', ministriesRoutes); // Ministérios routes
 app.use('/api/tickets', ticketsRoutes); // Tickets de Suporte routes
 app.use('/api/gallery', churchGalleryRoutes); // Church Gallery routes
-app.use('/api/church', liveStreamsRoutes); // Live Streams routes
+app.use('/api/church', liveStreamsRoutes);
+app.use('/api/live', liveNotificationsRoutes); // Live Streams routes
+app.use('/api/church', churchVersesRoutes); // Church Verses routes
 app.use('/api/admin', adminReviewsRoutes); // Rotas de avaliações (Admin)
 app.use('/api', adminReviewsRoutes);       // Rotas públicas de avaliações
 
@@ -140,9 +146,19 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+import './schedulers/live-status-scheduler.js';
+import { setupWebSocket } from './websocket/live-chat.js';
+
+import http from 'http';
+const httpServer = http.createServer(app);
+
+// Configurar WebSocket
+setupWebSocket(httpServer);
+
+httpServer.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📍 http://localhost:${PORT}`);
+  console.log(`🔌 WebSocket ready for live chat`);
 
   // Iniciar schedulers
   startScheduler(); // Comunicados

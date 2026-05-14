@@ -1,7 +1,7 @@
 /**
  * ChurchBase - Componentes Compartilhados para Sites de Igreja
  * ============================================
- * Contém todos os componentes que são usados tanto no plano Free quanto Premium
+ * Contém todos os componentes que são usados tanto no plano Essencial quanto Premium
  */
 
 import React, { useState, useEffect } from 'react';
