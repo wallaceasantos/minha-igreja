@@ -47,28 +47,10 @@ export default function Plans() {
 
   // Planos disponíveis
   const plans: Plan[] = [
-    {
-      name: 'Free',
-      price: 'Grátis',
-      period: 'para sempre',
-      description: 'Ideal para igrejas pequenas que estão começando',
-      features: [
-        { text: 'Até 50 membros', included: true },
-        { text: 'Até 20 pedidos de oração/mês', included: true },
-        { text: '1 administrador', included: true },
-        { text: 'Site público básico', included: true },
-        { text: 'Google Maps', included: true },
-        { text: 'Modo claro/escuro', included: true },
-        { text: 'Upload de logo', included: false },
-        { text: 'Pedidos ilimitados', included: false },
-        { text: 'Membros ilimitados', included: false },
-        { text: 'Múltiplos administradores', included: false },
-      ],
-      recommended: false,
-    },
+    
     {
       name: 'Essencial',
-      price: 'R$ 149,90',
+      price: 'R$ 79,90',
       period: '/mês',
       description: 'Para igrejas em crescimento que precisam de mais recursos',
       features: [
@@ -97,7 +79,7 @@ export default function Plans() {
       `✅ 30 dias de teste grátis\n` +
       `✅ Acesso a todos os recursos do Essencial\n` +
       `✅ Sem compromisso - cancele quando quiser\n\n` +
-      `Após 30 dias: R$ 149,90/mês`
+      `Após 30 dias: R$ 79,90/mês`
     );
 
     if (!confirm) return;
@@ -206,7 +188,7 @@ export default function Plans() {
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                 <Badge className="bg-primary text-primary-foreground">
                   <Sparkles className="w-3 h-3 mr-1" />
-                  Mais Popular
+                  
                 </Badge>
               </div>
             )}

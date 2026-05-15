@@ -1,28 +1,19 @@
 /**
  * Middleware: Limites por Plano
  * ============================================
- * Verifica e aplica limites baseados no plano da igreja
- * - Free: 50 membros, 20 pedidos/mês, 1 admin
+ * Modelo Trial-First: Todas as igrejas começam com 90 dias de trial
+ * Após o trial, devem assinar o plano Essencial (R$ 79,90/mês)
+ * - Trial: 90 dias com todos os recursos do Essencial
  * - Essencial: 200 membros, pedidos ilimitados, 3 admins
  * - Premium: 1000 membros, pedidos ilimitados, 10 admins
  * - Enterprise: ilimitado
+ * - Modo Leitura: Após trial sem assinatura (apenas visualização)
  */
 
 import { getPool } from '../config/database.js';
 
 // Definição dos limites por plano
 const PLAN_LIMITS = {
-  free: {
-    maxMembers: 50,
-    maxPrayersPerMonth: 20,
-    maxAdmins: 1,
-    hasCustomDomain: false,
-    hasLogoUpload: false,
-    hasAnalytics: false,
-    hasPixIntegration: false,
-    hasPWA: false,
-    hasMultiUnits: false,
-  },
   essencial: {
     maxMembers: 200,
     maxPrayersPerMonth: -1, // ilimitado
@@ -34,15 +25,49 @@ const PLAN_LIMITS = {
     hasPWA: false,
     hasMultiUnits: false,
   },
+  premium: {
+    maxMembers: 1000,
+    maxPrayersPerMonth: -1,
+    maxAdmins: 10,
+    hasCustomDomain: true,
+    hasLogoUpload: true,
+    hasAnalytics: true,
+    hasPixIntegration: true,
+    hasPWA: true,
+    hasMultiUnits: false,
+  },
+  enterprise: {
+    maxMembers: -1,
+    maxPrayersPerMonth: -1,
+    maxAdmins: -1,
+    hasCustomDomain: true,
+    hasLogoUpload: true,
+    hasAnalytics: true,
+    hasPixIntegration: true,
+    hasPWA: true,
+    hasMultiUnits: true,
+  },
+  // Modo leitura: apenas visualização, sem criação
+  readonly: {
+    maxMembers: 0,
+    maxPrayersPerMonth: 0,
+    maxAdmins: 0,
+    hasCustomDomain: false,
+    hasLogoUpload: false,
+    hasAnalytics: false,
+    hasPixIntegration: false,
+    hasPWA: false,
+    hasMultiUnits: false,
+  },
 };
 
 /**
  * Middleware para identificar igreja e plano
+ * Nova lógica: trial de 90 dias, depois precisa assinar
  */
 export async function identifyChurch(req, res, next) {
   try {
-    // Pegar church_id do header ou do corpo da requisição
-    const churchId = req.headers['x-church-id'] || req.body.church_id;
+    const churchId = parseInt(req.headers['x-church-id']) || parseInt(req.body.church_id);
 
     if (!churchId) {
       return res.status(400).json({
@@ -51,10 +76,9 @@ export async function identifyChurch(req, res, next) {
       });
     }
 
-    // Buscar igreja no banco
     const pool = getPool();
     const [churches] = await pool.query(
-      'SELECT id, plan_type, is_active FROM churches WHERE id = ? LIMIT 1',
+      'SELECT id, plan_type, is_active, created_at FROM churches WHERE id = ? LIMIT 1',
       [churchId]
     );
 
@@ -74,29 +98,42 @@ export async function identifyChurch(req, res, next) {
       });
     }
 
-    // Buscar trial da tabela subscriptions (se existir)
+    // Buscar trial/assinatura
     const [subscriptions] = await pool.query(
       'SELECT trial_end_date, is_trial, status FROM subscriptions WHERE church_id = ? LIMIT 1',
       [churchId]
     );
 
     const subscription = Array.isArray(subscriptions) ? subscriptions[0] : null;
-
-    // Verificar se trial está ativo
     const now = new Date();
-    const trialEndDate = subscription?.trial_end_date ? new Date(subscription.trial_end_date) : null;
-    const isTrialActive = subscription?.is_trial === 1 &&
-                          subscription?.status === 'trial' &&
-                          trialEndDate &&
-                          trialEndDate > now;
 
-    // Anexar informações da igreja ao request
-    // Se trial está ativo, tratar como plano 'essencial'
+    // Verificar se trial está ativo (90 dias)
+    const trialEndDate = subscription?.trial_end_date 
+      ? new Date(subscription.trial_end_date) 
+      : new Date(church.created_at);
+    trialEndDate.setDate(trialEndDate.getDate() + 90); // 90 dias de trial
+    
+    const isTrialActive = trialEndDate > now;
+
+    // Verificar se tem assinatura ativa
+    const hasActiveSubscription = subscription?.status === 'active' || 
+                                  subscription?.status === 'paid';
+
+    // Determinar o plano efetivo
+    let effectivePlan = 'readonly'; // Default: modo leitura
+    
+    if (isTrialActive) {
+      effectivePlan = 'essencial'; // Trial = todos os recursos
+    } else if (hasActiveSubscription) {
+      effectivePlan = church.plan_type || 'essencial';
+    }
+    // Se trial acabou e não assinou, fica em modo readonly
+
     req.churchId = church.id;
-    req.churchPlan = isTrialActive || church.plan_type === 'essencial' || church.plan_type === 'premium'
-      ? 'essencial'
-      : (church.plan_type || 'free');
+    req.churchPlan = effectivePlan;
     req.isTrialActive = isTrialActive;
+    req.hasActiveSubscription = hasActiveSubscription;
+    req.trialEndDate = trialEndDate;
 
     next();
   } catch (error) {
@@ -122,13 +159,21 @@ export function checkPlanLimits(feature) {
       }
 
       const plan = req.churchPlan;
-      const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
+      const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.readonly;
 
-      // Verificar se a feature está disponível no plano
+      // Modo leitura: bloquear criação/edição
+      if (plan === 'readonly') {
+        return res.status(403).json({
+          success: false,
+          error: 'Seu trial encerrou. Assine o plano Essencial para continuar usando todos os recursos.',
+          upgrade: true,
+          plan: 'essencial',
+          price: 'R$ 79,90/mês',
+        });
+      }
+
       if (feature in limits) {
         const featureLimit = limits[feature];
-        
-        // Se for boolean e for false, a feature não está disponível
         if (typeof featureLimit === 'boolean' && !featureLimit) {
           return res.status(403).json({
             success: false,
@@ -138,9 +183,7 @@ export function checkPlanLimits(feature) {
         }
       }
 
-      // Verificar limites numéricos
       await checkNumericLimit(req.churchId, feature, limits);
-
       next();
     } catch (error) {
       console.error('Error checking plan limits:', error);
@@ -153,12 +196,11 @@ export function checkPlanLimits(feature) {
 }
 
 /**
- * Verificar limites numéricos (membros, admins, pedidos)
+ * Verificar limites numéricos
  */
 async function checkNumericLimit(churchId, feature, limits) {
   const pool = getPool();
 
-  // Mapeamento de features para tabelas e queries
   const limitChecks = {
     maxMembers: {
       table: 'church_members',
@@ -183,8 +225,8 @@ async function checkNumericLimit(churchId, feature, limits) {
 
   const limit = limits[feature];
   if (limit === -1) return; // Ilimitado
+  if (limit === 0) return; // Modo leitura - será bloqueado antes
 
-  // Contar registros atuais
   let query = `SELECT COUNT(*) as count FROM ${checkConfig.table} WHERE ${checkConfig.column} = ?`;
   if (checkConfig.where) {
     query += ` AND ${checkConfig.where}`;
@@ -194,7 +236,6 @@ async function checkNumericLimit(churchId, feature, limits) {
   const result = Array.isArray(rows) ? rows[0] : rows;
   const currentCount = result.count;
 
-  // Verificar se atingiu o limite
   if (currentCount >= limit) {
     throw new Error(checkConfig.message);
   }
@@ -212,12 +253,19 @@ export async function canCreateAdmin(req, res, next) {
       });
     }
 
-    const plan = req.churchPlan;
-    const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
-
-    if (limits.maxAdmins === -1) {
-      return next(); // Ilimitado
+    // Modo leitura: bloquear
+    if (req.churchPlan === 'readonly') {
+      return res.status(403).json({
+        success: false,
+        error: 'Seu trial encerrou. Assine para continuar adicionando administradores.',
+        upgrade: true,
+      });
     }
+
+    const plan = req.churchPlan;
+    const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.essencial;
+
+    if (limits.maxAdmins === -1) return next();
 
     const pool = getPool();
     const [rows] = await pool.query(
@@ -258,16 +306,23 @@ export async function canCreatePrayer(req, res, next) {
       });
     }
 
-    const plan = req.churchPlan;
-    const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
-
-    if (limits.maxPrayersPerMonth === -1) {
-      return next(); // Ilimitado
+    // Modo leitura: bloquear
+    if (req.churchPlan === 'readonly') {
+      return res.status(403).json({
+        success: false,
+        error: 'Seu trial encerrou. Assine para continuar recebendo pedidos de oração.',
+        upgrade: true,
+      });
     }
+
+    const plan = req.churchPlan;
+    const limits = PLAN_LIMITS[plan] || PLAN_LIMITS.essencial;
+
+    if (limits.maxPrayersPerMonth === -1) return next();
 
     const pool = getPool();
     const [rows] = await pool.query(
-      `SELECT COUNT(*) as count FROM pedidos 
+      `SELECT COUNT(*) as count FROM pedidos
        WHERE church_id = ? AND created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)`,
       [req.churchId]
     );
@@ -293,5 +348,4 @@ export async function canCreatePrayer(req, res, next) {
   }
 }
 
-// Exportar definição dos planos para uso em outras partes do código
 export { PLAN_LIMITS };

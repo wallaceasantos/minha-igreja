@@ -93,8 +93,8 @@ export default function Pedidos() {
     }
   }, []);
 
-  // Verificar se está no plano Free e calcular limite
-  const plan = church?.plan_type || 'free';
+  // Verificar se está no plano Essencial e calcular limite
+  const plan = church?.plan_type || 'essencial';
   const limits = PLAN_LIMITS[plan as keyof typeof PLAN_LIMITS] || PLAN_LIMITS.free;
   const prayerPercent = limits.prayers > 0 ? Math.min((stats.total / limits.prayers) * 100, 100) : 0;
   const isNearLimit = limits.prayers > 0 && (stats.total / limits.prayers) >= 0.8;
@@ -363,7 +363,7 @@ export default function Pedidos() {
         </Card>
       </div>
 
-      {/* Alerta de Limite de Pedidos (Plano Free) */}
+      {/* Alerta de Limite de Pedidos (Plano Essencial) */}
       {limits.prayers > 0 && (
         <Alert className={`mb-6 ${isLimitReached ? 'bg-red-50 border-red-200' : isNearLimit ? 'bg-amber-50 border-amber-200' : 'bg-blue-50 border-blue-200'}`}>
           <Crown className={`h-4 w-4 ${isLimitReached ? 'text-red-600' : isNearLimit ? 'text-amber-600' : 'text-blue-600'}`} />
@@ -375,7 +375,7 @@ export default function Pedidos() {
                 </strong>
                 <p className="mt-1 text-sm">
                   {isLimitReached 
-                    ? `Você atingiu o limite de ${limits.prayers} pedidos por mês do plano Free.` 
+                    ? `Você atingiu o limite de ${limits.prayers} pedidos por mês do plano Essencial.` 
                     : isNearLimit 
                       ? `Você já usou ${stats.total} de ${limits.prayers} pedidos este mês.` 
                       : `Você usou ${stats.total} de ${limits.prayers} pedidos este mês.`}

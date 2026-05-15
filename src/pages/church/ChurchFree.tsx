@@ -1,5 +1,5 @@
 /**
- * ChurchFree - Site Público para Plano Free
+ * ChurchFree - Site Público para Plano Essencial
  * ============================================
  * Layout simples e básico para igrejas no plano gratuito
  */
@@ -71,6 +71,16 @@ export default function ChurchFree() {
     const res = await fetch(buildApiUrl(`/api/events?church_id=${churchId}`));
     const data = await res.json();
     if (data.success) setEvents(data.data);
+  };
+
+  const loadStats = async (churchId: number) => {
+    try {
+      const res = await fetch(buildApiUrl(`/api/church/${churchId}/stats`));
+      const data = await res.json();
+      if (data.success) setMemberCount(data.data.member_count || 0);
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
   };
 
   if (loading) {

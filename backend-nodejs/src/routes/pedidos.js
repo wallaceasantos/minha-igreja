@@ -133,10 +133,12 @@ router.post('/public', async (req, res) => {
     // Inserir pedido
     const [result] = await pool.execute(
       `INSERT INTO pedidos
-       (church_id, titulo, oracao, status, pedido_atendido, created_by, created_at, updated_at)
-       VALUES (?, ?, ?, 'pending', 0, NULL, NOW(), NOW())`,
+       (church_id, nome, email, titulo, oracao, status, pedido_atendido, created_by, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, 'pending', 0, NULL, NOW(), NOW())`,
       [
         churchId,
+        nome?.trim() || 'Anônimo',
+        email?.trim() || '',
         nome?.trim() || 'Anônimo',
         oracao.trim()
       ]
@@ -608,5 +610,131 @@ router.delete('/:id', identifyChurch, async (req, res) => {
     });
   }
 });
+
+
+// POST /api/pedidos/identify - Identificar pessoa e retornar mensagem personalizada
+router.post('/identify', async (req, res) => {
+  try {
+    const { church_id, email, name, google_id } = google_id ? { church_id, email, name, google_id } : { church_id, email, name };
+    if (!church_id) return res.status(400).json({ success: false, error: 'church_id obrigatório' });
+
+    const pool = getPool();
+
+    // Buscar por email primeiro
+    let query = 'SELECT * FROM church_members WHERE church_id = ? AND email IS NOT NULL AND email = ? LIMIT 1';
+    let params = [church_id, email];
+
+    // Se tem google_id, buscar por isso
+    if (google_id) {
+      query = 'SELECT * FROM church_members WHERE church_id = ? AND google_id = ? LIMIT 1';
+      params = [church_id, google_id];
+    }
+    // Se não tem email, buscar por nome
+    else if (!email && name) {
+      query = 'SELECT * FROM church_members WHERE church_id = ? AND name LIKE ? LIMIT 1';
+      params = [church_id, `%${name}%`];
+    }
+
+    const [members] = await pool.query(query, params);
+
+    if (members.length > 0) {
+      const member = members[0];
+      const now = new Date();
+      const lastInteraction = member.last_interaction_at ? new Date(member.last_interaction_at) : new Date(member.created_at);
+      const daysSinceInteraction = Math.floor((now - lastInteraction) / (1000 * 60 * 60 * 24));
+
+      // Atualizar última interação
+      await pool.query('UPDATE church_members SET last_interaction_at = NOW() WHERE id = ?', [member.id]);
+
+      // Determinar tipo de mensagem
+      let message = '';
+      let messageType = 'active'; // active, away, returning
+
+      if (member.is_active === 0 || member.member_status === 'inactive') {
+        message = `${member.name.split(' ')[0]}, que alegria ter você de volta! ❤️ Sentimos sua falta. Seu pedido de oração é muito importante para nós.`;
+        messageType = 'returning';
+        // Reativar membro automaticamente
+        await pool.query('UPDATE church_members SET is_active = 1, member_status = "member" WHERE id = ?', [member.id]);
+      } else if (daysSinceInteraction > 60) {
+        message = `${member.name.split(' ')[0]}, que bom ver você aqui novamente! 🙏 Fazia tempo que não interagia conosco. Vamos orar juntos!`;
+        messageType = 'returning';
+      } else {
+        message = `Olá ${member.name.split(' ')[0]}! Que bom ter você aqui! 🙏`;
+        messageType = 'active';
+      }
+
+      res.json({
+        success: true,
+        data: {
+          found: true,
+          member: { id: member.id, name: member.name, email: member.email, phone: member.phone, member_status: member.member_status, is_active: member.is_active },
+          message,
+          messageType,
+          days_since_interaction: daysSinceInteraction,
+          is_new: false
+        }
+      });
+    } else {
+      res.json({
+        success: true,
+        data: {
+          found: false,
+          message: 'Novo por aqui? Fique à vontade para fazer seu pedido de oração! 🙏',
+          messageType: 'new',
+          is_new: true
+        }
+      });
+    }
+  } catch (error) {
+    console.error('Error identifying person:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// POST /api/pedidos/quick-register - Cadastro rápido via Google ou formulário
+router.post('/quick-register', async (req, res) => {
+  try {
+    const { church_id, name, email, phone, google_id, source } = req.body;
+    if (!church_id || !name) return res.status(400).json({ success: false, error: 'name e church_id obrigatórios' });
+
+    const pool = getPool();
+    const [[church]] = await pool.query('SELECT id, name, slug FROM churches WHERE id = ?', [church_id]);
+    if (!church) return res.status(404).json({ success: false, error: 'Igreja não encontrada' });
+
+    // Verificar se já existe
+    const [existing] = await pool.query('SELECT id FROM church_members WHERE church_id = ? AND email = ? LIMIT 1', [church_id, email || '']);
+    if (existing.length > 0) {
+      await pool.query('UPDATE church_members SET last_interaction_at = NOW(), google_id = COALESCE(?, google_id) WHERE id = ?', [google_id, existing[0].id]);
+      return res.json({ success: true, data: { member_id: existing[0].id, created: false }, message: 'Membro encontrado!' });
+    }
+
+    // Criar novo membro/visitante
+    const phoneClean = phone ? phone.replace(/\D/g, '') : null;
+    const [result] = await pool.query(
+      'INSERT INTO church_members (church_id, name, phone, email, google_id, member_status, is_active, last_interaction_at) VALUES (?, ?, ?, ?, ?, "visitor", 1, NOW())',
+      [church_id, name.trim(), phoneClean, email || null, google_id || null]
+    );
+
+    // Gerar PIN para live
+    const pin = Math.floor(100000 + Math.random() * 900000).toString();
+    await pool.query('INSERT INTO member_live_pins (church_id, member_id, pin, max_uses, expires_at) VALUES (?,?,?,100,DATE_ADD(NOW(),INTERVAL 30 DAY))', [church_id, result.insertId, pin]);
+
+    res.json({
+      success: true,
+      data: {
+        member_id: result.insertId,
+        name: name.trim(),
+        pin,
+        created: true,
+        church: { slug: church.slug, name: church.name }
+      },
+      message: 'Cadastro realizado! Bem-vindo(a)!'
+    });
+  } catch (error) {
+    console.error('Error quick-register:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 
 export default router;

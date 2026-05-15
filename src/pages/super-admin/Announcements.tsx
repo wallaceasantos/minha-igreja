@@ -856,7 +856,7 @@ export default function SuperAdminAnnouncements() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todas as Igrejas</SelectItem>
-                  <SelectItem value="free">Plano Free</SelectItem>
+                  <SelectItem value="essencial">Plano Essencial</SelectItem>
                   <SelectItem value="essencial">Plano Essencial</SelectItem>
                   <SelectItem value="premium">Plano Premium</SelectItem>
                   <SelectItem value="enterprise">Plano Enterprise</SelectItem>

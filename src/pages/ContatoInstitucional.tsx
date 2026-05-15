@@ -370,7 +370,7 @@ export default function ContatoInstitucional() {
                     </div>
                     <div>
                       <p className="font-semibold">Tem plano grátis?</p>
-                      <p className="text-muted-foreground">Sim! Plano Free para sempre, sem cartão de crédito.</p>
+                      <p className="text-muted-foreground">Sim! Plano Essencial para sempre, sem cartão de crédito.</p>
                     </div>
                     <div>
                       <p className="font-semibold">Posso cancelar quando quiser?</p>

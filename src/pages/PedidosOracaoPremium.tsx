@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
+import { GoogleLogin } from '@react-oauth/google';
 import { ChurchHeader, ChurchFooter } from './church/ChurchBase';
 import emailjs from '@emailjs/browser';
 import { buildApiUrl } from '@/lib/config';
@@ -42,6 +43,7 @@ export default function PedidosOracaoPremium() {
   const [versiculoSucesso, setVersiculoSucesso] = useState<typeof versiculos[0] | null>(null);
   const [church, setChurch] = useState<any>(null);
   const [prayerCount, setPrayerCount] = useState(0);
+  const [googleUser, setGoogleUser] = useState<{ name: string; email: string; picture: string } | null>(null);
 
   const [formData, setFormData] = useState({
     tipo: 'pedido', // 'pedido', 'agradecimento', 'testemunho'
@@ -88,7 +90,19 @@ export default function PedidosOracaoPremium() {
     }
   };
 
-  // Lista de temas disponíveis
+
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    try {
+      const data = JSON.parse(atob(credentialResponse.credential.split('.')[1]));
+      setGoogleUser({ name: data.name, email: data.email, picture: data.picture });
+      setFormData(prev => ({ ...prev, nome: data.name, email: data.email }));
+      toast.success(`Logado como ${data.name}`);
+    } catch (error) {
+      toast.error('Erro no login com Google');
+    }
+  };
+
+  // // Lista de temas disponíveis
   const temasDisponiveis = [
     "Salvação",
     "Saúde/Cura",
@@ -427,7 +441,32 @@ ${church?.name || 'Nossa Igreja'}
                         <Users className="w-5 h-5 text-blue-600" />
                         Suas Informações
                       </h3>
-                      <div className="grid md:grid-cols-2 gap-4">
+                      {!googleUser ? (
+                      <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <p className="text-sm text-blue-700 dark:text-blue-300 mb-3">Entrar com Google (mais rápido)</p>
+                        <GoogleLogin
+                          onSuccess={handleGoogleSuccess}
+                          onError={() => toast.error('Erro no login com Google')}
+                          text="signin_with"
+                          shape="rectangular"
+                          width="100%"
+                          locale="pt_BR"
+                        />
+                        <p className="text-xs text-gray-500 mt-2">Preenche nome e email automaticamente</p>
+                      </div>
+                    ) : (
+                      <div className="mb-4 flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                        <img src={googleUser.picture} alt="" className="w-8 h-8 rounded-full" />
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-green-700 dark:text-green-300">{googleUser.name}</p>
+                          <p className="text-xs text-green-600 dark:text-green-400">{googleUser.email}</p>
+                        </div>
+                        <Button size="sm" variant="ghost" onClick={() => { setGoogleUser(null); setFormData(prev => ({ ...prev, nome: '', email: '' })); }} className="text-gray-500">
+                          Trocar
+                        </Button>
+                      </div>
+                    )}
+                    <div className="grid md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                             Nome Completo *
@@ -442,11 +481,10 @@ ${church?.name || 'Nossa Igreja'}
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                            Email *
+                            Email (opcional)
                           </label>
                           <Input
                             type="email"
-                            required
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             placeholder="seu@email.com"

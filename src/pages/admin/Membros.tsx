@@ -91,9 +91,14 @@ export default function Membros() {
   const [editingMember, setEditingMember] = useState<Member | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
+  const [bulkPinDialogOpen, setBulkPinDialogOpen] = useState(false);
+  const [bulkPinLoading, setBulkPinLoading] = useState(false);
+  const [bulkPinResults, setBulkPinResults] = useState<any[]>([]);
   const [selectedMemberProfile, setSelectedMemberProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [csvImportOpen, setCsvImportOpen] = useState(false);
+  const [selectedMembers, setSelectedMembers] = useState<number[]>([]);
+  const [pinMode, setPinMode] = useState<'all' | 'selected'>('all');
 
   // Obter URL do site público
   const getPublicSiteUrl = () => {
@@ -101,7 +106,10 @@ export default function Membros() {
     const isLocalhost = window.location.hostname === 'localhost';
     return isLocalhost 
       ? `http://localhost:5173/church/${church.slug}`
-      : `https://${church.slug}.plataforma.minhaigreja.com.br`;
+      //: `https://${church.slug}.plataforma.minhaigreja.com.br`;
+      : window.location.hostname.includes('railway.app') 
+    ? `/church/${church.slug}` 
+    : `https://${church.slug}.plataforma.minhaigreja.com.br`;
   };
 
   // Abrir site público em nova aba
@@ -559,7 +567,8 @@ export default function Membros() {
       is_active: member.is_active === 1,
       photo_url: member.photo_url || ''
     });
-    setPhotoPreview(member.photo_url || '');
+    // Usar URL completa para preview (convertendo localhost para URL de producao)
+    setPhotoPreview(member.photo_url ? buildApiUrl(member.photo_url) : '');
     setDialogOpen(true);
   };
 
@@ -635,6 +644,88 @@ export default function Membros() {
     }
   };
 
+  // Enviar PIN de acesso à live via WhatsApp
+  const sendPinViaWhatsApp = async (member: Member) => {
+    try {
+      const churchId = localStorage.getItem('churchId');
+      const response = await fetch(buildApiUrl('/api/member/live/regenerate'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ church_id: parseInt(churchId || '0'), member_id: member.id }),
+      });
+      const data = await response.json();
+      if (data.success && data.data.whatsapp_url) {
+        window.open(data.data.whatsapp_url, '_blank');
+        toast.success(`PIN ${data.data.pin} gerado!`);
+      }
+    } catch (error) {
+      toast.error('Erro ao gerar PIN');
+    }
+  };
+
+  const handleBulkGeneratePins = async () => {
+    try {
+      setBulkPinLoading(true);
+      setBulkPinResults([]);
+      const churchId = localStorage.getItem('churchId');
+      
+      // Define quais membros receberão PINs
+      const memberIds = pinMode === 'selected' ? selectedMembers : undefined;
+
+      const r = await fetch(buildApiUrl('/api/member/live/bulk-generate'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          church_id: parseInt(churchId || '0'),
+          member_ids: memberIds
+        })
+      });
+      const d = await r.json();
+      if (d.success) {
+        setBulkPinResults(d.data.generated);
+        toast.success(`${d.data.count} PINs gerados!`);
+        setSelectedMembers([]); // Limpa seleção após envio
+        setBulkPinDialogOpen(true);
+      }
+    } catch (e) {
+      toast.error('Erro ao gerar PINs');
+    } finally {
+      setBulkPinLoading(false);
+    }
+  };
+
+  // Lista filtrada de membros (busca + status)
+  const filteredMembersList = members.filter(m => {
+    const matchesSearch = !searchTerm || 
+      m.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      m.email?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || 
+      (statusFilter === 'active' && m.is_active === 1) ||
+      (statusFilter === 'inactive' && m.is_active === 0);
+    return matchesSearch && matchesStatus;
+  });
+
+  // Funções de seleção de membros
+  const toggleMemberSelection = (memberId: number) => {
+    setSelectedMembers(prev =>
+      prev.includes(memberId)
+        ? prev.filter(id => id !== memberId)
+        : [...prev, memberId]
+    );
+  };
+
+  const toggleAllMembers = () => {
+    const filteredIds = filteredMembersList.map(m => m.id);
+    if (selectedMembers.length === filteredMembersList.length) {
+      setSelectedMembers([]);
+    } else {
+      setSelectedMembers(filteredIds);
+    }
+  };
+
+  const isAllSelected = selectedMembers.length > 0 && selectedMembers.length === filteredMembersList.length;
+  const isSomeSelected = selectedMembers.length > 0 && selectedMembers.length < filteredMembersList.length;
+
   const handleDelete = async (memberId: number) => {
     if (!confirm('Tem certeza que deseja excluir este membro?')) return;
 
@@ -666,7 +757,10 @@ export default function Membros() {
     setProfileDialogOpen(true);
 
     try {
-      const response = await fetch(buildApiUrl(`/api/members/${memberId}/profile`));
+      const churchId = localStorage.getItem('churchId');
+      const response = await fetch(buildApiUrl(`/api/members/${memberId}/profile`), {
+        headers: { 'x-church-id': churchId || '' }
+      });
       const result = await response.json();
 
       if (result.success) {
@@ -817,6 +911,15 @@ export default function Membros() {
             <Upload className="w-4 h-4" />
             Importar CSV
           </Button>
+          <Button
+            variant="outline"
+            onClick={() => setBulkPinDialogOpen(true)}
+            className="gap-2"
+            disabled={selectedMembers.length === 0 && pinMode === 'selected'}
+          >
+            📩
+            {pinMode === 'selected' ? `Enviar PINs (${selectedMembers.length})` : 'Enviar PINs'}
+          </Button>
           <Button onClick={handleOpenCreate}>
             <UserPlus className="w-4 h-4 mr-2" />
             Novo Membro
@@ -923,6 +1026,14 @@ export default function Membros() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">
+                    <input
+                      type="checkbox"
+                      checked={isAllSelected}
+                      onChange={toggleAllMembers}
+                      className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                    />
+                  </TableHead>
                   <TableHead>Foto</TableHead>
                   <TableHead>Nome</TableHead>
                   <TableHead>Email</TableHead>
@@ -934,12 +1045,20 @@ export default function Membros() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {members.map((member) => (
-                  <TableRow key={member.id}>
+                {filteredMembersList.map((member) => (
+                  <TableRow key={member.id} className={selectedMembers.includes(member.id) ? 'bg-primary/5' : ''}>
+                    <TableCell>
+                      <input
+                        type="checkbox"
+                        checked={selectedMembers.includes(member.id)}
+                        onChange={() => toggleMemberSelection(member.id)}
+                        className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                      />
+                    </TableCell>
                     <TableCell>
                       {member.photo_url ? (
                         <img
-                          src={member.photo_url}
+                          src={buildApiUrl(member.photo_url)}
                           alt={member.name}
                           className="w-10 h-10 rounded-full object-cover border"
                         />
@@ -1033,6 +1152,83 @@ export default function Membros() {
           )}
         </CardContent>
       </Card>
+
+      {/* Dialog de Seleção de PINs */}
+      <Dialog open={bulkPinDialogOpen} onOpenChange={(open) => { setBulkPinDialogOpen(open); if (!open) setBulkPinResults([]); }}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>📩 Enviar PINs de Acesso à Live</DialogTitle>
+          </DialogHeader>
+          {bulkPinResults.length > 0 ? (
+            <div className="space-y-4">
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <p className="text-green-800 font-medium">✅ {bulkPinResults.length} PINs gerados com sucesso!</p>
+              </div>
+              <div className="max-h-60 overflow-y-auto space-y-2">
+                {bulkPinResults.map((result: any, i: number) => (
+                  <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium">{result.member_name}</p>
+                      <p className="text-sm text-gray-500">{result.member_phone || 'Sem telefone'}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="font-mono text-lg">{result.pin}</Badge>
+                      {result.whatsapp_url && (
+                        <a href={result.whatsapp_url} target="_blank" rel="noopener noreferrer">
+                          <Button size="sm" variant="outline" className="gap-1">
+                            <MessageCircle className="w-3 h-3" />
+                          </Button>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="flex gap-2 p-3 bg-gray-50 rounded-lg">
+                <button
+                  onClick={() => setPinMode('all')}
+                  className={`flex-1 p-3 rounded-lg border-2 transition-all ${pinMode === 'all' ? 'border-primary bg-primary/10' : 'border-gray-200 hover:border-gray-300'}`}
+                >
+                  <p className="font-medium">👥 Todos os Membros</p>
+                  <p className="text-sm text-gray-500">{stats.active} membros ativos</p>
+                </button>
+                <button
+                  onClick={() => setPinMode('selected')}
+                  className={`flex-1 p-3 rounded-lg border-2 transition-all ${pinMode === 'selected' ? 'border-primary bg-primary/10' : 'border-gray-200 hover:border-gray-300'}`}
+                  disabled={selectedMembers.length === 0}
+                >
+                  <p className="font-medium">✅ Membros Selecionados</p>
+                  <p className="text-sm text-gray-500">{selectedMembers.length} selecionados</p>
+                </button>
+              </div>
+
+              {pinMode === 'selected' && selectedMembers.length > 0 && (
+                <div className="max-h-40 overflow-y-auto space-y-1">
+                  {members
+                    .filter(m => selectedMembers.includes(m.id))
+                    .map(m => (
+                      <div key={m.id} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
+                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                        <span className="text-sm">{m.name}</span>
+                      </div>
+                    ))}
+                </div>
+              )}
+
+              <Button
+                onClick={handleBulkGeneratePins}
+                disabled={bulkPinLoading || (pinMode === 'selected' && selectedMembers.length === 0)}
+                className="w-full"
+              >
+                {bulkPinLoading ? 'Gerando PINs...' : `Gerar PINs para ${pinMode === 'all' ? 'Todos' : `${selectedMembers.length} selecionados`}`}
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Dialog de Cadastro/Edição */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -1292,7 +1488,7 @@ export default function Membros() {
               <div className="flex items-start gap-4 pb-4 border-b">
                 {selectedMemberProfile.member.photo_url ? (
                   <img
-                    src={selectedMemberProfile.member.photo_url}
+                    src={buildApiUrl(selectedMemberProfile.member.photo_url)}
                     alt={selectedMemberProfile.member.name}
                     className="w-20 h-20 rounded-full object-cover border-2"
                   />

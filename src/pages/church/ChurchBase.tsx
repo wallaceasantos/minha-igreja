@@ -1,11 +1,12 @@
 /**
  * ChurchBase - Componentes Compartilhados para Sites de Igreja
  * ============================================
- * Contém todos os componentes que são usados tanto no plano Free quanto Premium
+ * Contém todos os componentes que são usados tanto no plano Essencial quanto Premium
  */
 
 import React, { useState, useEffect } from 'react';
 import { Heart, Calendar, Users, MapPin, Phone, Clock } from 'lucide-react';
+import { buildApiUrl } from '@/lib/config';
 
 // ============================================
 // INTERFACES
@@ -103,7 +104,7 @@ export const ChurchHeader: React.FC<{
           <div className="flex items-center gap-3">
             {church.logo_url ? (
               <img
-                src={church.logo_url}
+                src={buildApiUrl(church.logo_url)}
                 alt={church.name}
                 className="w-12 h-12 object-contain"
               />

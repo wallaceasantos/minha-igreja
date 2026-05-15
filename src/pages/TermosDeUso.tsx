@@ -164,7 +164,7 @@ export default function TermosDeUso() {
                       Oferecemos os seguintes planos:
                     </p>
                     <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
-                      <li><strong>Free:</strong> Gratuito, com recursos limitados</li>
+                      
                       <li><strong>Essencial:</strong> R$ 29,90/mês</li>
                       <li><strong>Premium:</strong> R$ 79,90/mês</li>
                       <li><strong>Enterprise:</strong> R$ 199,90/mês</li>

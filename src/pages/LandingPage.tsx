@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Landing Page Institucional - MinhaIgreja
  * ============================================
  * Página inicial da plataforma (domínio principal)
@@ -84,47 +84,13 @@ const features = [
 
 const plans = [
   {
-    name: 'Livre',
-    price: 'Grátis',
-    period: 'Ilimitado',
-    annualPrice: 'Grátis',
-    description: 'Para igrejas iniciantes e missões',
-    features: [
-      'Site em subdomínio',
-      'Até 50 membros',
-      '20 pedidos de oração/mês',
-      '1 administrador',
-      'Cultos e eventos básicos',
-      'Cores personalizadas',
-      'Redes sociais',
-    ],
-    detailedFeatures: [
-      { icon: Globe, text: 'Site em subdomínio', included: true },
-      { icon: Users, text: 'Até 50 membros', included: true },
-      { icon: HeartHandshake, text: '20 pedidos/mês', included: true },
-      { icon: Users, text: '1 administrador', included: true },
-      { icon: Calendar, text: 'Cultos e eventos', included: true },
-      { icon: Church, text: 'Cores personalizadas', included: true },
-      { icon: Share2, text: 'Redes sociais', included: true },
-      { icon: Shield, text: 'Domínio próprio', included: false },
-      { icon: Smartphone, text: 'Upload de logo', included: false },
-      { icon: BarChart3, text: 'Analytics', included: false },
-    ],
-    cta: 'Começar Grátis',
-    popular: false,
-    bestFor: 'Igrejas pequenas e missões',
-    storage: '1 GB',
-    support: 'Email',
-    planValue: 'free',
-  },
-  {
     name: 'Essencial',
-    price: 'R\$ 149,90',
+    price: 'R\$ 79,90',
     period: '/mês',
     annualPrice: 'R\$ 1.798,80',
     description: 'Para igrejas em crescimento',
     features: [
-      'TUDO do Free +',
+      'Todos os recursos +',
       'Até 200 membros',
       'Pedidos de oração ILIMITADOS',
       '3 administradores',
@@ -136,7 +102,7 @@ const plans = [
       'Suporte por email',
     ],
     detailedFeatures: [
-      { icon: Globe, text: 'TUDO do plano Free', included: true },
+      { icon: Globe, text: 'TUDO do plano Essencial', included: true },
       { icon: Users, text: 'Até 200 membros', included: true },
       { icon: HeartHandshake, text: 'Pedidos ILIMITADOS', included: true },
       { icon: Users, text: '3 administradores', included: true },
@@ -146,7 +112,7 @@ const plans = [
       { icon: Church, text: 'Redes sociais', included: true },
       { icon: BarChart3, text: 'Analytics', included: true },
     ],
-    cta: 'Testar Grátis (30 dias)',
+    cta: 'Testar Grátis (60 dias)',
     popular: true,
     bestFor: 'Igrejas em crescimento',
     storage: '5 GB',
@@ -315,7 +281,7 @@ export default function LandingPage() {
               Funcionalidades
             </a>
             <a href="#planos" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-              Planos
+              Plano
             </a>
             <a href="#depoimentos" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Depoimentos
@@ -345,7 +311,7 @@ export default function LandingPage() {
               Funcionalidades
             </a>
             <a href="#planos" className="block py-2 text-sm" onClick={() => setMobileMenuOpen(false)}>
-              Planos
+              Plano
             </a>
             <a href="#depoimentos" className="block py-2 text-sm" onClick={() => setMobileMenuOpen(false)}>
               Depoimentos
@@ -372,7 +338,7 @@ export default function LandingPage() {
             <div className={`hero-badge inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full border border-primary/20 shadow-sm ${isHeroInView ? 'animate' : ''}`}>
               <Zap className="h-4 w-4 text-primary" />
               <span className="text-sm font-semibold text-primary">
-                Plano Livre ilimitado • 30 dias grátis no Essencial
+                60 dias grátis • Todos os recursos desbloqueados
               </span>
             </div>
 
@@ -388,7 +354,7 @@ export default function LandingPage() {
             <div className={`hero-cta flex flex-col sm:flex-row gap-4 justify-center mt-8 ${isHeroInView ? 'animate' : ''}`}>
               <Button size="lg" asChild className="hero-cta-primary text-lg h-14 px-8 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-xl shadow-primary/20">
                 <Link to="/criar">
-                  Começar Grátis Agora
+                  Testar Grátis (60 dias) Agora
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
@@ -522,10 +488,10 @@ export default function LandingPage() {
         <div className="container px-4 relative z-10">
           <div className="text-center mb-16 space-y-4">
             <Badge variant="outline" className="mb-2 px-4 py-1.5 text-sm font-medium bg-primary/5 hover:bg-primary/10 transition-colors">
-              💎 Escolha seu Plano
+              💎 Escolha o Plano
             </Badge>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
-              Planos que cabem na sua <span className="text-primary">Igreja</span>
+              Plano que cabe na sua <span className="text-primary">Igreja</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Comece grátis e evolua conforme sua igreja cresce. Sem surpresas, sem taxas ocultas.
@@ -562,45 +528,7 @@ export default function LandingPage() {
           </div>
 
           {/* Cards Grid */}
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Plano Livre */}
-            <div className={`group relative rounded-3xl border border-border bg-card/50 dark:bg-card/50 p-8 transition-all duration-300 hover:border-primary/50 hover:shadow-2xl hover:-translate-y-2 backdrop-blur-sm ${isPricingInView ? 'animate-card-reveal' : 'opacity-0'}`} style={{ animationDelay: '0.1s' }}>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-bold text-foreground">Livre</h3>
-                  <p className="text-muted-foreground text-sm">Para igrejas iniciantes e missões.</p>
-                </div>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold tracking-tight">Grátis</span>
-                </div>
-                
-                <Button className="w-full rounded-xl" variant="outline" asChild>
-                  <Link to="/criar" state={{ selectedPlan: 'free' }}>
-                    Começar Grátis
-                  </Link>
-                </Button>
-
-                <div className="pt-6 border-t border-border space-y-4">
-                  <p className="text-sm font-medium text-foreground">Recursos incluídos:</p>
-                  <ul className="space-y-3">
-                    {[
-                      'Site em subdomínio',
-                      'Até 50 membros',
-                      '20 pedidos de oração/mês',
-                      '1 administrador',
-                      'Cores personalizadas',
-                      'Redes sociais'
-                    ].map((feature, i) => (
-                      <li key={i} className="flex items-center gap-3 text-sm text-muted-foreground">
-                        <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-
+          <div className="grid gap-8 max-w-2xl mx-auto">
             {/* Plano Essencial (Popular) */}
             <div className={`group relative rounded-3xl bg-gradient-to-b from-primary/10 to-primary/5 p-[2px] transition-all duration-300 hover:shadow-[0_0_40px_-10px_rgba(var(--primary),0.5)] hover:-translate-y-2 ${isPricingInView ? 'animate-card-reveal' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
               {/* Gradient Border Effect */}
@@ -608,11 +536,11 @@ export default function LandingPage() {
               
               <div className="relative h-full rounded-[22px] bg-card p-8 overflow-hidden">
                 {/* Badge Popular */}
-                <div className="absolute top-0 right-6 translate-y-1/2">
+                {/* <div className="absolute top-0 right-6 translate-y-1/2">
                   <Badge className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-none shadow-md px-3 py-1">
                     ⭐ Mais Popular
                   </Badge>
-                </div>
+                </div> */}
 
                 <div className="space-y-4">
                   <div className="space-y-2">
@@ -621,19 +549,19 @@ export default function LandingPage() {
                   </div>
                   <div className="flex items-baseline gap-1">
                     <span className="text-sm text-muted-foreground">R$</span>
-                    <span className="text-5xl font-bold tracking-tight text-foreground">{isAnnual ? '1499' : '149,90'}</span>
+                    <span className="text-5xl font-bold tracking-tight text-foreground">{isAnnual ? '799' : '79,90'}</span>
                     <span className="text-muted-foreground self-end mb-1">/{isAnnual ? 'ano' : 'mês'}</span>
                   </div>
                   
                   <Button className="w-full rounded-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/25" asChild>
                     <Link to="/criar" state={{ selectedPlan: 'essencial' }}>
-                      Testar Grátis (30 dias)
+                      Testar Grátis (60 dias)
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
 
                   <div className="pt-6 border-t border-border space-y-4">
-                    <p className="text-sm font-medium text-foreground">Tudo do plano Livre, mais:</p>
+                    <p className="text-sm font-medium text-foreground">Todos os recursos incluídos:</p>
                     <ul className="space-y-3">
                       {[
                         'Até 200 membros',
@@ -754,7 +682,7 @@ export default function LandingPage() {
               Pronto para Começar?
             </h2>
             <p className={`text-lg text-primary-foreground/90 dark:text-gray-300 cta-subtitle ${isCtaInView ? 'animate' : ''}`}>
-              Junte-se a centenas de igrejas que já estão usando o MinhaIgreja
+              Junte-se a igrejas que já estão usando o MinhaIgreja
               para se conectar com seus membros.
             </p>
             <div className={`flex flex-col sm:flex-row gap-4 justify-center mt-8 cta-buttons ${isCtaInView ? 'animate' : ''}`}>
@@ -774,7 +702,7 @@ export default function LandingPage() {
               </Button>
             </div>
             <p className="text-sm text-primary-foreground/75 dark:text-gray-400 mt-4">
-              30 dias de teste no Essencial • Plano Grátis ilimitado • Não requer cartão de crédito
+              60 dias de teste no Essencial • Não requer cartão de crédito
             </p>
           </div>
         </div>
@@ -799,7 +727,7 @@ export default function LandingPage() {
               <ul className="space-y-2 text-sm text-gray-300 dark:text-muted-foreground">
                 <li><a href="#funcionalidades" className="hover:text-white dark:hover:text-primary">Funcionalidades</a></li>
                 <li><a href="#planos" className="hover:text-white dark:hover:text-primary">Planos</a></li>
-                <li><a href="/criar" className="hover:text-white dark:hover:text-primary">Começar Grátis</a></li>
+                <li><a href="/criar" className="hover:text-white dark:hover:text-primary">Testar Grátis (90 dias)</a></li>
               </ul>
             </div>
 
