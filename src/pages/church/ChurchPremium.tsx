@@ -194,8 +194,8 @@ export default function ChurchPremium() {
           {/* Nome e Descrição */}
           <div className="max-w-4xl mx-auto text-center">
             {church.logo_url && (
-              <img 
-                src={church.logo_url} 
+              <img
+                src={buildApiUrl(church.logo_url)}
                 alt={church.name}
                 className="w-32 h-32 mx-auto mb-6 object-contain bg-white rounded-full p-4 shadow-lg"
               />

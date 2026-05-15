@@ -74,7 +74,11 @@ export default function Dashboard() {
     const isLocalhost = window.location.hostname === 'localhost';
     return isLocalhost
       ? `http://localhost:5173/church/${church.slug}`
-      : `https://${church.slug}.plataforma.minhaigreja.com.br`;
+      //: `https://${church.slug}.plataforma.minhaigreja.com.br`;
+      // Se estiver no Railway, usa o caminho relativo. Se tiver domínio próprio, usa ele.
+: window.location.hostname.includes('railway.app') 
+    ? `/church/${church.slug}` 
+    : `https://${church.slug}.plataforma.minhaigreja.com.br`;
   };
 
   // Abrir site público em nova aba

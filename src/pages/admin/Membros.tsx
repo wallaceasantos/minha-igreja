@@ -106,7 +106,10 @@ export default function Membros() {
     const isLocalhost = window.location.hostname === 'localhost';
     return isLocalhost 
       ? `http://localhost:5173/church/${church.slug}`
-      : `https://${church.slug}.plataforma.minhaigreja.com.br`;
+      //: `https://${church.slug}.plataforma.minhaigreja.com.br`;
+      : window.location.hostname.includes('railway.app') 
+    ? `/church/${church.slug}` 
+    : `https://${church.slug}.plataforma.minhaigreja.com.br`;
   };
 
   // Abrir site público em nova aba
