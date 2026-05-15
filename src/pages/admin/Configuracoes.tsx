@@ -17,6 +17,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { ModeToggle } from '@/components/mode-toggle';
 import { useDashboard } from '@/hooks/useDashboard';
 import DomainValidator from '@/components/DomainValidator';
 import { toast } from 'sonner';
@@ -41,13 +42,28 @@ import {
   Play,
   MessageCircle,
   Mail,
-  Search
+  Search,
+  Video,
+  X,
+  Loader2,
+  Key
 } from 'lucide-react';
 
 export default function AdminConfiguracoes() {
   const { church, loading } = useDashboard();
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
+
+  // YouTube API Settings
+  const [youtubeApiKey, setYoutubeApiKey] = useState('');
+  const [youtubeChannelId, setYoutubeChannelId] = useState('');
+  const [youtubeConnected, setYoutubeConnected] = useState(false);
+  const [youtubeSaving, setYoutubeSaving] = useState(false);
+  const [youtubeKeySaved, setYoutubeKeySaved] = useState(false);
+  // OAuth Settings (optional, for future features)
+  const [youtubeClientId, setYoutubeClientId] = useState('');
+  const [youtubeClientSecret, setYoutubeClientSecret] = useState('');
+  const [oauthConnected, setOauthConnected] = useState(false);
   const [domain, setDomain] = useState('');
   const [domainValidated, setDomainValidated] = useState(false);
 
@@ -123,6 +139,101 @@ export default function AdminConfiguracoes() {
       navigate('/login');
     }
   }, [navigate]);
+
+  // Carregar configuracoes do YouTube
+  useEffect(() => {
+    if (!church?.id) return;
+    loadYoutubeSettings();
+  }, [church?.id]);
+
+  const loadYoutubeSettings = async () => {
+    try {
+      const churchId = localStorage.getItem('churchId') || church?.id;
+      const res = await fetch(buildApiUrl('/api/church/youtube-settings'), {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,
+          'x-church-id': String(churchId),
+        }
+      });
+      const data = await res.json();
+      if (data.success && data.data) {
+        setYoutubeApiKey(data.data.youtube_api_key_full || '');
+        setYoutubeChannelId(data.data.youtube_channel_id || '');
+        setYoutubeConnected(data.data.is_connected);
+        // OAuth fields
+        setYoutubeClientId(data.data.youtube_client_id || '');
+        setYoutubeClientSecret(data.data.youtube_client_secret_full || '');
+        setOauthConnected(data.data.oauth_connected);
+      }
+    } catch (err) {
+      console.error('Error loading YouTube settings:', err);
+    }
+  };
+
+  const handleSaveYoutubeKey = async () => {
+    if (!youtubeApiKey || !youtubeApiKey.startsWith('AIza')) {
+      toast.error('API Key inválida', { description: 'Deve começar com AIza' });
+      return;
+    }
+    setYoutubeSaving(true);
+    try {
+      const churchId = localStorage.getItem('churchId') || church?.id;
+      const res = await fetch(buildApiUrl('/api/church/youtube-settings'), {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,
+          'x-church-id': String(churchId),
+        },
+        body: JSON.stringify({
+          youtube_api_key: youtubeApiKey,
+          youtube_channel_id: youtubeChannelId || undefined,
+          // OAuth fields (optional)
+          youtube_client_id: youtubeClientId || undefined,
+          youtube_client_secret: youtubeClientSecret || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setYoutubeConnected(true);
+        setOauthConnected(data.data?.oauth_connected);
+        setYoutubeKeySaved(true);
+        toast.success('YouTube conectado!', { description: data.message });
+        setTimeout(() => setYoutubeKeySaved(false), 3000);
+      } else {
+        toast.error('Erro ao validar', { description: data.error });
+      }
+    } catch (err) {
+      toast.error('Erro ao conectar', { description: 'Verifique sua conexão' });
+    } finally {
+      setYoutubeSaving(false);
+    }
+  };
+
+  const handleRemoveYoutubeKey = async () => {
+    setYoutubeSaving(true);
+    try {
+      const churchId = localStorage.getItem('churchId') || church?.id;
+      await fetch(buildApiUrl('/api/church/youtube-settings'), {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,
+          'x-church-id': String(churchId),
+        }
+      });
+      setYoutubeApiKey('');
+      setYoutubeChannelId('');
+      setYoutubeConnected(false);
+      setYoutubeClientId('');
+      setYoutubeClientSecret('');
+      setOauthConnected(false);
+      toast.success('Configuracoes do YouTube removidas');
+    } catch (err) {
+      toast.error('Erro ao remover');
+    } finally {
+      setYoutubeSaving(false);
+    }
+  };
 
   // Se estiver carregando, mostra loading
   if (loading) {
@@ -343,31 +454,42 @@ export default function AdminConfiguracoes() {
   };
 
   return (
-    <div className="container px-4 py-8">
+    <div className="container px-3 sm:px-4 py-4 sm:py-8">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-2 mb-2">
-          <Church className="w-6 h-6 text-primary" />
-          <h1 className="text-3xl font-bold">Configurações da Igreja</h1>
+      <div className="flex items-start justify-between mb-4 sm:mb-8">
+        <div className="flex-1 pr-2">
+          <div className="flex items-center gap-2 mb-1 sm:mb-2">
+            <Church className="w-5 h-5 sm:w-6 sm:h-6 text-primary flex-shrink-0" />
+            <h1 className="text-xl sm:text-3xl font-bold">Configurações</h1>
+          </div>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Gerencie as informações da sua igreja, endereço, redes sociais e horários de culto.
+          </p>
         </div>
-        <p className="text-muted-foreground">
-          Gerencie as informações da sua igreja, endereço, redes sociais e horários de culto.
-        </p>
+        <ModeToggle />
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
-          <TabsTrigger value="general">Geral</TabsTrigger>
-          <TabsTrigger value="address">Endereço</TabsTrigger>
-          <TabsTrigger value="social">Redes Sociais</TabsTrigger>
-          <TabsTrigger value="domain">Domínio</TabsTrigger>
-        </TabsList>
+      <Tabs defaultValue="general" className="space-y-4 sm:space-y-6">
+        <div className="-mx-3 px-3 sm:mx-0 sm:px-0">
+          <TabsList className="flex w-full gap-1 overflow-x-auto pb-1 sm:grid sm:grid-cols-5 sm:w-auto sm:overflow-x-visible sm:pb-0 sm:gap-0">
+            <TabsTrigger value="general" className="text-xs sm:text-sm whitespace-nowrap flex-shrink-0 px-2 sm:px-3 py-1.5">Geral</TabsTrigger>
+            <TabsTrigger value="address" className="text-xs sm:text-sm whitespace-nowrap flex-shrink-0 px-2 sm:px-3 py-1.5">Endereço</TabsTrigger>
+            <TabsTrigger value="social" className="text-xs sm:text-sm whitespace-nowrap flex-shrink-0 px-2 sm:px-3 py-1.5">Redes</TabsTrigger>
+            <TabsTrigger value="domain" className="text-xs sm:text-sm whitespace-nowrap flex-shrink-0 px-2 sm:px-3 py-1.5">Domínio</TabsTrigger>
+            <TabsTrigger value="youtube" className="text-xs sm:text-sm whitespace-nowrap flex-shrink-0 px-2 sm:px-3 py-1.5">YouTube</TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Tab: Informações Gerais */}
         <TabsContent value="general" className="space-y-6">
+<<<<<<< HEAD
           {/* Aviso para plano Essencial */}
           {isFreePlan && (
+=======
+          
+          {/*{isFreePlan && (
+>>>>>>> 8b6745c (feat: inclusão da live pelo youtube)
             <Alert variant="destructive" className="bg-amber-50 border-amber-200 text-amber-900">
               <Crown className="h-4 w-4 text-amber-600" />
               <AlertDescription>
@@ -389,7 +511,7 @@ export default function AdminConfiguracoes() {
                 </Button>
               </AlertDescription>
             </Alert>
-          )}
+          )}*/}
 
           <Card>
             <CardHeader>
@@ -397,32 +519,33 @@ export default function AdminConfiguracoes() {
                 <ImageIcon className="w-5 h-5" />
                 Logo da Igreja
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-sm">
                 Faça upload da logo da sua igreja. Formatos aceitos: JPG, JPEG, PNG, WebP, GIF, BMP. Tamanho máximo: 2MB.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center gap-6">
+              {/* Logo Preview - empilhado no mobile */}
+              <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
                 {logoUrl ? (
                   <img
                     src={logoUrl}
                     alt="Logo da igreja"
-                    className="w-32 h-32 object-contain border rounded-lg p-2"
+                    className="w-24 h-24 sm:w-32 sm:h-32 object-contain border rounded-lg p-2 flex-shrink-0"
                   />
                 ) : (
-                  <div className="w-32 h-32 border-2 border-dashed rounded-lg flex items-center justify-center bg-muted/50">
-                    <Church className="w-12 h-12 text-muted-foreground" />
+                  <div className="w-24 h-24 sm:w-32 sm:h-32 border-2 border-dashed rounded-lg flex items-center justify-center bg-muted/50 flex-shrink-0">
+                    <Church className="w-10 h-10 sm:w-12 sm:h-12 text-muted-foreground" />
                   </div>
                 )}
 
-                <div className="space-y-2">
+                <div className="space-y-2 w-full">
                   <Label htmlFor="logo-url">URL da Logo</Label>
                   <Input
                     id="logo-url"
                     placeholder="https://exemplo.com/logo.png"
                     value={logoUrl}
                     onChange={(e) => setLogoUrl(e.target.value)}
-                    className="max-w-md"
+                    className="w-full"
                     disabled={isFreePlan}
                   />
                   <p className="text-xs text-muted-foreground">
@@ -432,7 +555,7 @@ export default function AdminConfiguracoes() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="gap-2"
+                      className="gap-2 flex-1 sm:flex-initial"
                       onClick={() => document.getElementById('logo-file-input')?.click()}
                       disabled={isFreePlan}
                     >
@@ -1161,14 +1284,163 @@ export default function AdminConfiguracoes() {
           </Card>
         </TabsContent>
 
-        {/* Botão Salvar */}
-        <div className="flex justify-end gap-4">
-          <Button variant="outline" onClick={() => navigate('/admin/dashboard')}>
+        {/* Tab: YouTube API Settings */}
+        <TabsContent value="youtube" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Video className="w-5 h-5 text-primary" />
+                Configuração do YouTube
+              </CardTitle>
+              <CardDescription>
+                Configure sua propria API Key do YouTube para verificacao automatica de lives.
+                Cada igreja usa sua propria cota (10.000 unidades/dia).
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Explicacao */}
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-2">💡 Por que usar minha propria API Key?</h4>
+                <ul className="text-sm text-blue-700 dark:text-blue-400 space-y-1">
+                  <li>• Cada igreja tem sua propria cota diaria de 10.000 requisicoes</li>
+                  <li>• Nao depende da chave do desenvolvedor</li>
+                  <li>• Verificacao automatica de quando a live comeca e termina</li>
+                  <li>• Grátis e facil de criar no Google Cloud Console</li>
+                </ul>
+              </div>
+
+              {/* Tutorial */}
+              <details className="border rounded-lg p-4 dark:border-gray-700">
+                <summary className="font-semibold cursor-pointer dark:text-gray-200">
+                  📖 Como criar sua API Key (passo a passo)
+                </summary>
+                <div className="mt-3 space-y-2 text-sm dark:text-gray-300">
+                  <p><strong>1.</strong> Acesse <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer" className="text-primary underline">console.cloud.google.com/apis/credentials</a></p>
+                  <p><strong>2.</strong> Selecione seu projeto ou crie um novo</p>
+                  <p><strong>3.</strong> Vá em <em>Biblioteca</em> → Pesquise <strong>"YouTube Data API v3"</strong> → Clique em <strong>Ativar</strong></p>
+                  <p><strong>4.</strong> Vá em <em>Credenciais</em> → <strong>+ Criar credenciais</strong> → <strong>Chave de API</strong></p>
+                  <p><strong>5.</strong> Copie a chave gerada (comeca com <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">AIza...</code>)</p>
+                  <p><strong>6.</strong> Cole no campo abaixo e clique em <strong>Validar e Salvar</strong></p>
+                </div>
+              </details>
+
+              {/* Campo API Key */}
+              <div className="space-y-2">
+                <Label htmlFor="youtube-api-key">YouTube Data API Key</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="youtube-api-key"
+                    type="text"
+                    placeholder="AIzaSy..."
+                    value={youtubeApiKey}
+                    onChange={(e) => setYoutubeApiKey(e.target.value)}
+                    className="flex-1"
+                  />
+                  <Button
+                    onClick={handleSaveYoutubeKey}
+                    disabled={youtubeSaving || !youtubeApiKey}
+                    className="whitespace-nowrap"
+                  >
+                    {youtubeSaving ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                    )}
+                    {youtubeSaving ? 'Validando...' : 'Validar e Salvar'}
+                  </Button>
+                </div>
+                {youtubeKeySaved && (
+                  <p className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
+                    <CheckCircle className="w-3.5 h-3.5" />
+                    API Key configurada com sucesso!
+                  </p>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Sua chave comeca com <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">AIza</code>. Nao compartilhe com ninguem.
+                </p>
+              </div>
+
+              {/* OAuth - Opcional (para funcionalidades futuras) */}
+              <div className="space-y-3 pt-4 border-t dark:border-gray-700">
+                <div className="flex items-center gap-2">
+                  <Key className="w-4 h-4 text-muted-foreground" />
+                  <h4 className="text-sm font-semibold dark:text-gray-200">
+                    Credenciais OAuth (Opcional - para uso futuro)
+                  </h4>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Client ID e Client Secret sao usados para funcionalidades avancadas como upload automatico de videos e criacao de lives. Nao e necessario para verificacao automatica de lives.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="youtube-client-id" className="text-xs">Client ID</Label>
+                    <Input
+                      id="youtube-client-id"
+                      type="text"
+                      placeholder="...apps.googleusercontent.com"
+                      value={youtubeClientId}
+                      onChange={(e) => setYoutubeClientId(e.target.value)}
+                      className="text-xs"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="youtube-client-secret" className="text-xs">Client Secret</Label>
+                    <Input
+                      id="youtube-client-secret"
+                      type="password"
+                      placeholder="GOCSPX-..."
+                      value={youtubeClientSecret}
+                      onChange={(e) => setYoutubeClientSecret(e.target.value)}
+                      className="text-xs"
+                    />
+                  </div>
+                </div>
+                {oauthConnected && (
+                  <p className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
+                    <CheckCircle className="w-3.5 h-3.5" />
+                    OAuth configurado!
+                  </p>
+                )}
+              </div>
+
+              {/* Status da conexao */}
+              <div className="flex items-center gap-3 p-3 rounded-lg border dark:border-gray-700">
+                <div className={`w-3 h-3 rounded-full ${youtubeConnected ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
+                <span className="text-sm dark:text-gray-300">
+                  {youtubeConnected ? 'Conectado ao YouTube' : 'Nao conectado'}
+                </span>
+                {youtubeChannelId && (
+                  <span className="text-xs text-muted-foreground">
+                    Canal: {youtubeChannelId}
+                  </span>
+                )}
+              </div>
+
+              {/* Botao remover */}
+              {youtubeConnected && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleRemoveYoutubeKey}
+                  disabled={youtubeSaving}
+                  className="text-red-600 hover:text-red-700"
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Remover API Key
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Botao Salvar */}
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
+          <Button variant="outline" onClick={() => navigate('/admin/dashboard')} className="w-full sm:w-auto">
             Cancelar
           </Button>
-          <Button onClick={handleSave} disabled={saving} className="gap-2">
+          <Button onClick={handleSave} disabled={saving} className="gap-2 w-full sm:w-auto">
             <Save className="w-4 h-4" />
-            {saving ? 'Salvando...' : 'Salvar Configurações'}
+            {saving ? 'Salvando...' : 'Salvar'}
           </Button>
         </div>
       </Tabs>

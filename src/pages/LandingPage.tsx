@@ -682,7 +682,7 @@ export default function LandingPage() {
               Pronto para Começar?
             </h2>
             <p className={`text-lg text-primary-foreground/90 dark:text-gray-300 cta-subtitle ${isCtaInView ? 'animate' : ''}`}>
-              Junte-se a centenas de igrejas que já estão usando o MinhaIgreja
+              Junte-se a igrejas que já estão usando o MinhaIgreja
               para se conectar com seus membros.
             </p>
             <div className={`flex flex-col sm:flex-row gap-4 justify-center mt-8 cta-buttons ${isCtaInView ? 'animate' : ''}`}>
@@ -702,7 +702,7 @@ export default function LandingPage() {
               </Button>
             </div>
             <p className="text-sm text-primary-foreground/75 dark:text-gray-400 mt-4">
-              30 dias de teste no Essencial • Plano Grátis ilimitado • Não requer cartão de crédito
+              60 dias de teste no Essencial • Não requer cartão de crédito
             </p>
           </div>
         </div>

@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { ModeToggle } from '@/components/mode-toggle';
 import {
   Users,
   Heart,
@@ -345,31 +346,31 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="container px-4 py-8">
+    <div className="container px-3 sm:px-4 py-4 sm:py-8">
       {/* Header com Informações do Usuário */}
-      <div className="bg-card border rounded-lg p-6 mb-8 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="bg-card border rounded-lg p-4 sm:p-6 mb-4 sm:mb-8 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           {/* Informações do Usuário */}
-          <div className="flex items-start gap-4">
-            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-              <Users className="w-8 h-8 text-primary" />
+          <div className="flex items-start gap-3">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <Users className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
             </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <h1 className="text-2xl font-bold">{church?.name || 'Igreja'}</h1>
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-1.5 mb-1">
+                <h1 className="text-lg sm:text-2xl font-bold truncate">{church?.name || 'Igreja'}</h1>
                 <Badge className={planColors[plan]}>
                   <Crown className="w-3 h-3 mr-1" />
                   {planNames[plan]}
                 </Badge>
               </div>
-              <p className="text-muted-foreground text-sm mb-2">
+              <p className="text-muted-foreground text-xs sm:text-sm mb-2 truncate">
                 {church?.admin_email || church?.email || 'email@igreja.com'}
               </p>
-              <div className="flex flex-wrap gap-2 text-xs">
+              <div className="flex flex-wrap gap-1.5 text-xs">
                 {trialEndDate && daysRemaining > 0 ? (
                   <Badge variant="outline" className="text-green-600 border-green-600">
                     <Clock className="w-3 h-3 mr-1" />
-                    Trial: {daysRemaining} dias restantes
+                    Trial: {daysRemaining} dias
                   </Badge>
                 ) : (
                   <Badge variant="outline" className="text-blue-600 border-blue-600">
@@ -378,7 +379,7 @@ export default function Dashboard() {
                   </Badge>
                 )}
                 {church?.address_city && (
-                  <Badge variant="outline">
+                  <Badge variant="outline" className="hidden sm:inline-flex">
                     📍 {church.address_city}/{church.address_state}
                   </Badge>
                 )}
@@ -387,19 +388,22 @@ export default function Dashboard() {
           </div>
 
           {/* Ações */}
-          <div className="flex flex-col gap-2">
-            <Button variant="outline" size="sm" onClick={handleOpenPublicSite}>
-              <Globe className="w-4 h-4 mr-2" />
-              Ver Site Público
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/admin/configuracoes')}>
-              <Settings className="w-4 h-4 mr-2" />
-              Configurações
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleLogout}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Sair
-            </Button>
+          <div className="flex flex-row sm:flex-col gap-2 items-stretch sm:items-end">
+            <ModeToggle />
+            <div className="flex gap-2 sm:flex-col">
+              <Button variant="outline" size="sm" onClick={handleOpenPublicSite} className="text-xs">
+                <Globe className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Ver Site</span>
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => navigate('/admin/configuracoes')} className="text-xs">
+                <Settings className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Config</span>
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleLogout} className="text-xs text-red-600 hover:text-red-700">
+                <LogOut className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Sair</span>
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -483,68 +487,73 @@ export default function Dashboard() {
 
       {/* Banner de Trial Ativo */}
       {trialInfo?.isTrial && (
-        <Card className="mb-8 border-2 border-green-500 bg-gradient-to-r from-green-50 via-green-100 to-green-50 dark:from-green-900/20 dark:via-green-900/10 dark:to-green-900/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-green-700 dark:text-green-400">
-              <Crown className="w-6 h-6" />
-              🎉 Plano Essencial Ativo - Período de Trial!
+        <Card className="mb-4 sm:mb-8 border-2 border-green-500 bg-gradient-to-r from-green-50 via-green-100 to-green-50 dark:from-green-900/20 dark:via-green-900/10 dark:to-green-900/20">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-green-700 dark:text-green-400 text-base sm:text-xl">
+              <Crown className="w-5 h-5 sm:w-6 sm:h-6" />
+              🎉 Plano Essencial Ativo - Trial!
             </CardTitle>
             <CardDescription className="text-green-600 dark:text-green-300">
               Sua igreja está aproveitando todos os recursos do plano Essencial
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="md:col-span-2">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center">
-                    <Calendar className="w-8 h-8 text-white" />
+            <div className="flex flex-col sm:grid sm:grid-cols-3 gap-4">
+              <div className="sm:col-span-2">
+                <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                    <Calendar className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-green-700 dark:text-green-400">
+                    <p className="text-xl sm:text-2xl font-bold text-green-700 dark:text-green-400">
                       {trialInfo.daysRemaining} dias restantes
                     </p>
-                    <p className="text-sm text-green-600 dark:text-green-300">
+                    <p className="text-xs sm:text-sm text-green-600 dark:text-green-300">
                       Trial encerra em {new Date(trialInfo.trialEndDate).toLocaleDateString('pt-BR')}
                     </p>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <p className="font-semibold text-green-700 dark:text-green-400">Recursos desbloqueados:</p>
-                  <ul className="grid md:grid-cols-2 gap-2 text-sm text-green-600 dark:text-green-300">
-                    <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4" /> 200 membros
+                  <p className="font-semibold text-green-700 dark:text-green-400 text-sm">Recursos desbloqueados:</p>
+                  <ul className="grid grid-cols-2 gap-1.5 text-xs sm:text-sm text-green-600 dark:text-green-300">
+                    <li className="flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5 flex-shrink-0" /> 200 membros
                     </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4" /> Pedidos de oração ilimitados
+                    <li className="flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5 flex-shrink-0" /> Pedidos ilimitados
                     </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4" /> 3 administradores
+                    <li className="flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5 flex-shrink-0" /> 3 administradores
                     </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4" /> Upload de logo
+                    <li className="flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5 flex-shrink-0" /> Upload de logo
                     </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4" /> Domínio próprio
+                    <li className="flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5 flex-shrink-0" /> Domínio próprio
                     </li>
-                    <li className="flex items-center gap-2">
-                      <Check className="w-4 h-4" /> Suporte prioritário
+                    <li className="flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5 flex-shrink-0" /> Suporte prioritário
                     </li>
                   </ul>
                 </div>
               </div>
-              <div className="flex flex-col justify-center items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-lg">
-                <p className="text-sm text-muted-foreground text-center">
+              <div className="flex flex-col sm:flex-row sm:flex-col justify-center items-center gap-3 p-3 sm:p-4 bg-white dark:bg-gray-800 rounded-lg">
+                <p className="text-xs sm:text-sm text-muted-foreground text-center">
                   Após o trial:
                 </p>
+<<<<<<< HEAD
                 <p className="text-3xl font-bold text-green-700 dark:text-green-400">
                   R$ 79,90<span className="text-sm font-normal">/mês</span>
+=======
+                <p className="text-2xl sm:text-3xl font-bold text-green-700 dark:text-green-400">
+                  R$ 79,90<span className="text-xs sm:text-sm font-normal">/mês</span>
+>>>>>>> 8b6745c (feat: inclusão da live pelo youtube)
                 </p>
-                <Button onClick={() => navigate('/admin/plans')} className="w-full gap-2 bg-green-600 hover:bg-green-700">
+                <Button onClick={() => navigate('/admin/plans')} className="w-full gap-2 bg-green-600 hover:bg-green-700 text-sm">
                   <Crown className="w-4 h-4" />
-                  Manter Plano Essencial
+                  Manter Essencial
                 </Button>
-                <p className="text-xs text-muted-foreground text-center">
+                <p className="text-[10px] sm:text-xs text-muted-foreground text-center">
                   Pagamento via PIX ou Boleto
                 </p>
               </div>
@@ -822,17 +831,17 @@ export default function Dashboard() {
       )}
 
       {/* Quick Actions */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-6 mb-6 sm:mb-8">
         <Card className="cursor-pointer hover:shadow-md transition-shadow">
           <Link to="/admin/configuracoes" className="block h-full">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="w-5 h-5" />
-                ⚙️ Configurações
+            <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-0">
+              <CardTitle className="flex items-center gap-1.5 text-sm sm:text-base">
+                <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
+                Configurações
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
+            <CardContent className="p-3 sm:p-6 pt-0">
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Configure logo, endereço, redes sociais
               </p>
             </CardContent>
@@ -844,18 +853,18 @@ export default function Dashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Globe className="w-5 h-5 text-primary" />
-                🌐 Domínio Próprio
+                Domínio Próprio
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
                 Configure seu domínio personalizado
               </p>
-              {church?.plan_type === 'essencial' && (
+              {/*{church?.plan_type === 'essencial' && (
                 <Badge className="mt-2 bg-green-500 text-xs">
-                  Incluído no Essencial
+                  
                 </Badge>
-              )}
+              )}*/}
             </CardContent>
           </Link>
         </Card>
@@ -865,18 +874,18 @@ export default function Dashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Image className="w-5 h-5 text-primary" />
-                📸 Galeria de Fotos
+                Galeria de Fotos
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
                 Gerencie fotos da igreja
               </p>
-              {church?.plan_type === 'essencial' && (
+              {/*{church?.plan_type === 'essencial' && (
                 <Badge className="mt-2 bg-green-500 text-xs">
                   Incluído no Essencial
                 </Badge>
-              )}
+              )}*/}
             </CardContent>
           </Link>
         </Card>
@@ -886,18 +895,39 @@ export default function Dashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Video className="w-5 h-5 text-primary" />
-                📺 Transmissões Ao Vivo
+                Transmissões Ao Vivo
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
                 Lives do YouTube
               </p>
-              {church?.plan_type === 'essencial' && (
+              {/*{church?.plan_type === 'essencial' && (
                 <Badge className="mt-2 bg-green-500 text-xs">
                   Incluído no Essencial
                 </Badge>
-              )}
+              )}*/}
+            </CardContent>
+          </Link>
+        </Card>
+
+        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Link to="/admin/verses" className="block h-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-purple-600" />
+                Versículos da Live
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Gerencie versículos para exibição na live
+              </p>
+              {/*{church?.plan_type === 'essencial' && (
+                <Badge className="mt-2 bg-green-500 text-xs">
+                  Incluído no Essencial
+                </Badge>
+              )}*/}
             </CardContent>
           </Link>
         </Card>
@@ -993,7 +1023,7 @@ export default function Dashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Ticket className="w-5 h-5" />
-                🎫 Tickets de Suporte
+                Tickets de Suporte
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -1009,7 +1039,7 @@ export default function Dashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Star className="w-5 h-5 text-yellow-500" />
-                ⭐ Avaliar Plataforma
+                Avaliar Plataforma
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -1026,7 +1056,7 @@ export default function Dashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Globe className="w-5 h-5 text-primary" />
-            🌐 Site Público da Igreja
+            Site Público da Igreja
           </CardTitle>
           <CardDescription>
             Visualize como os visitantes estão vendo o site da sua igreja

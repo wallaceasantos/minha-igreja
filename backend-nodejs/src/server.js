@@ -46,6 +46,10 @@ import churchGalleryRoutes from './routes/church-gallery.js';
 import liveStreamsRoutes from './routes/live-streams.js';
 import liveNotificationsRoutes from './routes/live-notifications.js';
 import churchVersesRoutes from './routes/church-verses.js';
+<<<<<<< HEAD
+=======
+import churchYoutubeRoutes from './routes/church-youtube.js';
+>>>>>>> 8b6745c (feat: inclusão da live pelo youtube)
 import { startScheduler } from './schedulers/announcement-scheduler.js';
 import { startScheduler as startPrayerReminderScheduler } from './schedulers/prayer-reminder-scheduler.js';
 import { startBillingScheduler } from './schedulers/billing-scheduler.js';
@@ -89,6 +93,8 @@ app.get('/health', (req, res) => {
 
 // Rotas
 app.use('/api/test-db', testDbRoutes);
+// YouTube settings DEVE vir antes de churchRoutes para nao ser interceptada por /:id
+app.use('/api/church', churchYoutubeRoutes);
 app.use('/api/church', churchRoutes);
 app.use('/api/member/live', memberLiveRoutes);
 app.use('/api/contact', contactRoutes);

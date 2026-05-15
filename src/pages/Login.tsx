@@ -332,7 +332,7 @@ export default function Login() {
                       </Link>
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      30 dias de teste grátis • Sem cartão de crédito
+                      60 dias de teste grátis • Sem cartão de crédito
                     </p>
                   </>
                 ) : (
