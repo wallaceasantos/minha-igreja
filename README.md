@@ -84,8 +84,6 @@ minhaigreja/
 │   ├── components/             # Reusable components
 │   ├── hooks/                  # Custom hooks
 │   └── lib/                    # Utilities
-├── database/
-│   └── migrations/             # SQL migrations
 ├── public/                     # Static assets
 ├── package.json
 ├── railway.json                # Railway config
@@ -180,22 +178,6 @@ npm test
 npm run build
 ```
 
----
-
-## 📝 Database Migrations
-
-Run in order:
-
-```bash
-database/migrations/
-├── 001_initial.sql
-├── 002_...
-├── ...
-└── 010_church_reviews.sql
-```
-
----
-
 ## 🤝 Contributing
 
 1. Fork repository
@@ -214,7 +196,7 @@ MIT License - see LICENSE file for details.
 
 ## 📞 Support
 
-- **Email**: suporte@minhaigreja.app
+- **Email**: wallace.a.santos.wa@gmail.com
 - **Docs**: [RAILWAY_DEPLOY.md](RAILWAY_DEPLOY.md)
 - **Issues**: https://github.com/YOUR-USERNAME/minhaigreja/issues
 

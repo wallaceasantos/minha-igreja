@@ -38,7 +38,6 @@ pm2-debug.log*
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea/
 *.suo
 *.ntvs*
 *.njsproj
@@ -90,64 +89,6 @@ $null
 *.swp
 *.swo
 *~
-
-# ===========================================
-# Qwen Code / AI Assistant (OCULTAR)
-# ===========================================
-.qwen/
-.qwenignore
-subagents/
-agent-*.jsonl
-*.agent.*
-memory/
-
-# ===========================================
-# Lovable / AI Code Generators (OCULTAR)
-# ===========================================
-lovable-tagger
-.vite/
-.lovable/
-
-# ===========================================
-# Documentation pessoal (OCULTAR)
-# ===========================================
-# docs-archive/ (toda documentação arquivada)
-docs-archive/
-
-# Arquivos soltos de documentação
-ADICIONAR_DOMAIN_CARD.md
-ANALISE_PLANO_ESSENCIAL.md
-ANALISE_PLANO_FREE.md
-ANALISE_SUPER_ADMIN.md
-ATIVAR_LEMBRETES.md
-AUDIT_LOGS_QUICKSTART.md
-AUDIT_LOGS_README.md
-BACKUP_README.md
-CORRECAO_PEDIDOS_DASHBOARD.md
-CSV_EXPORT_README.md
-CSV_IMPORT_README.md
-DARK_MODE_PEDIDOS.md
-DESENVOLVIMENTO_LOCAL.md
-DOMINIO_PROPRIO_IMPLEMENTACAO.md
-EMAIL_TEMPLATE.md
-EMAILJS_CONFIG.md
-EMAILJS_TROUBLESHOOTING.md
-EXPLICACAO_PEDIDOS.md
-GUIA_TESTES_COMPLETO.md
-HEADER_FOOTER_PEDIDOS.md
-HEADER_PEDIDOS_ORACAO.md
-IMPLEMENTACAO_CONCLUIDA.md
-IMPLEMENTACAO_INADIMPLENCIA.md
-LIVES_MULTIPLATAFORMA_README.md
-MUDANCA_NOME_README.md
-MYSQL_WORKBENCH_MIGRATION.md
-PEDIDOS_ORACAO_SITE_PUBLICO.md
-PLANS_DYNAMIC_README.md
-PLANS_MANAGEMENT_README.md
-PLANS_SIMPLE_README.md
-PRAYER_REMINDERS_README.md
-RESUMO_FINAL.md
-SYSTEM_SETTINGS_README.md
 
 # ===========================================
 # Backup files
