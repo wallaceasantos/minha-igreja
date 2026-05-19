@@ -346,38 +346,39 @@ export default function Membros() {
     setUploadingPhoto(true);
 
     try {
-      // Criar FormData para upload
+      // Upload para Cloudinary
+      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+      const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+      if (!cloudName || !uploadPreset) {
+        throw new Error('Configuração do Cloudinary ausente. Verifique as variáveis de ambiente.');
+      }
+
       const formDataUpload = new FormData();
-      formDataUpload.append('foto', file);
+      formDataUpload.append('file', file);
+      formDataUpload.append('upload_preset', uploadPreset);
+      formDataUpload.append('folder', 'membros'); // Opcional: organizar em pasta
 
-      // Obter church_id
-      const churchId = localStorage.getItem('churchId');
-
-      // Upload para servidor local
-      const response = await fetch(buildApiUrl('/api/uploads/membro'), {
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
         method: 'POST',
-        headers: {
-          'x-church-id': churchId || ''
-        },
         body: formDataUpload
       });
 
       const data = await response.json();
 
-      if (data.success && data.data.photoUrl) {
-        const fullPhotoUrl = buildApiUrl(data.data.photoUrl);
-        setFormData({ ...formData, photo_url: fullPhotoUrl });
-        setPhotoPreview(fullPhotoUrl);
+      if (data.secure_url) {
+        setFormData({ ...formData, photo_url: data.secure_url });
+        setPhotoPreview(data.secure_url);
         toast.success('Foto carregada com sucesso!', {
           description: 'Não esqueça de salvar o membro'
         });
       } else {
-        throw new Error(data.error || 'Erro no upload');
+        throw new Error(data.error?.message || 'Erro no upload');
       }
     } catch (error) {
       console.error('Error uploading photo:', error);
       toast.error('Erro ao carregar foto', {
-        description: 'Tente novamente'
+        description: error instanceof Error ? error.message : 'Tente novamente'
       });
     } finally {
       setUploadingPhoto(false);
