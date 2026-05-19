@@ -47,6 +47,7 @@ import liveStreamsRoutes from './routes/live-streams.js';
 import liveNotificationsRoutes from './routes/live-notifications.js';
 import churchVersesRoutes from './routes/church-verses.js';
 import churchYoutubeRoutes from './routes/church-youtube.js';
+import liveOtpRoutes from './routes/live-otp.js';
 import { startScheduler } from './schedulers/announcement-scheduler.js';
 import { startScheduler as startPrayerReminderScheduler } from './schedulers/prayer-reminder-scheduler.js';
 import { startBillingScheduler } from './schedulers/billing-scheduler.js';
@@ -94,6 +95,7 @@ app.use('/api/test-db', testDbRoutes);
 app.use('/api/church', churchYoutubeRoutes);
 app.use('/api/church', churchRoutes);
 app.use('/api/member/live', memberLiveRoutes);
+app.use('/api/live', liveOtpRoutes); // Live OTP (email auth) routes
 app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/church', configRoutes);
