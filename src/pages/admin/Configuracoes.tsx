@@ -387,14 +387,6 @@ export default function AdminConfiguracoes() {
 
   // Handler para upload de logo
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Bloquear upload no plano Essencial
-    if (isFreePlan) {
-      toast.error('Recurso não disponível', {
-        description: 'O upload de logo está disponível apenas nos planos Essencial, Premium e Enterprise.',
-      });
-      return;
-    }
-
     const file = e.target.files?.[0];
     if (!file) return;
 
