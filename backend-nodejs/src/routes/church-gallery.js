@@ -112,19 +112,15 @@ router.get('/admin/church/gallery', identifyChurch, async (req, res) => {
 
 /**
  * POST /api/admin/church/gallery/upload
- * Upload de imagem (Admin)
+ * Upload de imagem (Admin) - Suporta arquivo ou URL
  */
 router.post('/admin/church/gallery/upload', identifyChurch, upload.single('image'), async (req, res) => {
   try {
-    const { church_id, title, description, display_order } = req.body;
+    const { church_id, title, description, display_order, image_url } = req.body;
 
     // Verificar permissão (plano Essencial+ ou trial ativo)
     const limits = PLAN_LIMITS[req.churchPlan] || PLAN_LIMITS.free;
     if (!limits.hasLogoUpload) {
-      // Deletar arquivo se não tem permissão
-      if (req.file) {
-        fs.unlinkSync(req.file.path);
-      }
       return res.status(403).json({
         success: false,
         error: `Upload de imagens não disponível no plano ${req.churchPlan}`,
@@ -132,28 +128,31 @@ router.post('/admin/church/gallery/upload', identifyChurch, upload.single('image
       });
     }
 
-    if (!req.file) {
+    let finalImageUrl = image_url;
+
+    // Se veio arquivo, usar o arquivo
+    if (req.file) {
+      finalImageUrl = `/api/uploads/gallery/${req.file.filename}`;
+    } else if (!finalImageUrl) {
       return res.status(400).json({
         success: false,
-        error: 'Nenhuma imagem enviada',
+        error: 'Nenhuma imagem ou URL fornecida',
       });
     }
 
     const pool = getPool();
-    const imageUrl = `/api/uploads/gallery/${req.file.filename}`;
-
     const [result] = await pool.execute(`
       INSERT INTO church_gallery
       (church_id, image_url, title, description, display_order, is_active)
       VALUES (?, ?, ?, ?, ?, 1)
-    `, [church_id, imageUrl, title || null, description || null, display_order || 0]);
+    `, [church_id, finalImageUrl, title || null, description || null, display_order || 0]);
 
     res.json({
       success: true,
-      message: 'Imagem enviada com sucesso!',
+      message: 'Imagem adicionada com sucesso!',
       data: {
         id: result.insertId,
-        image_url: imageUrl,
+        image_url: finalImageUrl,
         title,
         description,
       },

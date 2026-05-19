@@ -40,10 +40,12 @@ import {
   Eye,
   EyeOff,
   MoveUp,
-  MoveDown
+  MoveDown,
+  Link as LinkIcon
 } from 'lucide-react';
 import { useDashboard } from '@/hooks/useDashboard';
 import { buildApiUrl } from '@/lib/config';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface GalleryImage {
   id: number;
@@ -70,6 +72,9 @@ export default function AdminChurchGallery() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [uploadProgress, setUploadProgress] = useState(0);
+  // Novo estado para URL da imagem (Cloudinary)
+  const [imageUrl, setImageUrl] = useState('');
+  const [uploadMethod, setUploadMethod] = useState<'file' | 'url'>('file');
 
   useEffect(() => {
     loadGallery();
@@ -140,53 +145,80 @@ export default function AdminChurchGallery() {
   };
 
   const handleUpload = async () => {
-    if (!selectedFiles.length) {
+    // Validar baseado no metodo selecionado
+    if (uploadMethod === 'file' && !selectedFiles.length) {
       toast.error('Selecione pelo menos uma imagem');
+      return;
+    }
+    if (uploadMethod === 'url' && !imageUrl) {
+      toast.error('Cole o link da imagem');
       return;
     }
 
     try {
       setUploading(true);
       const churchId = localStorage.getItem('churchId') || '';
-      const totalFiles = selectedFiles.length;
-      let uploadedCount = 0;
 
-      // Upload sequencial de cada arquivo
-      for (const [index, file] of selectedFiles.entries()) {
+      // Se metodo for URL
+      if (uploadMethod === 'url') {
         const formData = new FormData();
-        formData.append('image', file);
-        formData.append('church_id', churchId);
-        formData.append('title', title || file.name.split('.')[0]);
-        formData.append('description', description || '');
+        formData.append('church_id', String(churchId));
+        formData.append('image_url', String(imageUrl));
+        formData.append('title', String(title || 'Imagem da Galeria'));
+        formData.append('description', String(description || ''));
 
         const response = await fetch(buildApiUrl('/api/gallery/admin/church/gallery/upload'), {
           method: 'POST',
-          headers: {
-            'x-church-id': churchId,
-          },
+          headers: { 'x-church-id': churchId },
           body: formData,
         });
 
         const result = await response.json();
-        
         if (result.success) {
-          uploadedCount++;
-          setUploadProgress(Math.round((uploadedCount / totalFiles) * 100));
+          toast.success('Imagem adicionada com sucesso!');
+        } else {
+          toast.error('Erro ao adicionar imagem', { description: result.error });
+          return;
         }
+      } 
+      // Se metodo for arquivo
+      else {
+        const totalFiles = selectedFiles.length;
+        let uploadedCount = 0;
+
+        for (const file of selectedFiles) {
+          const formData = new FormData();
+          formData.append('image', file);
+          formData.append('church_id', String(churchId));
+          formData.append('title', String(title || file.name.split('.')[0] || 'Imagem'));
+          formData.append('description', String(description || ''));
+
+          const response = await fetch(buildApiUrl('/api/gallery/admin/church/gallery/upload'), {
+            method: 'POST',
+            headers: { 'x-church-id': churchId },
+            body: formData,
+          });
+
+          const result = await response.json();
+          if (result.success) {
+            uploadedCount++;
+            setUploadProgress(Math.round((uploadedCount / totalFiles) * 100));
+          }
+        }
+        toast.success(`${uploadedCount} de ${totalFiles} imagem(s) enviada(s)!`);
       }
 
-      toast.success(`${uploadedCount} de ${totalFiles} imagem(s) enviada(s)!`);
-      
       // Reset form
       setSelectedFiles([]);
       setPreviewUrls([]);
+      setImageUrl('');
       setTitle('');
       setDescription('');
       setUploadProgress(0);
-      
+
       // Reload gallery
       loadGallery();
-      
+
       // Close dialog
       setTimeout(() => {
         const closeBtn = document.querySelector('[data-state="open"] button[data-state="closed"]') as HTMLButtonElement | null;
@@ -388,90 +420,97 @@ export default function AdminChurchGallery() {
                 <DialogTitle>Adicionar Novas Fotos</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
-                <div>
-                  <Label htmlFor="image">Imagens</Label>
-                  <Input
-                    id="image"
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleFileSelect}
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Formatos: JPEG, PNG, WebP (Máx 5MB cada) • Selecione múltiplas fotos
-                  </p>
-                </div>
-
-                {/* Previews Múltiplos */}
-                {previewUrls.length > 0 && (
-                  <div>
-                    <Label>Previews ({previewUrls.length})</Label>
-                    <div className="grid grid-cols-3 gap-4 mt-2">
-                      {previewUrls.map((preview, index) => (
-                        <div key={index} className="relative group">
-                          <img
-                            src={preview}
-                            alt={`Preview ${index + 1}`}
-                            className="w-full h-32 object-cover rounded-lg"
-                          />
-                          <button
-                            onClick={() => handleRemoveFile(index)}
-                            className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ))}
+                <Tabs value={uploadMethod} onValueChange={(v) => setUploadMethod(v as 'file' | 'url')}>
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="file" className="flex items-center gap-2">
+                      <Upload className="w-4 h-4" /> Upload de Arquivo
+                    </TabsTrigger>
+                    <TabsTrigger value="url" className="flex items-center gap-2">
+                      <LinkIcon className="w-4 h-4" /> Colar Link (Cloudinary)
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="file" className="space-y-4">
+                    <div>
+                      <Label htmlFor="image">Imagens</Label>
+                      <Input
+                        id="image"
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleFileSelect}
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Formatos: JPEG, PNG, WebP (Máx 5MB cada)
+                      </p>
                     </div>
-                  </div>
-                )}
+                    {previewUrls.length > 0 && (
+                      <div>
+                        <Label>Previews ({previewUrls.length})</Label>
+                        <div className="grid grid-cols-3 gap-4 mt-2">
+                          {previewUrls.map((preview, index) => (
+                            <div key={index} className="relative group">
+                              <img src={preview} alt={`Preview ${index + 1}`} className="w-full h-32 object-cover rounded-lg" />
+                              <button onClick={() => handleRemoveFile(index)} className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </TabsContent>
+                  <TabsContent value="url" className="space-y-4">
+                    <div>
+                      <Label htmlFor="image-url">Link da Imagem</Label>
+                      <Input
+                        id="image-url"
+                        type="url"
+                        placeholder="https://res.cloudinary.com/..."
+                        value={imageUrl}
+                        onChange={(e) => setImageUrl(e.target.value)}
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Cole o link direto da imagem (Cloudinary, AWS S3, etc.)
+                      </p>
+                    </div>
+                  </TabsContent>
+                </Tabs>
 
                 {/* Barra de Progresso */}
                 {uploading && (
                   <div>
-                    <Label>Progresso do Upload</Label>
+                    <Label>Progresso</Label>
                     <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                      <div
-                        className="bg-blue-600 h-2 rounded-full transition-all"
-                        style={{ width: `${uploadProgress}%` }}
-                      />
+                      <div className="bg-blue-600 h-2 rounded-full transition-all" style={{ width: `${uploadProgress}%` }} />
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {uploadProgress}% concluído
-                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">{uploadProgress}% concluído</p>
                   </div>
                 )}
 
                 <div>
                   <Label htmlFor="title">Título (opcional)</Label>
-                  <Input
-                    id="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Ex: Culto de Domingo"
-                  />
+                  <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Ex: Culto de Domingo" />
                 </div>
 
                 <div>
                   <Label htmlFor="description">Descrição (opcional)</Label>
-                  <Textarea
-                    id="description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Descrição das fotos..."
-                    rows={3}
-                  />
+                  <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Descrição da foto..." rows={3} />
                 </div>
 
                 <Button
                   onClick={handleUpload}
-                  disabled={uploading || !selectedFiles.length}
+                  disabled={uploading || (uploadMethod === 'file' && !selectedFiles.length) || (uploadMethod === 'url' && !imageUrl)}
                   className="w-full"
                 >
                   {uploading ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                       Enviando {uploadProgress}%...
+                    </>
+                  ) : uploadMethod === 'url' ? (
+                    <>
+                      <LinkIcon className="w-4 h-4 mr-2" />
+                      Adicionar por Link
                     </>
                   ) : (
                     <>
