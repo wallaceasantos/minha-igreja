@@ -46,14 +46,7 @@ import churchGalleryRoutes from './routes/church-gallery.js';
 import liveStreamsRoutes from './routes/live-streams.js';
 import liveNotificationsRoutes from './routes/live-notifications.js';
 import churchVersesRoutes from './routes/church-verses.js';
-<<<<<<< HEAD
 import churchYoutubeRoutes from './routes/church-youtube.js';
-=======
-<<<<<<< HEAD
-=======
-import churchYoutubeRoutes from './routes/church-youtube.js';
->>>>>>> 8b6745c (feat: inclusão da live pelo youtube)
->>>>>>> 0d9215edaec305cf40940fe60c9dccd88f667747
 import { startScheduler } from './schedulers/announcement-scheduler.js';
 import { startScheduler as startPrayerReminderScheduler } from './schedulers/prayer-reminder-scheduler.js';
 import { startBillingScheduler } from './schedulers/billing-scheduler.js';

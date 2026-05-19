@@ -541,7 +541,6 @@ export default function AdminConfiguracoes() {
                     value={logoUrl}
                     onChange={(e) => setLogoUrl(e.target.value)}
                     className="w-full"
-                    disabled={isFreePlan}
                   />
                   <p className="text-xs text-muted-foreground">
                     Dica: Use um serviço como Cloudinary ou Uploadcare para hospedar a imagem.
@@ -552,7 +551,6 @@ export default function AdminConfiguracoes() {
                       size="sm"
                       className="gap-2 flex-1 sm:flex-initial"
                       onClick={() => document.getElementById('logo-file-input')?.click()}
-                      disabled={isFreePlan}
                     >
                       <Upload className="w-4 h-4" />
                       Fazer Upload
@@ -563,7 +561,6 @@ export default function AdminConfiguracoes() {
                       accept="image/*"
                       className="hidden"
                       onChange={handleLogoUpload}
-                      disabled={isFreePlan}
                     />
                     {logoUrl && (
                       <Button

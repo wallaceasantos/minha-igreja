@@ -520,6 +520,8 @@ export default function Membros() {
 
   const handleOpenEdit = (member: Member) => {
     setEditingMember(member);
+    // Limpar erros de datas ao abrir edicao
+    setDateErrors({ birth_date: '', baptism_date: '', membership_date: '' });
     // Converter data do banco (AAAA-MM-DD) para formato brasileiro (DD/MM/AAAA)
     let birthDateBR = '';
     if (member.birth_date) {
@@ -570,6 +572,11 @@ export default function Membros() {
     // Usar URL completa para preview (convertendo localhost para URL de producao)
     setPhotoPreview(member.photo_url ? buildApiUrl(member.photo_url) : '');
     setDialogOpen(true);
+    
+    // Validar datas carregadas para atualizar estado visual (bordas verdes/vermelhas)
+    if (birthDateBR) validateDates('birth_date', birthDateBR);
+    if (baptismDateBR) validateDates('baptism_date', baptismDateBR);
+    if (membershipDateBR) validateDates('membership_date', membershipDateBR);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
