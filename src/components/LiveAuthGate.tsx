@@ -211,10 +211,26 @@ export default function LiveAuthGate({ children, churchSlug }: LiveAuthGateProps
   const handleGoogleLogin = async (credentialResponse: any) => {
     try {
       const data = JSON.parse(atob(credentialResponse.credential.split('.')[1]));
-      setRegName(data.name);
-      setRegEmail(data.email);
-      await quickRegister(data.sub);
-    } catch (error) { toast.error('Erro no login com Google'); }
+      
+      const googleName = data.name;
+      const googleEmail = data.email;
+      const googleId = data.sub;
+
+      if (!googleName) {
+        toast.error('Não foi possível obter seu nome do Google');
+        return;
+      }
+
+      // Atualiza estados para visualização
+      setRegName(googleName);
+      setRegEmail(googleEmail);
+
+      // Chama o cadastro passando os dados diretamente para evitar problema de async state
+      await quickRegister(googleId, googleName, googleEmail);
+    } catch (error) { 
+      console.error(error);
+      toast.error('Erro no login com Google'); 
+    }
   };
 
   const verifyPin = async () => {
@@ -236,7 +252,11 @@ export default function LiveAuthGate({ children, churchSlug }: LiveAuthGateProps
     finally { setIsVerifyingOtp(false); }
   };
 
-  const quickRegister = async (googleId?: string) => {
+  const quickRegister = async (googleId?: string, overrideName?: string, overrideEmail?: string) => {
+    // Se veio do Google, usa os dados passados diretamente, senão usa o estado
+    const finalName = overrideName || regName;
+    const finalEmail = overrideEmail || regEmail;
+
     const newErrors: { phone?: string; email?: string } = {};
     const phoneDigits = regPhone.replace(/\D/g, '');
 
@@ -248,9 +268,9 @@ export default function LiveAuthGate({ children, churchSlug }: LiveAuthGateProps
       }
     }
 
-    if (regEmail.trim()) {
+    if (finalEmail.trim()) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(regEmail.trim())) {
+      if (!emailRegex.test(finalEmail.trim())) {
         newErrors.email = 'E-mail invalido';
       }
     }
@@ -268,14 +288,14 @@ export default function LiveAuthGate({ children, churchSlug }: LiveAuthGateProps
       const response = await fetch(buildApiUrl('/api/member/live/quick-register'), {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          church_id: churchId, name: regName, phone: phoneDigits,
-          email: regEmail.trim() || null, source: googleId ? 'google' : 'quick_register',
+          church_id: churchId, name: finalName, phone: phoneDigits,
+          email: finalEmail.trim() || null, source: googleId ? 'google' : 'quick_register',
         }),
       });
       const data = await response.json();
       if (data.success) {
         localStorage.setItem('memberLiveSession', JSON.stringify(data.data));
-        toast.success(googleId ? `Bem-vindo(a), ${regName}!` : `Bem-vindo(a)!`);
+        toast.success(googleId ? `Bem-vindo(a), ${finalName}!` : `Bem-vindo(a)!`);
         setIsAuthenticated(true);
       } else { toast.error(data.error || 'Erro ao cadastrar'); }
     } catch (error) { toast.error('Erro ao cadastrar'); }
