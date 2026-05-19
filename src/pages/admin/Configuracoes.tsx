@@ -312,12 +312,13 @@ export default function AdminConfiguracoes() {
       }
 
       // Limpar dados antes de enviar (converter strings vazias para null)
-      // NOTA: logo_url é salvo separadamente via endpoint /api/church/:id/logo
       const cleanFormData = {
         ...formData,
+        // Incluir a URL da logo (pode ser do Cloudinary ou URL externa)
+        logo_url: logoUrl || null,
       };
 
-      // Salvar configurações básicas
+      // Salvar configurações básicas (incluindo logo_url)
       const configResponse = await fetch(buildApiUrl(`/api/church/${churchId}/config`), {
         method: 'PUT',
         headers: {
@@ -336,7 +337,7 @@ export default function AdminConfiguracoes() {
       toast.success('Configurações salvas com sucesso!', {
         description: 'Todas as alterações foram aplicadas.',
       });
-      
+
       // Redirecionar para o dashboard após 1.5 segundos
       setTimeout(() => {
         navigate('/admin/dashboard');

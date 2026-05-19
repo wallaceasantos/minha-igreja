@@ -58,7 +58,7 @@ const router = express.Router();
  */
 router.put('/:id/config', identifyChurch, async (req, res) => {
   const pool = getPool();
-  
+
   try {
     const churchId = req.params.id;
     const {
@@ -81,6 +81,9 @@ router.put('/:id/config', identifyChurch, async (req, res) => {
       latitude = null,
       longitude = null,
 
+      // Logo (URL do Cloudinary ou outra fonte)
+      logo_url,
+
       // Redes sociais
       facebook_url,
       instagram_url,
@@ -88,11 +91,7 @@ router.put('/:id/config', identifyChurch, async (req, res) => {
       youtube_channel_id,
     } = req.body;
 
-    // NOTA: Upload de logo, favicon e hero_image é feito via POST /api/church/:id/logo
-    // Logo, favicon_url e hero_image_url no body são ignorados aqui
-
-    // Atualizar igreja (converter undefined, null e string vazia para null)
-    // NOTA: logo_url, favicon_url, hero_image_url são gerenciados via endpoints separados
+    // Atualizar igreja (incluindo logo_url para suporte a Cloudinary)
     await pool.execute(`
       UPDATE churches SET
         name = ?,
@@ -101,6 +100,7 @@ router.put('/:id/config', identifyChurch, async (req, res) => {
         email = ?,
         phone = ?,
         whatsapp = ?,
+        logo_url = ?,
         address_street = ?,
         address_number = ?,
         address_complement = ?,
@@ -123,6 +123,7 @@ router.put('/:id/config', identifyChurch, async (req, res) => {
       email ?? null,
       phone ?? null,
       whatsapp ?? null,
+      logo_url ?? null,
       address_street ?? null,
       address_number ?? null,
       address_complement ?? null,
