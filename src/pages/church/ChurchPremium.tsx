@@ -27,8 +27,68 @@ import {
   Play,
   Mail as MailIcon,
   MessageCircle,
-  Globe
+  Globe,
+  CalendarCheck
 } from 'lucide-react';
+
+// Componente para Contagem Regressiva
+const CountdownTimer = ({ targetDate }: { targetDate: string }) => {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    const target = new Date(targetDate).getTime();
+
+    const calculateTimeLeft = () => {
+      const now = new Date().getTime();
+      const difference = target - now;
+
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / 1000 / 60) % 60),
+          seconds: Math.floor((difference / 1000) % 60)
+        });
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(timer);
+  }, [targetDate]);
+
+  return (
+    <div className="flex gap-3 text-white">
+      {timeLeft.days > 0 && (
+        <div className="flex flex-col items-center">
+          <span className="text-3xl font-bold bg-white/20 rounded-lg px-3 py-2 backdrop-blur-sm">
+            {timeLeft.days}
+          </span>
+          <span className="text-xs font-medium mt-1">Dias</span>
+        </div>
+      )}
+      <div className="flex flex-col items-center">
+        <span className="text-3xl font-bold bg-white/20 rounded-lg px-3 py-2 backdrop-blur-sm">
+          {timeLeft.hours.toString().padStart(2, '0')}
+        </span>
+        <span className="text-xs font-medium mt-1">Horas</span>
+      </div>
+      <div className="flex flex-col items-center">
+        <span className="text-3xl font-bold bg-white/20 rounded-lg px-3 py-2 backdrop-blur-sm">
+          {timeLeft.minutes.toString().padStart(2, '0')}
+        </span>
+        <span className="text-xs font-medium mt-1">Min</span>
+      </div>
+      <div className="flex flex-col items-center">
+        <span className="text-3xl font-bold bg-white/20 rounded-lg px-3 py-2 backdrop-blur-sm text-orange-300">
+          {timeLeft.seconds.toString().padStart(2, '0')}
+        </span>
+        <span className="text-xs font-medium mt-1 text-orange-300">Seg</span>
+      </div>
+    </div>
+  );
+};
 
 export default function ChurchPremium() {
   const { slug } = useParams<{ slug: string }>();
@@ -254,107 +314,148 @@ export default function ChurchPremium() {
         </div>
       </section>
 
-      {/* Transmissões Ao Vivo */}
+      {/* Transmissões Ao Vivo e Agendadas */}
       {liveStreams.length > 0 && (
-        <section className="py-16 bg-gradient-to-br from-red-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+        <section className="py-16 bg-gradient-to-br from-gray-50 via-white to-red-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 rounded-full text-sm font-medium mb-4 animate-pulse dark:bg-red-900 dark:text-red-300">
-                <div className="w-2 h-2 bg-red-600 rounded-full"></div>
-                AO VIVO AGORA
+              <div className="inline-flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 rounded-full text-sm font-medium mb-4 dark:bg-red-900 dark:text-red-300">
+                <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+                TRANSMISSÕES
               </div>
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 dark:text-white">
-                Transmissões Ao Vivo
+                Cultos e Eventos
               </h2>
               <p className="text-xl text-gray-600 dark:text-gray-400">
-                Assista aos cultos e eventos da igreja
+                Assista aos cultos ao vivo ou acompanhe a agenda
               </p>
             </div>
 
-            <div className="max-w-4xl mx-auto">
-              {liveStreams.map((stream) => (
-                <Card key={stream.id} className="border-2 border-red-200 shadow-2xl overflow-hidden dark:border-red-800 dark:bg-gray-800">
-                  <div className="aspect-video bg-gray-900 relative flex items-center justify-center overflow-hidden">
-                    {/* Overlay de Bloqueio - Forçar Acesso via Plataforma */}
-                    <div className="absolute inset-0 bg-black/90 flex flex-col items-center justify-center text-white p-6 text-center z-10">
-                      <Youtube className="w-16 h-16 text-red-600 mb-4 animate-pulse" />
-                      <h3 className="text-2xl font-bold mb-2">Transmissão Exclusiva</h3>
-                      <p className="text-gray-300 mb-6 max-w-sm">
-                        Para assistir, faça login ou cadastre-se gratuitamente na nossa plataforma.
-                      </p>
-                    </div>
-                    {/* Fundo desfocado com imagem ou cor sólida */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-black opacity-50"></div>
-                  </div>
+            <div className="max-w-4xl mx-auto space-y-8">
+              {liveStreams.map((stream) => {
+                const isLive = stream.status === 'live';
+                const isScheduled = stream.status === 'scheduled';
 
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-2xl font-bold text-gray-900">{stream.title}</h3>
-                      <Badge className="bg-red-600 animate-pulse">
-                        <Play className="w-3 h-3 mr-1" />
-                        AO VIVO
-                      </Badge>
-                    </div>
-                    
-                    {stream.description && (
-                      <p className="text-gray-600 mb-6">{stream.description}</p>
-                    )}
-                    
-                    
-                    {/* Botão Principal - Assistir na Igreja */}
-                    <Link
-                      to={`/church/${slug}/ao-vivo`}
-                      className="inline-flex items-center gap-3 w-full justify-center px-6 py-4 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-xl hover:from-red-700 hover:to-orange-700 transition-all shadow-lg hover:shadow-xl text-lg font-bold mb-4"
-                    >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                      Assistir na Igreja
-                    </Link>
-
-                    {/* Botões para Outras Plataformas */}
-                    {(stream.facebook_url || stream.instagram_url || stream.twitch_url) && (
-                      <div className="flex flex-wrap gap-3">
-                        <span className="text-sm font-medium text-gray-600">Assistir também em:</span>
-                        {stream.facebook_url && (
-                          <a
-                            href={stream.facebook_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-                          >
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                            Facebook
-                          </a>
-                        )}
-                        {stream.instagram_url && (
-                          <a
-                            href={stream.instagram_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:opacity-90 transition-opacity text-sm font-medium"
-                          >
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                            Instagram
-                          </a>
-                        )}
-                        {stream.twitch_url && (
-                          <a
-                            href={stream.twitch_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium"
-                          >
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg>
-                            Twitch
-                          </a>
+                return (
+                  <Card key={stream.id} className={`border-2 shadow-2xl overflow-hidden transition-all ${
+                    isLive 
+                      ? 'border-red-200 dark:border-red-800 dark:bg-gray-800' 
+                      : 'border-blue-200 dark:border-blue-800 dark:bg-gray-800'
+                  }`}>
+                    <div className="aspect-video bg-gray-900 relative flex items-center justify-center overflow-hidden">
+                      {/* Overlay de Bloqueio */}
+                      <div className={`absolute inset-0 flex flex-col items-center justify-center text-white p-6 text-center z-10 ${
+                        isLive ? 'bg-black/90' : 'bg-gradient-to-br from-blue-900/90 to-purple-900/90'
+                      }`}>
+                        {isLive ? (
+                          <>
+                            <Youtube className="w-16 h-16 text-red-600 mb-4 animate-pulse" />
+                            <h3 className="text-2xl font-bold mb-2">Transmissão Exclusiva</h3>
+                            <p className="text-gray-300 mb-6 max-w-sm">
+                              Para assistir, faça login ou cadastre-se gratuitamente na nossa plataforma.
+                            </p>
+                          </>
+                        ) : (
+                          <>
+                            <CalendarCheck className="w-16 h-16 text-blue-400 mb-4" />
+                            <h3 className="text-2xl font-bold mb-4">Em Breve</h3>
+                            <p className="text-gray-300 mb-6 max-w-sm">
+                              Esta transmissão está agendada para:
+                            </p>
+                            {/* Contagem Regressiva */}
+                            <CountdownTimer targetDate={stream.scheduled_start} />
+                          </>
                         )}
                       </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
+                    </div>
+
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{stream.title}</h3>
+                        
+                        {isLive ? (
+                          <Badge className="bg-red-600 animate-pulse text-white">
+                            <Play className="w-3 h-3 mr-1 fill-white" />
+                            AO VIVO
+                          </Badge>
+                        ) : (
+                          <Badge className="bg-blue-600 text-white">
+                            <Clock className="w-3 h-3 mr-1" />
+                            AGENDADO
+                          </Badge>
+                        )}
+                      </div>
+
+                      {stream.description && (
+                        <p className="text-gray-600 dark:text-gray-400 mb-6">{stream.description}</p>
+                      )}
+
+                      {isLive ? (
+                        <>
+                          {/* Botão Principal - Assistir na Igreja */}
+                          <Link
+                            to={`/church/${slug}/ao-vivo`}
+                            className="inline-flex items-center gap-3 w-full justify-center px-6 py-4 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-xl hover:from-red-700 hover:to-orange-700 transition-all shadow-lg hover:shadow-xl text-lg font-bold mb-4"
+                          >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Assistir na Igreja
+                          </Link>
+                        </>
+                      ) : (
+                        <div className="w-full p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl mb-4 text-center">
+                          <p className="text-blue-800 dark:text-blue-200 font-medium flex items-center justify-center gap-2">
+                            <CalendarCheck className="w-5 h-5" />
+                            Início previsto: {new Date(stream.scheduled_start).toLocaleString('pt-BR', { dateStyle: 'full', timeStyle: 'short' })}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Botões para Outras Plataformas */}
+                      {(stream.facebook_url || stream.instagram_url || stream.twitch_url) && (
+                        <div className="flex flex-wrap gap-3">
+                          <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Assistir também em:</span>
+                          {stream.facebook_url && (
+                            <a
+                              href={stream.facebook_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                            >
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                              Facebook
+                            </a>
+                          )}
+                          {stream.instagram_url && (
+                            <a
+                              href={stream.instagram_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:opacity-90 transition-opacity text-sm font-medium"
+                            >
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                              Instagram
+                            </a>
+                          )}
+                          {stream.twitch_url && (
+                            <a
+                              href={stream.twitch_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium"
+                            >
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg>
+                              Twitch
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </div>
         </section>
