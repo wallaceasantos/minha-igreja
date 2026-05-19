@@ -17,6 +17,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import { ModeToggle } from '@/components/mode-toggle';
 import { useDashboard } from '@/hooks/useDashboard';
 import DomainValidator from '@/components/DomainValidator';
@@ -102,6 +103,12 @@ export default function AdminConfiguracoes() {
 
   // Estado para logo (URL)
   const [logoUrl, setLogoUrl] = useState('');
+  // Estado para upload de logo
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState('');
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [logoUploadProgress, setLogoUploadProgress] = useState(0);
+  const [logoMethod, setLogoMethod] = useState<'file' | 'url'>('url');
 
   // Carregar dados da igreja
   useEffect(() => {
@@ -385,63 +392,70 @@ export default function AdminConfiguracoes() {
     }
   };
 
-  // Handler para upload de logo
-  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handler para seleção de arquivo de logo (apenas preview)
+  const handleLogoFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validar tipo de arquivo (aceita todos os tipos de imagem)
     if (!file.type.startsWith('image/')) {
-      toast.error('Arquivo inválido', {
-        description: 'Por favor, selecione uma imagem (JPG, JPEG, PNG, WebP, GIF, BMP)',
-      });
+      toast.error('Arquivo inválido', { description: 'Apenas imagens são permitidas' });
       return;
     }
-
-    // Validar tamanho (max 2MB - limite do servidor)
     if (file.size > 2 * 1024 * 1024) {
-      toast.error('Arquivo muito grande', {
-        description: 'A imagem deve ter no máximo 2MB',
-      });
+      toast.error('Arquivo muito grande', { description: 'Máximo 2MB' });
       return;
     }
 
-    // Upload do arquivo para o servidor
+    setLogoFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => setLogoPreview(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  // Upload de logo para o Cloudinary
+  const uploadLogoToCloudinary = async () => {
+    if (!logoFile) {
+      toast.error('Selecione uma imagem primeiro');
+      return;
+    }
+
+    setLogoUploading(true);
+    setLogoUploadProgress(0);
+
     try {
-      const churchId = localStorage.getItem('churchId') || church?.id;
-      if (!churchId) {
-        toast.error('Igreja não identificada');
-        return;
-      }
+      const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dzbylskro';
+      const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'igreja-connect';
 
       const formData = new FormData();
-      formData.append('logo', file);
+      formData.append('file', logoFile);
+      formData.append('upload_preset', uploadPreset);
+      formData.append('folder', 'logos');
 
-      const response = await fetch(buildApiUrl(`/api/church/${churchId}/logo`), {
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
         method: 'POST',
-        headers: {
-          'x-church-id': String(churchId),
-        },
         body: formData,
       });
 
-      const result = await response.json();
+      setLogoUploadProgress(100);
 
-      if (result.success) {
-        setLogoUrl(result.data.logo_url);
-        toast.success('Logo enviada com sucesso!', {
-          description: 'A logo foi salva e já está disponível.',
-        });
+      const data = await response.json();
+
+      if (data.secure_url) {
+        setLogoUrl(data.secure_url);
+        setLogoFile(null);
+        setLogoPreview('');
+        setLogoUploading(false);
+        setLogoUploadProgress(0);
+        toast.success('Logo enviada com sucesso para o Cloudinary!');
       } else {
-        toast.error('Erro ao enviar logo', {
-          description: result.error || 'Tente novamente.',
-        });
+        throw new Error(data.error?.message || 'Erro no upload');
       }
-    } catch (error) {
-      console.error('Error uploading logo:', error);
-      toast.error('Erro ao enviar logo', {
-        description: 'Tente novamente.',
-      });
+    } catch (error: any) {
+      console.error('Cloudinary upload error:', error);
+      toast.error('Erro ao enviar logo', { description: error.message || 'Tente novamente' });
+    } finally {
+      setLogoUploading(false);
+      setLogoUploadProgress(0);
     }
   };
 
@@ -507,64 +521,120 @@ export default function AdminConfiguracoes() {
                 Logo da Igreja
               </CardTitle>
               <CardDescription className="text-sm">
-                Faça upload da logo da sua igreja. Formatos aceitos: JPG, JPEG, PNG, WebP, GIF, BMP. Tamanho máximo: 2MB.
+                Hospede sua logo no Cloudinary (grátis) ou cole o link direto de qualquer serviço.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Logo Preview - empilhado no mobile */}
+              {/* Logo Preview */}
               <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
-                {logoUrl ? (
-                  <img
-                    src={logoUrl}
-                    alt="Logo da igreja"
-                    className="w-24 h-24 sm:w-32 sm:h-32 object-contain border rounded-lg p-2 flex-shrink-0"
-                  />
-                ) : (
-                  <div className="w-24 h-24 sm:w-32 sm:h-32 border-2 border-dashed rounded-lg flex items-center justify-center bg-muted/50 flex-shrink-0">
-                    <Church className="w-10 h-10 sm:w-12 sm:h-12 text-muted-foreground" />
-                  </div>
-                )}
-
-                <div className="space-y-2 w-full">
-                  <Label htmlFor="logo-url">URL da Logo</Label>
-                  <Input
-                    id="logo-url"
-                    placeholder="https://exemplo.com/logo.png"
-                    value={logoUrl}
-                    onChange={(e) => setLogoUrl(e.target.value)}
-                    className="w-full"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Dica: Use um serviço como Cloudinary ou Uploadcare para hospedar a imagem.
-                  </p>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-2 flex-1 sm:flex-initial"
-                      onClick={() => document.getElementById('logo-file-input')?.click()}
-                    >
-                      <Upload className="w-4 h-4" />
-                      Fazer Upload
-                    </Button>
-                    <input
-                      id="logo-file-input"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handleLogoUpload}
+                {/* Preview da logo */}
+                <div className="flex-shrink-0">
+                  {(logoUrl || logoPreview) ? (
+                    <img
+                      src={logoPreview || logoUrl}
+                      alt="Logo da igreja"
+                      className="w-24 h-24 sm:w-32 sm:h-32 object-contain border rounded-lg p-2 bg-white"
                     />
-                    {logoUrl && (
+                  ) : (
+                    <div className="w-24 h-24 sm:w-32 sm:h-32 border-2 border-dashed rounded-lg flex items-center justify-center bg-muted/50">
+                      <Church className="w-10 h-10 sm:w-12 sm:h-12 text-muted-foreground" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Controles */}
+                <div className="space-y-3 w-full">
+                  <Tabs value={logoMethod} onValueChange={(v) => setLogoMethod(v as 'file' | 'url')}>
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="url" className="flex items-center gap-1.5 text-xs">
+                        <LinkIcon className="w-3.5 h-3.5" /> Colar URL
+                      </TabsTrigger>
+                      <TabsTrigger value="file" className="flex items-center gap-1.5 text-xs">
+                        <Upload className="w-3.5 h-3.5" /> Upload Cloudinary
+                      </TabsTrigger>
+                    </TabsList>
+
+                    {/* Aba: Colar URL */}
+                    <TabsContent value="url" className="mt-3">
+                      <div className="space-y-2">
+                        <Input
+                          id="logo-url"
+                          placeholder="https://res.cloudinary.com/.../logo.png"
+                          value={logoUrl}
+                          onChange={(e) => setLogoUrl(e.target.value)}
+                          className="w-full text-sm"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Cole o link direto da imagem (Cloudinary, AWS S3, etc.)
+                        </p>
+                      </div>
+                    </TabsContent>
+
+                    {/* Aba: Upload Cloudinary */}
+                    <TabsContent value="file" className="mt-3 space-y-3">
+                      <input
+                        id="logo-file-input"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleLogoFileSelect}
+                      />
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
-                        onClick={() => setLogoUrl('')}
-                        className="text-red-600 hover:text-red-700"
+                        className="w-full gap-2"
+                        onClick={() => document.getElementById('logo-file-input')?.click()}
+                        disabled={logoUploading}
                       >
-                        Remover
+                        <Upload className="w-4 h-4" />
+                        {logoFile ? logoFile.name : 'Selecionar Imagem'}
                       </Button>
-                    )}
-                  </div>
+                      {logoFile && (
+                        <p className="text-xs text-muted-foreground">
+                          {(logoFile.size / 1024).toFixed(0)} KB • {logoFile.type.split('/')[1]?.toUpperCase()}
+                        </p>
+                      )}
+
+                      {/* Barra de Progresso */}
+                      {logoUploading && (
+                        <div className="space-y-1">
+                          <Progress value={logoUploadProgress} className="h-2" />
+                          <p className="text-xs text-muted-foreground text-center">Enviando para Cloudinary...</p>
+                        </div>
+                      )}
+
+                      <Button
+                        size="sm"
+                        className="w-full gap-2"
+                        onClick={uploadLogoToCloudinary}
+                        disabled={!logoFile || logoUploading}
+                      >
+                        {logoUploading ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Upload className="w-4 h-4" />
+                        )}
+                        {logoUploading ? 'Enviando...' : 'Enviar para Cloudinary'}
+                      </Button>
+
+                      <p className="text-xs text-muted-foreground text-center">
+                        Upload direto para nuvem (não fica no servidor)
+                      </p>
+                    </TabsContent>
+                  </Tabs>
+
+                  {/* Botao remover */}
+                  {logoUrl && logoMethod === 'url' && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setLogoUrl('')}
+                      className="w-full text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Remover Logo
+                    </Button>
+                  )}
                 </div>
               </div>
             </CardContent>
