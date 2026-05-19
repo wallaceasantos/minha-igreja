@@ -235,22 +235,28 @@ router.delete('/admin/church/gallery/:id', identifyChurch, async (req, res) => {
     const imageId = req.params.id;
     const pool = getPool();
 
-    // Buscar URL da imagem para deletar o arquivo
+    // Buscar URL da imagem para tentar deletar o arquivo
     const [images] = await pool.query(`
       SELECT image_url FROM church_gallery WHERE id = ?
     `, [imageId]);
 
     if (images.length > 0) {
       const imageUrl = images[0].image_url;
-      const filePath = `.${imageUrl}`;
-      
-      // Deletar arquivo físico
-      if (require('fs').existsSync(filePath)) {
-        require('fs').unlinkSync(filePath);
+      // Remover prefixo da URL para obter o caminho relativo
+      const relativePath = imageUrl.startsWith('/api/') ? imageUrl.replace('/api/', '') : imageUrl;
+      const filePath = path.join(process.cwd(), relativePath);
+
+      // Tentar deletar arquivo físico (ignorar erros se nao existir)
+      try {
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      } catch (fileError) {
+        console.warn(`Aviso: Nao foi possivel deletar arquivo ${filePath}:`, fileError.message);
       }
     }
 
-    await pool.execute(`
+    await pool.query(`
       DELETE FROM church_gallery WHERE id = ?
     `, [imageId]);
 
