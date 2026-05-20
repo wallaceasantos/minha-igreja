@@ -15,7 +15,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ModeToggle } from '@/components/mode-toggle';
 import PlanSelection from '@/components/PlanSelection';
-import { CheckCircle2, Loader2, Church, Mail, Phone, MapPin, User, Lock, Palette, Menu, X } from 'lucide-react';
+import BorderGlow from '@/components/ui/BorderGlow';
+import { HoverFooter } from '@/components/ui/hover-footer';
+import heroBg from '@/assets/img_bkg.png';
+import { Badge } from '@/components/ui/badge';
+import { CheckCircle2, Loader2, Church, Mail, Phone, MapPin, User, Lock, Menu, X, Sparkles, Shield, Cloud, Globe, HeartHandshake, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { buildApiUrl } from '@/lib/config';
 
@@ -266,41 +270,37 @@ export default function CreateChurch() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header Fixo */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      {/* Header Fixo - Estilo Landing Page */}
+      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center px-4">
           <div className="flex items-center gap-2">
-            <Church className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold text-primary">MinhaIgreja</span>
+            <div className="relative">
+              <Church className="h-7 w-7 text-primary" />
+              <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-amber-500 animate-pulse" />
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">MinhaIgreja</span>
           </div>
 
           <nav className="hidden md:flex items-center gap-6 ml-auto">
-            <a href="/#funcionalidades" className="text-sm font-medium text-muted-foreground hover:text-primary">
+            <a href="/#funcionalidades" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Funcionalidades
             </a>
-            <a href="/#planos" className="text-sm font-medium text-muted-foreground hover:text-primary">
+            <a href="/#planos" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Planos
             </a>
-            <a href="/#depoimentos" className="text-sm font-medium text-muted-foreground hover:text-primary">
+            <a href="/#depoimentos" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Depoimentos
             </a>
             <Button variant="ghost" asChild>
               <Link to="/login">Entrar</Link>
             </Button>
             <ModeToggle />
-            <Button asChild>
-              <Link to="/criar">Criar Minha Igreja</Link>
-            </Button>
           </nav>
 
           {/* Mobile menu button */}
           <div className="flex items-center gap-2 md:hidden ml-auto">
             <ModeToggle />
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
+            <Button variant="ghost" size="sm" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </Button>
           </div>
@@ -346,89 +346,176 @@ export default function CreateChurch() {
         )}
       </header>
 
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
-        <div className="container px-4 text-center">
-          <div className="max-w-4xl mx-auto">
-            <Church className="h-20 w-20 text-primary mx-auto mb-6" />
-            <h1 className="text-4xl md:text-5xl font-bold text-primary mb-6">
-              Crie o Site da Sua Igreja
+      {/* Hero Section - Estilo Landing Page */}
+      <section className="relative py-16 md:py-28 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
+        {/* Overlay */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-background/70 via-background/40 to-background/70 dark:from-background/80 dark:via-background/50 dark:to-background/80" />
+
+        <div className="container px-4 text-center relative z-10">
+          <div className="max-w-3xl mx-auto space-y-4 md:space-y-6">
+            <div className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 bg-primary/10 rounded-full border border-primary/20 shadow-sm">
+              <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-primary" />
+              <span className="text-xs md:text-sm font-semibold text-primary">Crie seu site em minutos</span>
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-primary leading-tight tracking-tight">
+              Crie o Site da Sua Igreja em <span className="bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">Minutos</span>
             </h1>
-            <p className="text-xl text-muted-foreground mb-8">
-              Tenha um site profissional em minutos. Sem precisar de programador.
-              Comece grátis e cresça sem limites.
+
+            <p className="text-base sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Plataforma completa e segura para igrejas que desejam se <span className="text-primary font-semibold">conectar com membros</span>, <span className="text-primary font-semibold">crescer de verdade</span> e <span className="text-primary font-semibold">transformar vidas</span> de forma profissional.
             </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-6 text-xs md:text-sm text-muted-foreground mt-4 md:mt-6">
+              <div className="flex items-center gap-2">
+                <Shield className="h-3 w-3 md:h-4 md:w-4 text-green-500" />
+                <span>Seguro e confiável</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Lock className="h-3 w-3 md:h-4 md:w-4 text-blue-500" />
+                <span>Dados protegidos</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Cloud className="h-3 w-3 md:h-4 md:w-4 text-purple-500" />
+                <span>100% na nuvem</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Tela de Seleção de Planos */}
-      {showPlanSelection && (
-        <section className="py-12 bg-background">
-          <PlanSelection
-            selectedPlan={selectedPlan}
-            onSelectPlan={setSelectedPlan}
-            onContinue={() => setShowPlanSelection(false)}
-          />
+      {/* Plano Selecionado - BorderGlow */}
+      {!showPlanSelection && selectedPlan === 'essencial' && (
+        <section className="py-8 md:py-12 bg-background">
+          <div className="container px-4">
+            <div className="text-center mb-8 md:mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2 md:mb-4">Plano Selecionado</h2>
+              <p className="text-sm md:text-base text-muted-foreground">Você está criando sua igreja no plano Essencial</p>
+            </div>
+            
+            <div className="max-w-md mx-auto">
+              <BorderGlow
+                glowColor="210 80 60"
+                backgroundColor="transparent"
+                colors={['#3b82f6', '#6366f1', '#8b5cf6']}
+                glowIntensity={0.4}
+                edgeSensitivity={40}
+                glowRadius={25}
+                animated={true}
+                borderRadius={24}
+                fillOpacity={0.08}
+              >
+                <div className="relative rounded-3xl bg-gradient-to-b from-primary/10 to-primary/5 p-[2px]">
+                  <div className="relative rounded-[22px] bg-card p-6 md:p-8">
+                    <div className="absolute top-0 right-4 md:right-6 -translate-y-1/2">
+                      <Badge className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-none shadow-md px-2 md:px-3 py-1 text-xs md:text-sm">
+                        ⭐ Mais Popular
+                      </Badge>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <h3 className="text-xl md:text-2xl font-bold text-foreground">Essencial</h3>
+                        <p className="text-muted-foreground text-xs md:text-sm">Para igrejas em crescimento acelerado.</p>
+                      </div>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-xs md:text-sm text-muted-foreground">R$</span>
+                        <span className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">79,90</span>
+                        <span className="text-muted-foreground text-xs md:text-sm self-end mb-1">/mês</span>
+                      </div>
+                      <div className="pt-4 md:pt-6 border-t border-border space-y-3 md:space-y-4">
+                        <p className="text-xs md:text-sm font-medium text-foreground">Todos os recursos incluídos:</p>
+                        <ul className="space-y-2 md:space-y-3">
+                          {[
+                            'Até 200 membros',
+                            'Pedidos de oração ILIMITADOS',
+                            '3 administradores',
+                            'Domínio próprio',
+                            'Upload de logo',
+                            'Google Maps integrado'
+                          ].map((feature, i) => (
+                            <li key={i} className="flex items-center gap-2 md:gap-3 text-xs md:text-sm text-muted-foreground">
+                              <CheckCircle2 className="h-3 w-3 md:h-4 md:w-4 text-green-500 flex-shrink-0" />
+                              {feature}
+                            </li>
+                          ))}
+                        </ul>
+                        <p className="text-xs text-center text-primary font-semibold mt-2 md:mt-4">60 dias de teste grátis</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </BorderGlow>
+            </div>
+          </div>
         </section>
       )}
 
-      {/* Benefícios */}
-      <section className="py-12 bg-background">
+      {/* Benefícios com Cores no Hover */}
+      <section className="py-12 md:py-16 bg-muted/30">
         <div className="container px-4">
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12">
-            <Card>
-              <CardHeader>
-                <CheckCircle2 className="h-8 w-8 text-green-500 mb-2" />
-                <CardTitle>Site Profissional</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Design moderno e responsivo. Sua igreja sempre visível para membros e visitantes.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CheckCircle2 className="h-8 w-8 text-green-500 mb-2" />
-                <CardTitle>Pedidos de Oração</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Receba pedidos de oração online. Pastoreio mais próximo e eficiente.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CheckCircle2 className="h-8 w-8 text-green-500 mb-2" />
-                <CardTitle>30 Dias Grátis</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Teste todos os recursos do plano Premium gratuitamente por 30 dias.
-                </p>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
+            {[
+              { 
+                icon: Globe, 
+                title: 'Site Profissional', 
+                desc: 'Design moderno e responsivo. Sua igreja sempre visível para membros e visitantes.',
+                hover: 'hover:bg-blue-50 hover:border-blue-200',
+                bgIcon: 'bg-blue-100',
+                textIcon: 'text-blue-600'
+              },
+              { 
+                icon: HeartHandshake, 
+                title: 'Pedidos de Oração', 
+                desc: 'Receba pedidos de oração online. Pastoreio mais próximo e eficiente.',
+                hover: 'hover:bg-rose-50 hover:border-rose-200',
+                bgIcon: 'bg-rose-100',
+                textIcon: 'text-rose-600'
+              },
+              { 
+                icon: Zap, 
+                title: '60 Dias Grátis', 
+                desc: 'Teste todos os recursos do plano Essencial gratuitamente por 60 dias.',
+                hover: 'hover:bg-amber-50 hover:border-amber-200',
+                bgIcon: 'bg-amber-100',
+                textIcon: 'text-amber-600'
+              }
+            ].map((item, index) => (
+              <Card key={index} className={`group border transition-all duration-300 hover:-translate-y-1 md:hover:-translate-y-2 hover:shadow-lg ${item.hover}`}>
+                <CardHeader className="p-4 md:p-6 pb-2 md:pb-4">
+                  <div className={`w-12 h-12 md:w-14 md:h-14 rounded-xl ${item.bgIcon} flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                    <item.icon className={`h-6 w-6 md:h-7 md:w-7 ${item.textIcon}`} />
+                  </div>
+                  <CardTitle className="text-lg md:text-xl group-hover:text-primary transition-colors">{item.title}</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 md:p-6 pt-2 md:pt-4">
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">{item.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Formulário */}
-      <section className="py-20 bg-muted/50">
+      <section className="py-12 md:py-20 bg-background">
         <div className="container px-4">
           <div className="max-w-4xl mx-auto">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-2xl">Dados da Igreja</CardTitle>
-                <CardDescription>
+            <div className="text-center mb-8 md:mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2 md:mb-4">Dados da Igreja</h2>
+              <p className="text-sm md:text-base text-muted-foreground">Preencha as informações abaixo para criar o site da sua igreja</p>
+            </div>
+            
+            <Card className="border-2 shadow-xl">
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className="text-xl md:text-2xl">Dados da Igreja</CardTitle>
+                <CardDescription className="text-sm">
                   Preencha as informações abaixo para criar o site da sua igreja
                 </CardDescription>
               </CardHeader>
               <form onSubmit={handleSubmit}>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-6 md:space-y-8 p-4 md:p-8">
                   {/* Alerta de Erros */}
                   {errors.length > 0 && (
                     <Alert variant="destructive">
@@ -443,9 +530,9 @@ export default function CreateChurch() {
                   )}
 
                   {/* Dados Básicos */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <Church className="h-5 w-5" />
+                  <div className="space-y-3 md:space-y-4 p-4 md:p-6 bg-muted/30 rounded-xl border border-border/50">
+                    <h3 className="text-base md:text-lg font-semibold flex items-center gap-2">
+                      <Church className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                       Informações da Igreja
                     </h3>
 
@@ -556,9 +643,9 @@ export default function CreateChurch() {
                   </div>
 
                   {/* Endereço */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <MapPin className="h-5 w-5" />
+                  <div className="space-y-3 md:space-y-4 p-4 md:p-6 bg-muted/30 rounded-xl border border-border/50">
+                    <h3 className="text-base md:text-lg font-semibold flex items-center gap-2">
+                      <MapPin className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                       Endereço da Igreja
                     </h3>
 
@@ -667,9 +754,9 @@ export default function CreateChurch() {
                   </div>
 
                   {/* Dados do Administrador */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <User className="h-5 w-5" />
+                  <div className="space-y-3 md:space-y-4 p-4 md:p-6 bg-muted/30 rounded-xl border border-border/50">
+                    <h3 className="text-base md:text-lg font-semibold flex items-center gap-2">
+                      <User className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                       Dados do Administrador
                     </h3>
 
@@ -740,8 +827,8 @@ export default function CreateChurch() {
                   </div>
 
                   {/* Termos */}
-                  <div className="bg-muted/50 p-4 rounded-lg">
-                    <p className="text-sm text-muted-foreground">
+                  <div className="bg-muted/50 p-3 md:p-4 rounded-lg">
+                    <p className="text-xs md:text-sm text-muted-foreground">
                       Ao criar sua igreja, você concorda com nossos{' '}
                       <Link to="/termos-de-uso" className="text-primary hover:underline">
                         Termos de Uso
@@ -756,28 +843,28 @@ export default function CreateChurch() {
 
                   {/* Resumo do Plano Selecionado */}
                   <Card className={`border-2 ${
-                    selectedPlan === 'essencial' 
-                      ? 'border-primary/50 bg-primary/5' 
+                    selectedPlan === 'essencial'
+                      ? 'border-primary/50 bg-primary/5'
                       : 'border-green-500/50 bg-green-500/5'
                   }`}>
-                    <CardContent className="pt-6">
-                      <div className="flex items-center gap-3 mb-3">
-                        <CheckCircle2 className={`h-6 w-6 ${
+                    <CardContent className="pt-4 md:pt-6">
+                      <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                        <CheckCircle2 className={`h-5 w-5 md:h-6 md:w-6 ${
                           selectedPlan === 'essencial' ? 'text-primary' : 'text-green-600'
                         }`} />
                         <div>
-                          <h3 className="font-bold text-lg">
+                          <h3 className="font-bold text-base md:text-lg">
                             {selectedPlan === 'essencial' ? 'Plano Essencial' : 'Plano Essencial'} Selecionado
                           </h3>
-                          <p className="text-sm text-muted-foreground">
-                            {selectedPlan === 'essencial' 
-                              ? '30 dias grátis • Depois R$ 79,90/mês' 
+                          <p className="text-xs md:text-sm text-muted-foreground">
+                            {selectedPlan === 'essencial'
+                              ? '60 dias grátis • Depois R$ 79,90/mês'
                               : 'Grátis ilimitado • Sem cartão de crédito'}
                           </p>
                         </div>
                       </div>
-                      
-                      <div className="grid grid-cols-2 gap-3 text-sm">
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3 text-xs md:text-sm">
                         {selectedPlan === 'essencial' ? (
                           <>
                             <div className="flex items-center gap-2">
@@ -824,17 +911,17 @@ export default function CreateChurch() {
                   {/* Botão Submit */}
                   <Button
                     type="submit"
-                    className="w-full h-12 text-lg"
+                    className="w-full h-11 md:h-12 text-base md:text-lg"
                     disabled={loading}
                   >
                     {loading ? (
                       <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        <Loader2 className="mr-2 h-4 w-4 md:h-5 md:w-5 animate-spin" />
                         Criando sua igreja...
                       </>
                     ) : (
                       <>
-                        <Church className="mr-2 h-5 w-5" />
+                        <Church className="mr-2 h-4 w-4 md:h-5 md:w-5" />
                         Criar Minha Igreja Grátis
                       </>
                     )}
@@ -846,53 +933,8 @@ export default function CreateChurch() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-divine-shadow text-white dark:bg-card dark:border-t dark:border-border py-12">
-        <div className="container px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Church className="h-6 w-6" />
-                <span className="text-xl font-bold">MinhaIgreja</span>
-              </div>
-              <p className="text-sm text-gray-300 dark:text-muted-foreground">
-                Plataforma digital para igrejas que desejam se conectar com membros e visitantes.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Produto</h4>
-              <ul className="space-y-2 text-sm text-gray-300 dark:text-muted-foreground">
-                <li><a href="/#funcionalidades" className="hover:text-white dark:hover:text-primary">Funcionalidades</a></li>
-                <li><a href="/#planos" className="hover:text-white dark:hover:text-primary">Planos</a></li>
-                <li><a href="/criar" className="hover:text-white dark:hover:text-primary">Começar Grátis</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Empresa</h4>
-              <ul className="space-y-2 text-sm text-gray-300 dark:text-muted-foreground">
-                <li><a href="/sobre-nos" className="hover:text-white dark:hover:text-primary">Sobre Nós</a></li>
-                <li><a href="/contato-institucional" className="hover:text-white dark:hover:text-primary">Contato</a></li>
-                <li><a href="/blog" className="hover:text-white dark:hover:text-primary">Blog</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm text-gray-300 dark:text-muted-foreground">
-                <li><a href="/termos-de-uso" className="hover:text-white dark:hover:text-primary">Termos de Uso</a></li>
-                <li><a href="/politica-privacidade" className="hover:text-white dark:hover:text-primary">Privacidade</a></li>
-                <li><a href="/lgpd" className="hover:text-white dark:hover:text-primary">LGPD</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-600 dark:border-border mt-8 pt-6 text-center text-sm text-gray-400 dark:text-muted-foreground">
-            <p>Copyright © {new Date().getFullYear()} MinhaIgreja. Todos os direitos reservados.</p>
-          </div>
-        </div>
-      </footer>
+      {/* Footer Premium */}
+      <HoverFooter />
     </div>
   );
 }

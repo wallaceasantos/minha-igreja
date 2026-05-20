@@ -12,6 +12,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ModeToggle } from '@/components/mode-toggle';
 import { buildApiUrl } from '@/lib/config';
+import { AnimatedTestimonials } from '@/components/ui/animated-testimonials';
+import BorderGlow from '@/components/ui/BorderGlow';
+import { HoverFooter } from '@/components/ui/hover-footer';
+import heroBg from '@/assets/img_bkg.png';
 import {
   Church,
   Check,
@@ -125,7 +129,6 @@ export default function LandingPage() {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [selectedPlanForDetails, setSelectedPlanForDetails] = useState<typeof plans[0] | null>(null);
   const [isAnnual, setIsAnnual] = useState(false);
-  const [reviews, setReviews] = useState<any[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Scroll Reveal State - Pricing
@@ -144,10 +147,6 @@ export default function LandingPage() {
   // Scroll Reveal State - Steps
   const stepsRef = useRef<HTMLElement | null>(null);
   const [isStepsInView, setIsStepsInView] = useState(false);
-
-  // Scroll Reveal State - Testimonials
-  const testimonialsRef = useRef<HTMLElement | null>(null);
-  const [isTestimonialsInView, setIsTestimonialsInView] = useState(false);
 
   // Scroll Reveal State - CTA Final
   const ctaRef = useRef<HTMLElement | null>(null);
@@ -216,22 +215,6 @@ export default function LandingPage() {
     return () => observer.disconnect();
   }, []);
 
-  // Testimonials Section Observer
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry?.isIntersecting) {
-        setIsTestimonialsInView(true);
-        observer.disconnect();
-      }
-    }, { threshold: 0.1 });
-
-    if (testimonialsRef.current) {
-      observer.observe(testimonialsRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
   // Final CTA Section Observer
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {
@@ -246,21 +229,6 @@ export default function LandingPage() {
     }
 
     return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const loadReviews = async () => {
-      try {
-        const res = await fetch(buildApiUrl(`/api/reviews?t=${Date.now()}`));
-        const data = await res.json();
-        if (data.success) {
-          setReviews(data.data);
-        }
-      } catch (error) {
-        console.error('Erro ao carregar reviews:', error);
-      }
-    };
-    loadReviews();
   }, []);
 
   return (
@@ -328,8 +296,15 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="relative py-24 md:py-32 overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-secondary/5" />
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 z-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${heroBg})` }}
+        />
+        {/* Overlay suave em gradiente para mostrar a imagem mas manter legibilidade */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-background/50 via-background/20 to-background/50 dark:from-background/60 dark:via-background/30 dark:to-background/60" />
+        
+        {/* Background Orbs/Gradients */}
         <div className={`hero-bg-orb absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/10 rounded-full blur-3xl`} />
         <div className={`hero-bg-orb absolute bottom-0 right-0 w-[400px] h-[300px] bg-blue-500/10 rounded-full blur-3xl`} />
 
@@ -346,9 +321,8 @@ export default function LandingPage() {
               Crie o Site da Sua Igreja em <span className="bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">Minutos</span>
             </h1>
 
-            <p className={`hero-subtitle text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed ${isHeroInView ? 'animate' : ''}`}>
-              Plataforma completa e segura para igrejas que desejam se conectar com membros
-              e visitantes de forma profissional e eficiente.
+            <p className={`hero-subtitle text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed ${isHeroInView ? 'animate' : ''}`}>
+              Plataforma completa e segura para igrejas que desejam se <span className="text-primary font-semibold">conectar com membros</span>, <span className="text-primary font-semibold">crescer de verdade</span> e <span className="text-primary font-semibold">transformar vidas</span> de forma profissional.
             </p>
 
             <div className={`hero-cta flex flex-col sm:flex-row gap-4 justify-center mt-8 ${isHeroInView ? 'animate' : ''}`}>
@@ -386,7 +360,7 @@ export default function LandingPage() {
       {/* Stats */}
       <section ref={statsRef} className="py-12 bg-card/50 border-y backdrop-blur-sm">
         <div className="container px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto">
             {[
               { value: '500+', label: 'Igrejas Ativas', icon: Church },
               { value: '50K+', label: 'Membros', icon: Users },
@@ -410,7 +384,7 @@ export default function LandingPage() {
             <Badge variant="outline" className={`mb-4 px-4 py-1.5 text-sm font-medium features-badge ${isFeaturesInView ? 'animate' : ''}`}>
               ✨ Recursos Completos
             </Badge>
-            <h2 className={`text-3xl md:text-5xl font-bold text-primary mb-4 features-title ${isFeaturesInView ? 'animate' : ''}`}>
+            <h2 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-3 sm:mb-4 features-title ${isFeaturesInView ? 'animate' : ''}`}>
               Tudo o Que Sua Igreja Precisa
             </h2>
             <p className={`text-lg text-muted-foreground max-w-2xl mx-auto features-subtitle ${isFeaturesInView ? 'animate' : ''}`}>
@@ -448,7 +422,7 @@ export default function LandingPage() {
             <Badge variant="outline" className={`mb-4 px-4 py-1.5 text-sm font-medium steps-badge ${isStepsInView ? 'animate' : ''}`}>
               🚀 Simples e Rápido
             </Badge>
-            <h2 className={`text-3xl md:text-5xl font-bold text-primary mb-4 steps-title ${isStepsInView ? 'animate' : ''}`}>
+            <h2 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-3 sm:mb-4 steps-title ${isStepsInView ? 'animate' : ''}`}>
               Comece em 3 Passos Simples
             </h2>
             <p className={`text-lg text-muted-foreground max-w-2xl mx-auto steps-subtitle ${isStepsInView ? 'animate' : ''}`}>
@@ -456,7 +430,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto relative">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto relative">
             {/* Linha conectora */}
             <div className={`hidden md:block absolute top-12 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 steps-connector ${isStepsInView ? 'animate' : ''}`} />
 
@@ -490,7 +464,7 @@ export default function LandingPage() {
             <Badge variant="outline" className="mb-2 px-4 py-1.5 text-sm font-medium bg-primary/5 hover:bg-primary/10 transition-colors">
               💎 Escolha o Plano
             </Badge>
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
               Plano que cabe na sua <span className="text-primary">Igreja</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -529,145 +503,105 @@ export default function LandingPage() {
 
           {/* Cards Grid */}
           <div className="grid gap-8 max-w-2xl mx-auto">
-            {/* Plano Essencial (Popular) */}
-            <div className={`group relative rounded-3xl bg-gradient-to-b from-primary/10 to-primary/5 p-[2px] transition-all duration-300 hover:shadow-[0_0_40px_-10px_rgba(var(--primary),0.5)] hover:-translate-y-2 ${isPricingInView ? 'animate-card-reveal' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
-              {/* Gradient Border Effect */}
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-b from-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-md -z-10"></div>
-              
-              <div className="relative h-full rounded-[22px] bg-card p-8 overflow-hidden">
-                {/* Badge Popular */}
-                {/* <div className="absolute top-0 right-6 translate-y-1/2">
-                  <Badge className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-none shadow-md px-3 py-1">
-                    ⭐ Mais Popular
-                  </Badge>
-                </div> */}
+            {/* Plano Essencial (Popular) com BorderGlow */}
+            <div className={`${isPricingInView ? 'animate-card-reveal' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
+              <BorderGlow
+                glowColor="210 80 60"
+                backgroundColor="transparent"
+                colors={['#3b82f6', '#6366f1', '#8b5cf6']}
+                glowIntensity={0.4}
+                edgeSensitivity={40}
+                glowRadius={25}
+                animated={true}
+                borderRadius={24}
+                fillOpacity={0.08}
+              >
+                <div className="relative rounded-3xl bg-gradient-to-b from-primary/10 to-primary/5 p-[2px]">
+                  <div className="relative rounded-[22px] bg-card p-6 sm:p-8">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <h3 className="text-2xl font-bold text-foreground">Essencial</h3>
+                        <p className="text-muted-foreground text-sm">Para igrejas em crescimento acelerado.</p>
+                      </div>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-sm text-muted-foreground">R$</span>
+                        <span className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-foreground">{isAnnual ? '799' : '79,90'}</span>
+                        <span className="text-muted-foreground self-end mb-1">/{isAnnual ? 'ano' : 'mês'}</span>
+                      </div>
 
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <h3 className="text-2xl font-bold text-foreground">Essencial</h3>
-                    <p className="text-muted-foreground text-sm">Para igrejas em crescimento acelerado.</p>
-                  </div>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-sm text-muted-foreground">R$</span>
-                    <span className="text-5xl font-bold tracking-tight text-foreground">{isAnnual ? '799' : '79,90'}</span>
-                    <span className="text-muted-foreground self-end mb-1">/{isAnnual ? 'ano' : 'mês'}</span>
-                  </div>
-                  
-                  <Button className="w-full rounded-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/25" asChild>
-                    <Link to="/criar" state={{ selectedPlan: 'essencial' }}>
-                      Testar Grátis (60 dias)
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
+                      <Button className="w-full rounded-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/25" asChild>
+                        <Link to="/criar" state={{ selectedPlan: 'essencial' }}>
+                          Testar Grátis (60 dias)
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      </Button>
 
-                  <div className="pt-6 border-t border-border space-y-4">
-                    <p className="text-sm font-medium text-foreground">Todos os recursos incluídos:</p>
-                    <ul className="space-y-3">
-                      {[
-                        'Até 200 membros',
-                        'Pedidos de oração ILIMITADOS',
-                        '3 administradores',
-                        'Domínio próprio',
-                        'Upload de logo',
-                        'Google Maps integrado',
-                        'Analytics avançado',
-                        'Suporte prioritário'
-                      ].map((feature, i) => (
-                        <li key={i} className="flex items-center gap-3 text-sm text-muted-foreground">
-                          <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
+                      <div className="pt-6 border-t border-border space-y-4">
+                        <p className="text-sm font-medium text-foreground">Todos os recursos incluídos:</p>
+                        <ul className="space-y-3">
+                          {[
+                            'Até 200 membros',
+                            'Pedidos de oração ILIMITADOS',
+                            '3 administradores',
+                            'Domínio próprio',
+                            'Upload de logo',
+                            'Google Maps integrado',
+                            'Analytics avançado',
+                            'Suporte prioritário'
+                          ].map((feature, i) => (
+                            <li key={i} className="flex items-center gap-3 text-sm text-muted-foreground">
+                              <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                              {feature}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </BorderGlow>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Depoimentos */}
-      <section ref={testimonialsRef} id="depoimentos" className="py-24 bg-gradient-to-br from-gray-50 via-blue-50/50 to-purple-50/30 dark:from-gray-900 dark:via-gray-900/95 dark:to-gray-800">
+      {/* Depoimentos Reais (Novo Componente) */}
+      <AnimatedTestimonials
+        title="💬 Depoimentos Reais"
+        subtitle="O Que Dizem Nossos Clientes"
+        badgeText="Igrejas que transformaram sua comunicação conosco"
+        autoRotateInterval={8000}
+        testimonials={[
+          {
+            id: 1,
+            name: "Pastor Almeida",
+            role: "Pastor",
+            company: "Igreja do Evangelho Quadrangular",
+            content: "O sistema é simples de usar! Gostaria do recurso de dízimos e ofertas!",
+            rating: 5,
+            avatar: "https://ui-avatars.com/api/?name=Pastor+Almeida&background=2563eb&color=fff",
+          },
+        ]}
+      />
+
+      {/* Stats de Confiança */}
+      <section className="py-8 bg-background">
         <div className="container px-4">
-          <div className="text-center mb-16">
-            <Badge variant="outline" className={`mb-4 px-4 py-1.5 text-sm font-medium testimonials-badge ${isTestimonialsInView ? 'animate' : ''}`}>
-              💬 Depoimentos Reais
-            </Badge>
-            <h2 className={`text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 testimonials-title ${isTestimonialsInView ? 'animate' : ''}`}>
-              O Que Dizem Nossos Clientes
-            </h2>
-            <p className={`text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto testimonials-subtitle ${isTestimonialsInView ? 'animate' : ''}`}>
-              Igrejas que transformaram sua comunicação conosco
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {reviews.length > 0 ? (
-              reviews.map((review, index) => (
-                <Card
-                  key={review.id}
-                  className={`relative hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-2 border-transparent hover:border-blue-200 dark:hover:border-blue-800 overflow-hidden group testimonial-card ${isTestimonialsInView ? 'animate' : ''}`}
-                  style={{ animationDelay: `${0.3 + index * 0.2}s` }}
-                >
-                  {/* Aspas decorativas */}
-                  <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <svg className="w-16 h-16 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
-                    </svg>
-                  </div>
-
-                  <CardContent className="pt-8 pb-6 px-6">
-                    {/* Estrelas */}
-                    <div className={`flex gap-1 mb-4 testimonial-stars ${isTestimonialsInView ? 'animate' : ''}`}>
-                      {[...Array(review.rating)].map((_, i) => (
-                        <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400 drop-shadow-sm" />
-                      ))}
-                    </div>
-
-                    {/* Texto do depoimento */}
-                    <blockquote className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed italic">
-                      "{review.comment}"
-                    </blockquote>
-
-                    {/* Autor */}
-                    <div className="grid grid-cols-[auto_1fr] gap-4 pt-4 border-t border-gray-100 dark:border-gray-700 items-center">
-                      {/* Avatar */}
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl shadow-lg">
-                        {(review.pastor_name || 'P').charAt(0)}
-                      </div>
-                      {/* Info */}
-                      <div>
-                        <div className="font-semibold text-gray-900 dark:text-white">{review.pastor_name || 'Pastor'}</div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400">{review.church_name || 'Igreja'}</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <div className="col-span-3 text-center py-12">
-                <p className="text-gray-500 dark:text-gray-400">Nenhum depoimento ainda. Seja o primeiro!</p>
-              </div>
-            )}
-          </div>
-
-          {/* Stats de confiança */}
-          <div className={`mt-16 text-center testimonials-stats ${isTestimonialsInView ? 'animate' : ''}`}>
-            <div className="grid grid-cols-3 gap-3 sm:inline-flex sm:gap-8 sm:px-8 px-4 py-4 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 max-w-full mx-auto sm:mx-0">
+          <div className="text-center">
+            <div className="inline-flex flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-8 px-4 sm:px-8 py-4 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
               <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-blue-600 dark:text-blue-400">500+</div>
-                <div className="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400">Igrejas Ativas</div>
+                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">500+</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">Igrejas Ativas</div>
               </div>
               <div className="w-px h-12 bg-gray-200 dark:bg-gray-700"></div>
               <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-green-600 dark:text-green-400">98%</div>
-                <div className="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400">Satisfação</div>
+                <div className="text-3xl font-bold text-green-600 dark:text-green-400">98%</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">Satisfação</div>
               </div>
               <div className="w-px h-12 bg-gray-200 dark:bg-gray-700"></div>
               <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-purple-600 dark:text-purple-400">24/7</div>
-                <div className="text-[10px] sm:text-sm text-gray-500 dark:text-gray-400">Suporte</div>
+                <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">24/7</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">Suporte</div>
               </div>
             </div>
           </div>
@@ -708,53 +642,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-divine-shadow text-white dark:bg-card dark:border-t dark:border-border py-12">
-        <div className="container px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Church className="h-6 w-6" />
-                <span className="text-xl font-bold">MinhaIgreja</span>
-              </div>
-              <p className="text-sm text-gray-300 dark:text-muted-foreground">
-                Plataforma digital para igrejas que desejam se conectar com membros e visitantes.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Produto</h4>
-              <ul className="space-y-2 text-sm text-gray-300 dark:text-muted-foreground">
-                <li><a href="#funcionalidades" className="hover:text-white dark:hover:text-primary">Funcionalidades</a></li>
-                <li><a href="#planos" className="hover:text-white dark:hover:text-primary">Planos</a></li>
-                <li><a href="/criar" className="hover:text-white dark:hover:text-primary">Testar Grátis (90 dias)</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Empresa</h4>
-              <ul className="space-y-2 text-sm text-gray-300 dark:text-muted-foreground">
-                <li><a href="/sobre-nos" className="hover:text-white dark:hover:text-primary">Sobre Nós</a></li>
-                <li><a href="/contato-institucional" className="hover:text-white dark:hover:text-primary">Contato</a></li>
-                <li><a href="/blog" className="hover:text-white dark:hover:text-primary">Blog</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm text-gray-300 dark:text-muted-foreground">
-                <li><a href="/termos-de-uso" className="hover:text-white dark:hover:text-primary">Termos de Uso</a></li>
-                <li><a href="/politica-privacidade" className="hover:text-white dark:hover:text-primary">Privacidade</a></li>
-                <li><a href="/lgpd" className="hover:text-white dark:hover:text-primary">LGPD</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-600 dark:border-border mt-8 pt-6 text-center text-sm text-gray-400 dark:text-muted-foreground">
-            <p>Copyright © {new Date().getFullYear()} MinhaIgreja. Todos os direitos reservados.</p>
-          </div>
-        </div>
-      </footer>
+      {/* Footer Premium */}
+      <HoverFooter />
     </div>
   );
 }

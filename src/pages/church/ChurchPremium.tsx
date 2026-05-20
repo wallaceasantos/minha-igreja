@@ -59,32 +59,32 @@ const CountdownTimer = ({ targetDate }: { targetDate: string }) => {
   }, [targetDate]);
 
   return (
-    <div className="flex gap-3 text-white">
+    <div className="flex gap-2 sm:gap-3 text-white flex-wrap justify-center">
       {timeLeft.days > 0 && (
         <div className="flex flex-col items-center">
-          <span className="text-3xl font-bold bg-white/20 rounded-lg px-3 py-2 backdrop-blur-sm">
+          <span className="text-2xl sm:text-3xl font-bold bg-white/20 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 backdrop-blur-sm">
             {timeLeft.days}
           </span>
-          <span className="text-xs font-medium mt-1">Dias</span>
+          <span className="text-[10px] sm:text-xs font-medium mt-1">Dias</span>
         </div>
       )}
       <div className="flex flex-col items-center">
-        <span className="text-3xl font-bold bg-white/20 rounded-lg px-3 py-2 backdrop-blur-sm">
+        <span className="text-2xl sm:text-3xl font-bold bg-white/20 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 backdrop-blur-sm">
           {timeLeft.hours.toString().padStart(2, '0')}
         </span>
-        <span className="text-xs font-medium mt-1">Horas</span>
+        <span className="text-[10px] sm:text-xs font-medium mt-1">Horas</span>
       </div>
       <div className="flex flex-col items-center">
-        <span className="text-3xl font-bold bg-white/20 rounded-lg px-3 py-2 backdrop-blur-sm">
+        <span className="text-2xl sm:text-3xl font-bold bg-white/20 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 backdrop-blur-sm">
           {timeLeft.minutes.toString().padStart(2, '0')}
         </span>
-        <span className="text-xs font-medium mt-1">Min</span>
+        <span className="text-[10px] sm:text-xs font-medium mt-1">Min</span>
       </div>
       <div className="flex flex-col items-center">
-        <span className="text-3xl font-bold bg-white/20 rounded-lg px-3 py-2 backdrop-blur-sm text-orange-300">
+        <span className="text-2xl sm:text-3xl font-bold bg-white/20 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 backdrop-blur-sm text-orange-300">
           {timeLeft.seconds.toString().padStart(2, '0')}
         </span>
-        <span className="text-xs font-medium mt-1 text-orange-300">Seg</span>
+        <span className="text-[10px] sm:text-xs font-medium mt-1 text-orange-300">Seg</span>
       </div>
     </div>
   );
@@ -291,24 +291,24 @@ export default function ChurchPremium() {
           </div>
 
           {/* Stats Premium */}
-          <div className="grid grid-cols-3 gap-8 pt-16 max-w-2xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 md:gap-8 pt-8 sm:pt-12 md:pt-16 max-w-2xl mx-auto">
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-white mb-2">
+              <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-1 sm:mb-2">
                 {memberCount}+
               </div>
-              <div className="text-blue-200">Membros</div>
+              <div className="text-sm sm:text-base text-blue-200">Membros</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-white mb-2">
+              <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-1 sm:mb-2">
                 {eventCount}+
               </div>
-              <div className="text-blue-200">Eventos</div>
+              <div className="text-sm sm:text-base text-blue-200">Eventos</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-white mb-2">
+              <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-1 sm:mb-2">
                 {prayerCount}+
               </div>
-              <div className="text-blue-200">Pedidos</div>
+              <div className="text-sm sm:text-base text-blue-200">Pedidos</div>
             </div>
           </div>
         </div>
@@ -323,10 +323,10 @@ export default function ChurchPremium() {
                 <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
                 TRANSMISSÕES
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 dark:text-white">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 dark:text-white">
                 Cultos e Eventos
               </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-400">
+              <p className="text-base sm:text-xl text-gray-600 dark:text-gray-400">
                 Assista aos cultos ao vivo ou acompanhe a agenda
               </p>
             </div>
@@ -484,8 +484,8 @@ export default function ChurchPremium() {
                       loading="lazy"
                     />
                     {slide.title && (
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-8">
-                        <h3 className="text-2xl md:text-3xl font-bold text-white">{slide.title}</h3>
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 sm:p-6 md:p-8">
+                        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">{slide.title}</h3>
                       </div>
                     )}
                   </div>
@@ -542,7 +542,7 @@ export default function ChurchPremium() {
               <span className="inline-block px-4 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-full mb-4">
                 Sobre Nós
               </span>
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
                 Nossa História
               </h2>
             </div>
@@ -563,7 +563,7 @@ export default function ChurchPremium() {
             <span className="inline-block px-4 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-full mb-4 animate-fade-in">
               Sirva com Seus Dons
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
               Ministérios & Atividades
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -592,7 +592,7 @@ export default function ChurchPremium() {
             <span className="inline-block px-4 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-full mb-4 animate-fade-in">
               Horários
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
               Nossos Cultos
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -621,7 +621,7 @@ export default function ChurchPremium() {
             <span className="inline-block px-4 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-full mb-4 animate-fade-in">
               Programação
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
               Próximos Eventos
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -650,7 +650,7 @@ export default function ChurchPremium() {
             <span className="inline-block px-4 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-full mb-4">
               Fale Conosco
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
               Entre em Contato
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -658,7 +658,7 @@ export default function ChurchPremium() {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-6xl mx-auto">
             {/* Informações de Contato */}
             <div className="space-y-8">
               {/* Endereço */}
@@ -759,7 +759,7 @@ export default function ChurchPremium() {
             </div>
 
             {/* Card do Endereço com Links para Mapas */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 md:p-8">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
                   <MapPin className="w-6 h-6 text-blue-600" />

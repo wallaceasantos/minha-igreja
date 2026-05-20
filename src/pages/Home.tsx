@@ -207,11 +207,11 @@ export default function Home() {
           </div>
 
           {/* Título Principal */}
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight px-4">
             {churchName}
           </h1>
-          
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-white/90">
+
+          <p className="text-lg sm:text-xl md:text-2xl mb-6 sm:mb-8 max-w-3xl mx-auto text-white/90 px-4">
             {churchDescription}
           </p>
 
@@ -242,18 +242,18 @@ export default function Home() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 mt-16 max-w-2xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mt-8 sm:mt-12 md:mt-16 max-w-2xl mx-auto">
             <div className="text-center">
-              <div className="text-4xl font-bold mb-2">100+</div>
-              <div className="text-sm text-white/80">Membros</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold mb-1 sm:mb-2">100+</div>
+              <div className="text-xs sm:text-sm text-white/80">Membros</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold mb-2">3x</div>
-              <div className="text-sm text-white/80">Cultos Semanais</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold mb-1 sm:mb-2">3x</div>
+              <div className="text-xs sm:text-sm text-white/80">Cultos Semanais</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold mb-2">24/7</div>
-              <div className="text-sm text-white/80">Oração</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold mb-1 sm:mb-2">24/7</div>
+              <div className="text-xs sm:text-sm text-white/80">Oração</div>
             </div>
           </div>
         </div>
@@ -269,12 +269,12 @@ export default function Home() {
       {/* Versículo do Dia */}
       <section className="py-16 bg-gradient-to-r from-amber-50 to-orange-50">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <BookOpen className="w-12 h-12 mx-auto mb-4" style={{ color: secondaryColor }} />
-            <blockquote className="text-2xl md:text-3xl font-serif italic mb-4 text-gray-700">
+          <div className="max-w-4xl mx-auto text-center px-4">
+            <BookOpen className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4" style={{ color: secondaryColor }} />
+            <blockquote className="text-xl sm:text-2xl md:text-3xl font-serif italic mb-3 sm:mb-4 text-gray-700">
               "{verses[currentVerse]?.text}"
             </blockquote>
-            <cite className="text-lg font-semibold" style={{ color: primaryColor }}>
+            <cite className="text-base sm:text-lg font-semibold" style={{ color: primaryColor }}>
               {verses[currentVerse]?.reference}
             </cite>
           </div>
@@ -282,39 +282,39 @@ export default function Home() {
       </section>
 
       {/* Horários de Culto */}
-      <section className="py-20 bg-white">
+      <section className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4" style={{ color: primaryColor }}>
+          <div className="text-center mb-8 sm:mb-12 md:mb-16 px-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4" style={{ color: primaryColor }}>
               Nossos Cultos
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
               Venha nos visitar e participar de nossos momentos de adoração
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-6xl mx-auto">
             {serviceTimes.map((item, index) => (
-              <Card 
+              <Card
                 key={index}
                 className="border-2 hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
               >
-                <CardContent className="p-8 text-center">
-                  <div 
-                    className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
+                <CardContent className="p-4 sm:p-6 md:p-8 text-center">
+                  <div
+                    className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6"
                     style={{ backgroundColor: `${primaryColor}20` }}
                   >
-                    <item.icon className="w-8 h-8" style={{ color: primaryColor }} />
+                    <item.icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" style={{ color: primaryColor }} />
                   </div>
-                  <h3 className="text-2xl font-bold mb-2" style={{ color: primaryColor }}>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-2" style={{ color: primaryColor }}>
                     {item.day}
                   </h3>
-                  <p className="text-lg font-semibold mb-2">{item.service}</p>
+                  <p className="text-base sm:text-lg font-semibold mb-2">{item.service}</p>
                   <div className="inline-flex items-center gap-2 text-muted-foreground mb-4">
-                    <Clock3 className="w-5 h-5" />
+                    <Clock3 className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span>{item.time}</span>
                   </div>
-                  <p className="text-sm text-gray-600">{item.description}</p>
+                  <p className="text-xs sm:text-sm text-gray-600">{item.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -323,15 +323,15 @@ export default function Home() {
       </section>
 
       {/* Localização e Contato */}
-      <section className="py-20" style={{ backgroundColor: '#f8fafc' }}>
+      <section className="py-12 sm:py-16 md:py-20" style={{ backgroundColor: '#f8fafc' }}>
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-12 max-w-6xl mx-auto">
             {/* Informações */}
-            <div>
-              <h2 className="text-4xl font-bold mb-6" style={{ color: primaryColor }}>
+            <div className="px-4 md:px-0">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6" style={{ color: primaryColor }}>
                 Nossa Localização
               </h2>
-              <p className="text-lg text-gray-600 mb-8">
+              <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8">
                 Venha nos visitar! Estamos esperando por você.
               </p>
 
@@ -382,11 +382,11 @@ export default function Home() {
             </div>
 
             {/* Mapa (placeholder) */}
-            <div className="rounded-2xl overflow-hidden shadow-2xl h-[400px] bg-gray-200 flex items-center justify-center">
-              <div className="text-center p-8">
-                <MapPin className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-                <p className="text-gray-500 font-medium">Mapa do Google</p>
-                <p className="text-sm text-gray-400 mt-2">{churchAddress}</p>
+            <div className="rounded-2xl overflow-hidden shadow-2xl h-[300px] sm:h-[350px] md:h-[400px] bg-gray-200 flex items-center justify-center mx-4 md:mx-0">
+              <div className="text-center p-4 sm:p-6 md:p-8">
+                <MapPin className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 mx-auto mb-3 sm:mb-4 text-gray-400" />
+                <p className="text-sm sm:text-base text-gray-500 font-medium">Mapa do Google</p>
+                <p className="text-xs sm:text-sm text-gray-400 mt-2">{churchAddress}</p>
               </div>
             </div>
           </div>
@@ -394,26 +394,26 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 text-white" style={{ backgroundColor: primaryColor }}>
+      <footer className="py-8 sm:py-10 md:py-12 text-white" style={{ backgroundColor: primaryColor }}>
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
             {/* Igreja */}
             <div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                  <Heart className="w-5 h-5 text-white" />
+              <div className="flex items-center gap-3 mb-3 sm:mb-4">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/20 flex items-center justify-center">
+                  <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <h3 className="text-xl font-bold">{churchName}</h3>
+                <h3 className="text-lg sm:text-xl font-bold">{churchName}</h3>
               </div>
-              <p className="text-white/80 text-sm">
+              <p className="text-white/80 text-xs sm:text-sm">
                 Levando o evangelho a todas as nações.
               </p>
             </div>
 
             {/* Links Rápidos */}
             <div>
-              <h4 className="font-semibold mb-4">Links Rápidos</h4>
-              <div className="space-y-2 text-sm text-white/80">
+              <h4 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Links Rápidos</h4>
+              <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-white/80">
                 <Link to="#" className="block hover:text-white transition-colors">Início</Link>
                 <Link to="/pedidos-oracao" className="block hover:text-white transition-colors">Pedidos de Oração</Link>
                 <Link to="/contato" className="block hover:text-white transition-colors">Contato</Link>
@@ -423,14 +423,14 @@ export default function Home() {
 
             {/* Contato */}
             <div>
-              <h4 className="font-semibold mb-4">Contato</h4>
-              <div className="space-y-2 text-sm text-white/80">
+              <h4 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Contato</h4>
+              <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-white/80">
                 <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4" />
+                  <Phone className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>{churchPhone}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
+                  <Mail className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>{churchEmail}</span>
                 </div>
               </div>
@@ -438,7 +438,7 @@ export default function Home() {
           </div>
 
           {/* Copyright */}
-          <div className="border-t border-white/20 pt-8 text-center text-sm text-white/60">
+          <div className="border-t border-white/20 pt-6 sm:pt-8 text-center text-xs sm:text-sm text-white/60">
             <p>Copyright © {new Date().getFullYear()} {churchName}. Todos os direitos reservados.</p>
           </div>
         </div>

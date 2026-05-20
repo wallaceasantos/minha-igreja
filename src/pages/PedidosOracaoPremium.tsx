@@ -300,30 +300,30 @@ ${church?.name || 'Nossa Igreja'}
             <Heart className="w-4 h-4" />
             Ministério de Intercessão
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 px-4">
             Como Podemos Orar Por Você Hoje?
           </h2>
-          <p className="text-xl text-blue-100 leading-relaxed max-w-3xl mx-auto">
-            "A oração eficaz de um justo pode muito em seus efeitos." 
+          <p className="text-base sm:text-xl text-blue-100 leading-relaxed max-w-3xl mx-auto px-4">
+            "A oração eficaz de um justo pode muito em seus efeitos."
             <span className="block mt-2 font-semibold">Tiago 5:16</span>
           </p>
-          
+
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-6 mt-12 max-w-2xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12 max-w-2xl mx-auto">
             <div className="text-center">
-              <Heart className="w-8 h-8 mx-auto mb-2 opacity-80" />
-              <div className="text-2xl font-bold">{prayerCount}+</div>
-              <div className="text-sm text-blue-100">Pedidos de Oração</div>
+              <Heart className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 opacity-80" />
+              <div className="text-xl sm:text-2xl font-bold">{prayerCount}+</div>
+              <div className="text-xs sm:text-sm text-blue-100">Pedidos de Oração</div>
             </div>
             <div className="text-center">
-              <Users className="w-8 h-8 mx-auto mb-2 opacity-80" />
-              <div className="text-2xl font-bold">24/7</div>
-              <div className="text-sm text-blue-100">Intercessão</div>
+              <Users className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 opacity-80" />
+              <div className="text-xl sm:text-2xl font-bold">24/7</div>
+              <div className="text-xs sm:text-sm text-blue-100">Intercessão</div>
             </div>
             <div className="text-center">
-              <Sparkles className="w-8 h-8 mx-auto mb-2 opacity-80" />
-              <div className="text-2xl font-bold">100%</div>
-              <div className="text-sm text-blue-100">Privacidade</div>
+              <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 opacity-80" />
+              <div className="text-xl sm:text-2xl font-bold">100%</div>
+              <div className="text-xs sm:text-sm text-blue-100">Privacidade</div>
             </div>
           </div>
         </div>
@@ -339,7 +339,7 @@ ${church?.name || 'Nossa Igreja'}
                   <div className="w-20 h-20 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
                     <CheckCircle className="w-12 h-12 text-green-600 dark:text-green-400" />
                   </div>
-                  <h3 className="text-3xl font-bold text-green-700 dark:text-green-400 mb-2">
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-green-700 dark:text-green-400 mb-2 px-4">
                     {formData.tipo === 'agradecimento' ? 'Agradecimento' : formData.tipo === 'testemunho' ? 'Testemunho' : 'Pedido'} Recebido!
                   </h3>
 
@@ -381,7 +381,7 @@ ${church?.name || 'Nossa Igreja'}
                     Preencha o formulário abaixo e nossa equipe de intercessão orará por você
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="p-8 dark:bg-gray-800">
+                <CardContent className="p-4 sm:p-6 md:p-8 dark:bg-gray-800">
                   <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Tipo de Pedido */}
                     <div>
@@ -450,7 +450,6 @@ ${church?.name || 'Nossa Igreja'}
                           text="signin_with"
                           shape="rectangular"
                           width="100%"
-                          locale="pt_BR"
                         />
                         <p className="text-xs text-gray-500 mt-2">Preenche nome e email automaticamente</p>
                       </div>

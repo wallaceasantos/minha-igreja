@@ -30,13 +30,42 @@ import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { buildApiUrl } from '@/lib/config';
 
+interface DelinquentChurch {
+  id: string | number;
+  name: string;
+  plan_type: string;
+  email: string;
+  phone?: string;
+  days_overdue: number;
+  due_date: string;
+  amount: string | number;
+  collection_notes_count?: number;
+  subscription_id?: string | number;
+}
+
+interface DelinquencyStats {
+  total: number;
+  byDays: {
+    days30: number;
+    days60: number;
+    days90: number;
+  };
+  amount: {
+    total: number;
+    days30: number;
+    days60: number;
+    days90: number;
+  };
+  rate: number;
+}
+
 export default function SuperAdminDelinquency() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [delinquentChurches, setDelinquentChurches] = useState([]);
-  const [stats, setStats] = useState(null);
+  const [delinquentChurches, setDelinquentChurches] = useState<DelinquentChurch[]>([]);
+  const [stats, setStats] = useState<DelinquencyStats | null>(null);
   const [filter, setFilter] = useState('all');
-  const [selectedChurch, setSelectedChurch] = useState(null);
+  const [selectedChurch, setSelectedChurch] = useState<DelinquentChurch | null>(null);
   const [showActionDialog, setShowActionDialog] = useState(false);
   const [actionType, setActionType] = useState(''); // 'reminder', 'suspend', 'cancel'
   const [message, setMessage] = useState('');
@@ -56,7 +85,7 @@ export default function SuperAdminDelinquency() {
       });
       const statsData = await statsRes.json();
       if (statsData.success) {
-        setStats(statsData.data);
+        setStats(statsData.data as DelinquencyStats);
       }
 
       // Buscar lista de inadimplentes
@@ -65,12 +94,12 @@ export default function SuperAdminDelinquency() {
       });
       const churchesData = await churchesRes.json();
       if (churchesData.success) {
-        setDelinquentChurches(churchesData.data.churches);
+        setDelinquentChurches(churchesData.data.churches as DelinquentChurch[]);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error loading delinquency data:', error);
       toast.error('Erro ao carregar dados', {
-        description: error.message,
+        description: error instanceof Error ? error.message : 'Erro desconhecido',
       });
     } finally {
       setLoading(false);
@@ -78,6 +107,8 @@ export default function SuperAdminDelinquency() {
   };
 
   const handleSendReminder = async () => {
+    if (!selectedChurch) return;
+
     try {
       const response = await fetch(buildApiUrl(`/api/admin/delinquency/${selectedChurch.id}/send-reminder`), {
         method: 'POST',
@@ -101,14 +132,16 @@ export default function SuperAdminDelinquency() {
         setMessage('');
         loadDelinquencyData();
       }
-    } catch (error) {
+    } catch (error: unknown) {
       toast.error('Erro ao enviar lembrete', {
-        description: error.message,
+        description: error instanceof Error ? error.message : 'Erro desconhecido',
       });
     }
   };
 
   const handleSuspend = async () => {
+    if (!selectedChurch) return;
+
     try {
       const response = await fetch(buildApiUrl(`/api/admin/delinquency/${selectedChurch.id}/suspend`), {
         method: 'POST',
@@ -132,14 +165,16 @@ export default function SuperAdminDelinquency() {
         setMessage('');
         loadDelinquencyData();
       }
-    } catch (error) {
+    } catch (error: unknown) {
       toast.error('Erro ao suspender igreja', {
-        description: error.message,
+        description: error instanceof Error ? error.message : 'Erro desconhecido',
       });
     }
   };
 
   const handleCancel = async () => {
+    if (!selectedChurch) return;
+
     try {
       const response = await fetch(buildApiUrl(`/api/admin/delinquency/${selectedChurch.id}/cancel`), {
         method: 'POST',
@@ -163,14 +198,14 @@ export default function SuperAdminDelinquency() {
         setMessage('');
         loadDelinquencyData();
       }
-    } catch (error) {
+    } catch (error: unknown) {
       toast.error('Erro ao cancelar assinatura', {
-        description: error.message,
+        description: error instanceof Error ? error.message : 'Erro desconhecido',
       });
     }
   };
 
-  const openActionDialog = (church, type) => {
+  const openActionDialog = (church: DelinquentChurch, type: string) => {
     setSelectedChurch(church);
     setActionType(type);
     setShowActionDialog(true);
@@ -375,7 +410,7 @@ export default function SuperAdminDelinquency() {
                           </div>
                           <div className="flex items-center gap-2">
                             <DollarSign className="w-4 h-4 text-muted-foreground" />
-                            <span className="font-semibold">R$ {parseFloat(church.amount).toFixed(2)}</span>
+                            <span className="font-semibold">R$ {parseFloat(String(church.amount)).toFixed(2)}</span>
                           </div>
                         </div>
                         
@@ -459,7 +494,7 @@ export default function SuperAdminDelinquency() {
               <div className="p-4 bg-muted rounded-lg">
                 <p className="font-semibold">{selectedChurch.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  {selectedChurch.days_overdue} dias de atraso - R$ {parseFloat(selectedChurch.amount).toFixed(2)}
+                  {selectedChurch.days_overdue} dias de atraso - R$ {parseFloat(String(selectedChurch.amount)).toFixed(2)}
                 </p>
               </div>
               

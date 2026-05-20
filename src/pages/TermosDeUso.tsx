@@ -8,36 +8,38 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ModeToggle } from '@/components/mode-toggle';
-import { Church, Menu, X, LogIn } from 'lucide-react';
+import { HoverFooter } from '@/components/ui/hover-footer';
+import heroBg from '@/assets/img_bkg.png';
+import { Church, Menu, X, LogIn, Sparkles, FileText } from 'lucide-react';
 
 export default function TermosDeUso() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header Fixo */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      {/* Header Fixo - Estilo Landing Page */}
+      <header className="border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container flex h-16 items-center px-4">
           <div className="flex items-center gap-2">
-            <Church className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold text-primary">MinhaIgreja</span>
+            <div className="relative">
+              <Church className="h-7 w-7 text-primary" />
+              <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-amber-500 animate-pulse" />
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">MinhaIgreja</span>
           </div>
 
           <nav className="hidden md:flex items-center gap-6 ml-auto">
-            <a href="/#funcionalidades" className="text-sm font-medium text-muted-foreground hover:text-primary">
+            <a href="/#funcionalidades" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Funcionalidades
             </a>
-            <a href="/#planos" className="text-sm font-medium text-muted-foreground hover:text-primary">
+            <a href="/#planos" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Planos
             </a>
-            <a href="/#depoimentos" className="text-sm font-medium text-muted-foreground hover:text-primary">
+            <a href="/#depoimentos" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Depoimentos
             </a>
             <Button variant="ghost" asChild>
-              <Link to="/login">
-                <LogIn className="h-4 w-4 mr-2" />
-                Entrar
-              </Link>
+              <Link to="/login">Entrar</Link>
             </Button>
             <ModeToggle />
             <Button asChild>
@@ -99,23 +101,36 @@ export default function TermosDeUso() {
         )}
       </header>
 
+      {/* Hero Section */}
+      <section className="relative py-16 md:py-24 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
+        {/* Overlay */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-background/70 via-background/40 to-background/70 dark:from-background/80 dark:via-background/50 dark:to-background/80" />
+
+        <div className="container px-4 text-center relative z-10">
+          <div className="max-w-4xl mx-auto">
+            <FileText className="h-14 w-14 md:h-20 md:w-20 text-primary mx-auto mb-4 md:mb-6" />
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-4 md:mb-6">
+              Termos de Uso
+            </h1>
+            <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto">
+              Última atualização: 22 de Março de 2026
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Conteúdo Principal */}
       <main className="flex-1">
-        <section className="py-20 bg-background">
+        <section className="py-12 md:py-20 bg-background">
           <div className="container px-4">
             <div className="max-w-4xl mx-auto">
-              <h1 className="text-4xl font-bold text-primary mb-8 text-center">
-                Termos de Uso
-              </h1>
-              <p className="text-muted-foreground text-center mb-12">
-                Última atualização: 22 de Março de 2026
-              </p>
-
-              <div className="space-y-8">
-                <Card>
-                  <CardContent className="pt-6">
-                    <h2 className="text-2xl font-bold mb-4">1. Aceitação dos Termos</h2>
-                    <p className="text-muted-foreground">
+              <div className="space-y-6 md:space-y-8">
+                <Card className="border shadow-sm">
+                  <CardContent className="pt-6 p-4 md:p-6">
+                    <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">1. Aceitação dos Termos</h2>
+                    <p className="text-sm md:text-base text-muted-foreground">
                       Ao acessar e usar a plataforma MinhaIgreja, você aceita e concorda
                       com estes Termos de Uso. Se não concordar com algum termo, por favor
                       não utilize nossos serviços.
@@ -123,14 +138,14 @@ export default function TermosDeUso() {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <h2 className="text-2xl font-bold mb-4">2. Descrição do Serviço</h2>
-                    <p className="text-muted-foreground mb-4">
+                <Card className="border shadow-sm">
+                  <CardContent className="pt-6 p-4 md:p-6">
+                    <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">2. Descrição do Serviço</h2>
+                    <p className="text-sm md:text-base text-muted-foreground mb-3 md:mb-4">
                       O MinhaIgreja é uma plataforma SaaS (Software as a Service) que
                       fornece ferramentas para gestão de igrejas, incluindo:
                     </p>
-                    <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
+                    <ul className="list-disc list-inside space-y-2 text-sm md:text-base text-muted-foreground ml-2 md:ml-4">
                       <li>Criação e gestão de sites para igrejas</li>
                       <li>Pedidos de oração online</li>
                       <li>Gestão de membros e visitantes</li>
@@ -141,13 +156,13 @@ export default function TermosDeUso() {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <h2 className="text-2xl font-bold mb-4">3. Cadastro e Conta</h2>
-                    <p className="text-muted-foreground mb-4">
+                <Card className="border shadow-sm">
+                  <CardContent className="pt-6 p-4 md:p-6">
+                    <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">3. Cadastro e Conta</h2>
+                    <p className="text-sm md:text-base text-muted-foreground mb-3 md:mb-4">
                       Para usar a plataforma, você deve:
                     </p>
-                    <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
+                    <ul className="list-disc list-inside space-y-2 text-sm md:text-base text-muted-foreground ml-2 md:ml-4">
                       <li>Ter pelo menos 18 anos de idade</li>
                       <li>Ser representante legal de uma igreja ou ministério</li>
                       <li>Fornecer informações verdadeiras e atualizadas</li>
@@ -157,31 +172,28 @@ export default function TermosDeUso() {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <h2 className="text-2xl font-bold mb-4">4. Planos e Pagamentos</h2>
-                    <p className="text-muted-foreground mb-4">
+                <Card className="border shadow-sm">
+                  <CardContent className="pt-6 p-4 md:p-6">
+                    <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">4. Planos e Pagamentos</h2>
+                    <p className="text-sm md:text-base text-muted-foreground mb-3 md:mb-4">
                       Oferecemos os seguintes planos:
                     </p>
-                    <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
-                      
-                      <li><strong>Essencial:</strong> R$ 29,90/mês</li>
-                      <li><strong>Premium:</strong> R$ 79,90/mês</li>
-                      <li><strong>Enterprise:</strong> R$ 199,90/mês</li>
+                    <ul className="list-disc list-inside space-y-2 text-sm md:text-base text-muted-foreground ml-2 md:ml-4">
+                      <li><strong>Essencial:</strong> R$ 79,90/mês</li>
                     </ul>
-                    <p className="text-muted-foreground mt-4">
+                    <p className="text-sm md:text-base text-muted-foreground mt-3 md:mt-4">
                       Os valores podem ser alterados com aviso prévio de 30 dias.
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <h2 className="text-2xl font-bold mb-4">5. Cancelamento e Reembolso</h2>
-                    <p className="text-muted-foreground mb-4">
+                <Card className="border shadow-sm">
+                  <CardContent className="pt-6 p-4 md:p-6">
+                    <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">5. Cancelamento e Reembolso</h2>
+                    <p className="text-sm md:text-base text-muted-foreground mb-3 md:mb-4">
                       Você pode cancelar sua assinatura a qualquer momento:
                     </p>
-                    <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
+                    <ul className="list-disc list-inside space-y-2 text-sm md:text-base text-muted-foreground ml-2 md:ml-4">
                       <li>Sem multa ou fidelidade</li>
                       <li>Acesso até o final do período pago</li>
                       <li>Reembolso proporcional apenas para planos anuais</li>
@@ -190,10 +202,10 @@ export default function TermosDeUso() {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <h2 className="text-2xl font-bold mb-4">6. Propriedade Intelectual</h2>
-                    <p className="text-muted-foreground">
+                <Card className="border shadow-sm">
+                  <CardContent className="pt-6 p-4 md:p-6">
+                    <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">6. Propriedade Intelectual</h2>
+                    <p className="text-sm md:text-base text-muted-foreground">
                       Todo o conteúdo da plataforma, incluindo código, design, logotipos e
                       documentação, é de propriedade do MinhaIgreja e protegido por leis
                       de propriedade intelectual.
@@ -201,13 +213,13 @@ export default function TermosDeUso() {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <h2 className="text-2xl font-bold mb-4">7. Limitação de Responsabilidade</h2>
-                    <p className="text-muted-foreground">
+                <Card className="border shadow-sm">
+                  <CardContent className="pt-6 p-4 md:p-6">
+                    <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">7. Limitação de Responsabilidade</h2>
+                    <p className="text-sm md:text-base text-muted-foreground mb-3 md:mb-4">
                       O MinhaIgreja não se responsabiliza por:
                     </p>
-                    <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
+                    <ul className="list-disc list-inside space-y-2 text-sm md:text-base text-muted-foreground ml-2 md:ml-4">
                       <li>Conteúdo publicado pelos usuários</li>
                       <li>Uso indevido da plataforma</li>
                       <li>Perda de dados por falhas do usuário</li>
@@ -216,23 +228,23 @@ export default function TermosDeUso() {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <h2 className="text-2xl font-bold mb-4">8. Modificações nos Termos</h2>
-                    <p className="text-muted-foreground">
+                <Card className="border shadow-sm">
+                  <CardContent className="pt-6 p-4 md:p-6">
+                    <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">8. Modificações nos Termos</h2>
+                    <p className="text-sm md:text-base text-muted-foreground">
                       Reservamo-nos o direito de modificar estes termos a qualquer momento.
                       Alterações significativas serão comunicadas com 30 dias de antecedência.
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <h2 className="text-2xl font-bold mb-4">9. Contato</h2>
-                    <p className="text-muted-foreground">
+                <Card className="border shadow-sm">
+                  <CardContent className="pt-6 p-4 md:p-6">
+                    <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">9. Contato</h2>
+                    <p className="text-sm md:text-base text-muted-foreground">
                       Dúvidas sobre estes termos? Entre em contato:
                     </p>
-                    <p className="text-muted-foreground mt-2">
+                    <p className="text-sm md:text-base text-muted-foreground mt-2 md:mt-3">
                       Email: juridico@minhaigreja.app<br />
                       Telefone: (11) 99999-9999
                     </p>
@@ -244,53 +256,8 @@ export default function TermosDeUso() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-divine-shadow text-white dark:bg-card dark:border-t dark:border-border py-12">
-        <div className="container px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Church className="h-6 w-6" />
-                <span className="text-xl font-bold">MinhaIgreja</span>
-              </div>
-              <p className="text-sm text-gray-300 dark:text-muted-foreground">
-                Plataforma digital para igrejas que desejam se conectar com membros e visitantes.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Produto</h4>
-              <ul className="space-y-2 text-sm text-gray-300 dark:text-muted-foreground">
-                <li><a href="/#funcionalidades" className="hover:text-white dark:hover:text-primary">Funcionalidades</a></li>
-                <li><a href="/#planos" className="hover:text-white dark:hover:text-primary">Planos</a></li>
-                <li><a href="/criar" className="hover:text-white dark:hover:text-primary">Começar Grátis</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Empresa</h4>
-              <ul className="space-y-2 text-sm text-gray-300 dark:text-muted-foreground">
-                <li><a href="/sobre-nos" className="hover:text-white dark:hover:text-primary">Sobre Nós</a></li>
-                <li><a href="/contato-institucional" className="hover:text-white dark:hover:text-primary">Contato</a></li>
-                <li><a href="/blog" className="hover:text-white dark:hover:text-primary">Blog</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm text-gray-300 dark:text-muted-foreground">
-                <li><a href="/termos-de-uso" className="hover:text-white dark:hover:text-primary">Termos de Uso</a></li>
-                <li><a href="/politica-privacidade" className="hover:text-white dark:hover:text-primary">Privacidade</a></li>
-                <li><a href="/lgpd" className="hover:text-white dark:hover:text-primary">LGPD</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-600 dark:border-border mt-8 pt-6 text-center text-sm text-gray-400 dark:text-muted-foreground">
-            <p>Copyright © {new Date().getFullYear()} MinhaIgreja. Todos os direitos reservados.</p>
-          </div>
-        </div>
-      </footer>
+      {/* Footer Premium */}
+      <HoverFooter />
     </div>
   );
 }

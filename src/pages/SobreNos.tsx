@@ -103,11 +103,11 @@ export default function SobreNos() {
       <section className="py-20 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
         <div className="container px-4 text-center">
           <div className="max-w-4xl mx-auto">
-            <Church className="h-20 w-20 text-primary mx-auto mb-6" />
-            <h1 className="text-4xl md:text-5xl font-bold text-primary mb-6">
+            <Church className="h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 text-primary mx-auto mb-4 sm:mb-6" />
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-4 sm:mb-6 px-4">
               Sobre o MinhaIgreja
             </h1>
-            <p className="text-xl text-muted-foreground mb-8">
+            <p className="text-base sm:text-xl text-muted-foreground mb-6 sm:mb-8 px-4">
               A plataforma que está transformando a gestão de igrejas em todo o Brasil
             </p>
           </div>
@@ -150,10 +150,10 @@ export default function SobreNos() {
       <section className="py-20 bg-muted/50">
         <div className="container px-4">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-primary mb-12 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-6 sm:mb-8 md:mb-12 text-center">
               Missão, Visão e Valores
             </h2>
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
               <Card className="hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                 <CardContent className="pt-6 text-center">
                   <Heart className="h-12 w-12 text-primary mx-auto mb-4" />
@@ -200,32 +200,32 @@ export default function SobreNos() {
       <section className="py-20 bg-background">
         <div className="container px-4">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-primary mb-12 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-6 sm:mb-8 md:mb-12 text-center">
               Números que Nos Orgulham
             </h2>
-            <div className="grid md:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
               <div className="text-center">
-                <TrendingUp className="h-12 w-12 text-primary mx-auto mb-4" />
-                <div className="text-5xl font-bold text-primary mb-2">500+</div>
-                <p className="text-muted-foreground">Igrejas Ativas</p>
+                <TrendingUp className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-primary mx-auto mb-3 sm:mb-4" />
+                <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-1 sm:mb-2">500+</div>
+                <p className="text-sm sm:text-base text-muted-foreground">Igrejas Ativas</p>
               </div>
 
               <div className="text-center">
-                <Users className="h-12 w-12 text-primary mx-auto mb-4" />
-                <div className="text-5xl font-bold text-primary mb-2">50K+</div>
-                <p className="text-muted-foreground">Membros Cadastrados</p>
+                <Users className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-primary mx-auto mb-3 sm:mb-4" />
+                <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-1 sm:mb-2">50K+</div>
+                <p className="text-sm sm:text-base text-muted-foreground">Membros Cadastrados</p>
               </div>
 
               <div className="text-center">
-                <Heart className="h-12 w-12 text-primary mx-auto mb-4" />
-                <div className="text-5xl font-bold text-primary mb-2">100K+</div>
-                <p className="text-muted-foreground">Pedidos de Oração</p>
+                <Heart className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-primary mx-auto mb-3 sm:mb-4" />
+                <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-1 sm:mb-2">100K+</div>
+                <p className="text-sm sm:text-base text-muted-foreground">Pedidos de Oração</p>
               </div>
 
               <div className="text-center">
-                <Award className="h-12 w-12 text-primary mx-auto mb-4" />
-                <div className="text-5xl font-bold text-primary mb-2">99.9%</div>
-                <p className="text-muted-foreground">Uptime Garantido</p>
+                <Award className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-primary mx-auto mb-3 sm:mb-4" />
+                <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary mb-1 sm:mb-2">99.9%</div>
+                <p className="text-sm sm:text-base text-muted-foreground">Uptime Garantido</p>
               </div>
             </div>
           </div>
@@ -236,10 +236,10 @@ export default function SobreNos() {
       <section className="py-20 bg-muted/50">
         <div className="container px-4">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-primary mb-12 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-6 sm:mb-8 md:mb-12 text-center">
               Como Funciona a Plataforma
             </h2>
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
               <Card className="hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                 <CardHeader className="text-center">
                   <Zap className="h-12 w-12 text-primary mx-auto mb-2" />
@@ -287,7 +287,7 @@ export default function SobreNos() {
       <section className="py-20 bg-background">
         <div className="container px-4">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-primary mb-12 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-6 sm:mb-8 md:mb-12 text-center">
               Por Que Escolher o MinhaIgreja?
             </h2>
             <div className="grid md:grid-cols-2 gap-6">
@@ -389,13 +389,13 @@ export default function SobreNos() {
       <section className="py-20 bg-muted/50">
         <div className="container px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-primary mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-4 sm:mb-6 px-4">
               Nossa Equipe
             </h2>
-            <p className="text-lg text-muted-foreground mb-12">
+            <p className="text-base sm:text-lg text-muted-foreground mb-8 sm:mb-12 px-4">
               Somos um time apaixonado por tecnologia e fé, dedicado a servir as igrejas brasileiras
             </p>
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
               <Card className="hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                 <CardContent className="pt-6 text-center">
                   <div className="h-24 w-24 bg-primary/10 rounded-full mx-auto mb-4 flex items-center justify-center">

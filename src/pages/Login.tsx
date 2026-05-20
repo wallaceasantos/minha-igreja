@@ -12,8 +12,10 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ModeToggle } from '@/components/mode-toggle';
+import { HoverFooter } from '@/components/ui/hover-footer';
+import heroBg from '@/assets/img_bkg.png';
 import { toast } from 'sonner';
-import { Church, Lock, Mail, Loader2, LogIn, Menu, X } from 'lucide-react';
+import { Church, Lock, Mail, Loader2, LogIn, Menu, X, Sparkles } from 'lucide-react';
 import { useChurch } from '@/hooks/useChurch';
 import { useIsMainDomain } from '@/hooks/useChurch';
 
@@ -110,29 +112,29 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header Fixo */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      {/* Header Fixo - Estilo Landing Page */}
+      <header className="border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container flex h-16 items-center px-4">
           <div className="flex items-center gap-2">
-            <Church className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold text-primary">MinhaIgreja</span>
+            <div className="relative">
+              <Church className="h-7 w-7 text-primary" />
+              <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-amber-500 animate-pulse" />
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">MinhaIgreja</span>
           </div>
 
           <nav className="hidden md:flex items-center gap-6 ml-auto">
-            <a href="/#funcionalidades" className="text-sm font-medium text-muted-foreground hover:text-primary">
+            <a href="/#funcionalidades" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Funcionalidades
             </a>
-            <a href="/#planos" className="text-sm font-medium text-muted-foreground hover:text-primary">
+            <a href="/#planos" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Planos
             </a>
-            <a href="/#depoimentos" className="text-sm font-medium text-muted-foreground hover:text-primary">
+            <a href="/#depoimentos" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Depoimentos
             </a>
-            <Button variant="default" asChild>
-              <Link to="/login">
-                <LogIn className="h-4 w-4 mr-2" />
-                Entrar
-              </Link>
+            <Button variant="ghost" asChild>
+              <Link to="/login">Entrar</Link>
             </Button>
             <ModeToggle />
             <Button asChild>
@@ -196,33 +198,38 @@ export default function Login() {
 
       {/* Conteúdo Principal */}
       <main className="flex-1">
-        <section className="py-20 bg-background">
-          <div className="container px-4">
+        <section className="relative py-16 md:py-24 overflow-hidden">
+          {/* Background Image */}
+          <div className="absolute inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} />
+          {/* Overlay */}
+          <div className="absolute inset-0 z-0 bg-gradient-to-b from-background/70 via-background/40 to-background/70 dark:from-background/80 dark:via-background/50 dark:to-background/80" />
+
+          <div className="container px-4 relative z-10">
             <div className="max-w-md mx-auto">
               {/* Logo */}
-              <div className="text-center mb-8">
+              <div className="text-center mb-6 md:mb-8">
                 {isMainDomain ? (
-                  <div className="h-20 w-20 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                    <Church className="h-10 w-10 text-primary" />
+                  <div className="h-16 w-16 md:h-20 md:w-20 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-3 md:mb-4">
+                    <Church className="h-8 w-8 md:h-10 md:w-10 text-primary" />
                   </div>
                 ) : church?.logo_url ? (
                   <img
                     src={church.logo_url}
                     alt={church.name}
-                    className="h-20 w-20 mx-auto rounded-full object-cover mb-4"
+                    className="h-16 w-16 md:h-20 md:w-20 mx-auto rounded-full object-cover mb-3 md:mb-4"
                   />
                 ) : (
-                  <div className="h-20 w-20 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                    <Church className="h-10 w-10 text-primary" />
+                  <div className="h-16 w-16 md:h-20 md:w-20 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-3 md:mb-4">
+                    <Church className="h-8 w-8 md:h-10 md:w-10 text-primary" />
                   </div>
                 )}
-                
-                <h1 className="text-2xl font-bold text-primary">
+
+                <h1 className="text-2xl md:text-3xl font-bold text-primary">
                   {isMainDomain ? 'MinhaIgreja' : church?.name || 'Área Administrativa'}
                 </h1>
-                <p className="text-muted-foreground mt-2">
-                  {isMainDomain 
-                    ? 'Plataforma de Gestão para Igrejas' 
+                <p className="text-sm md:text-base text-muted-foreground mt-2">
+                  {isMainDomain
+                    ? 'Plataforma de Gestão para Igrejas'
                     : 'Acesse o painel administrativo'}
                 </p>
               </div>
@@ -244,20 +251,20 @@ export default function Login() {
               )}
 
               {/* Formulário de Login */}
-              <Card>
-                <CardHeader>
+              <Card className="border-2 shadow-xl">
+                <CardHeader className="p-4 md:p-6">
                   <div className="flex items-center gap-2">
                     <LogIn className="h-5 w-5 text-primary" />
-                    <CardTitle>Login</CardTitle>
+                    <CardTitle className="text-xl md:text-2xl">Login</CardTitle>
                   </div>
-                  <CardDescription>
-                    {isMainDomain 
-                      ? 'Acesse sua conta da plataforma' 
+                  <CardDescription className="text-sm">
+                    {isMainDomain
+                      ? 'Acesse sua conta da plataforma'
                       : 'Entre com suas credenciais da igreja'}
                   </CardDescription>
                 </CardHeader>
                 <form onSubmit={handleSubmit}>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-4 p-4 md:p-6">
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
                       <div className="relative">
@@ -303,16 +310,16 @@ export default function Login() {
                     </div>
                   </CardContent>
 
-                  <CardFooter>
-                    <Button type="submit" className="w-full" disabled={loading}>
+                  <CardFooter className="p-4 md:p-6 pt-0">
+                    <Button type="submit" className="w-full h-11 md:h-12 text-base md:text-lg" disabled={loading}>
                       {loading ? (
                         <>
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          <Loader2 className="h-4 w-4 md:h-5 md:w-5 mr-2 animate-spin" />
                           Entrando...
                         </>
                       ) : (
                         <>
-                          <LogIn className="h-4 w-4 mr-2" />
+                          <LogIn className="h-4 w-4 md:h-5 md:w-5 mr-2" />
                           {isMainDomain ? 'Acessar Plataforma' : 'Acessar Painel'}
                         </>
                       )}
@@ -322,7 +329,7 @@ export default function Login() {
               </Card>
 
               {/* Links Adicionais */}
-              <div className="text-center mt-6 space-y-4">
+              <div className="text-center mt-6 md:mt-8 space-y-3 md:space-y-4">
                 {isMainDomain ? (
                   <>
                     <p className="text-sm text-muted-foreground">
@@ -356,53 +363,8 @@ export default function Login() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-divine-shadow text-white dark:bg-card dark:border-t dark:border-border py-12">
-        <div className="container px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Church className="h-6 w-6" />
-                <span className="text-xl font-bold">MinhaIgreja</span>
-              </div>
-              <p className="text-sm text-gray-300 dark:text-muted-foreground">
-                Plataforma digital para igrejas que desejam se conectar com membros e visitantes.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Produto</h4>
-              <ul className="space-y-2 text-sm text-gray-300 dark:text-muted-foreground">
-                <li><a href="/#funcionalidades" className="hover:text-white dark:hover:text-primary">Funcionalidades</a></li>
-                <li><a href="/#planos" className="hover:text-white dark:hover:text-primary">Planos</a></li>
-                <li><a href="/criar" className="hover:text-white dark:hover:text-primary">Começar Grátis</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Empresa</h4>
-              <ul className="space-y-2 text-sm text-gray-300 dark:text-muted-foreground">
-                <li><a href="/sobre-nos" className="hover:text-white dark:hover:text-primary">Sobre Nós</a></li>
-                <li><a href="/contato-institucional" className="hover:text-white dark:hover:text-primary">Contato</a></li>
-                <li><a href="/blog" className="hover:text-white dark:hover:text-primary">Blog</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm text-gray-300 dark:text-muted-foreground">
-                <li><a href="/termos-de-uso" className="hover:text-white dark:hover:text-primary">Termos de Uso</a></li>
-                <li><a href="/politica-privacidade" className="hover:text-white dark:hover:text-primary">Privacidade</a></li>
-                <li><a href="/lgpd" className="hover:text-white dark:hover:text-primary">LGPD</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-600 dark:border-border mt-8 pt-6 text-center text-sm text-gray-400 dark:text-muted-foreground">
-            <p>Copyright © {new Date().getFullYear()} MinhaIgreja. Todos os direitos reservados.</p>
-          </div>
-        </div>
-      </footer>
+      {/* Footer Premium */}
+      <HoverFooter />
     </div>
   );
 }
