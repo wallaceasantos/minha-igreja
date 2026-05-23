@@ -10,7 +10,7 @@ interface LiveStreamData {
   description: string | null;
   youtube_url: string | null;
   youtube_video_id: string | null;
-  scheduled_start: string | null;
+  scheduled_start: string | Date | null;
   status: string;
   is_active: number;
 }
@@ -18,6 +18,53 @@ interface LiveStreamData {
 interface LiveSectionProps {
   churchSlug: string;
 }
+
+// Helper para fazer parse de data de vários formatos possíveis
+const parseDate = (input: string | Date | null | undefined): Date | null => {
+  if (!input) return null;
+
+  // Se já é um objeto Date
+  if (input instanceof Date) {
+    return isNaN(input.getTime()) ? null : input;
+  }
+
+  // Se é string
+  const str = String(input).trim();
+  if (!str) return null;
+
+  // Tenta vários formatos:
+
+  // 1. Formato ISO 8609 completo: 2026-05-24T18:30:00.000Z
+  let date = new Date(str);
+  if (!isNaN(date.getTime())) return date;
+
+  // 2. Formato MySQL: 2026-05-24 18:30:00
+  const mysqlMatch = str.match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/);
+  if (mysqlMatch) {
+    // MySQL armazena em UTC, então adicionamos Z
+    const isoString = `${mysqlMatch[1]}-${mysqlMatch[2]}-${mysqlMatch[3]}T${mysqlMatch[4]}:${mysqlMatch[5]}:${mysqlMatch[6]}Z`;
+    date = new Date(isoString);
+    if (!isNaN(date.getTime())) return date;
+  }
+
+  // 3. Formato ISO sem timezone: 2026-05-24T18:30:00
+  const isoMatch = str.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/);
+  if (isoMatch) {
+    const isoString = `${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}T${isoMatch[4]}:${isoMatch[5]}:${isoMatch[6]}Z`;
+    date = new Date(isoString);
+    if (!isNaN(date.getTime())) return date;
+  }
+
+  // 4. Formato de data apenas: 2026-05-24
+  const dateMatch = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (dateMatch) {
+    date = new Date(`${str}T00:00:00Z`);
+    if (!isNaN(date.getTime())) return date;
+  }
+
+  console.warn('Não foi possível fazer parse da data:', str);
+  return null;
+};
 
 // Helper to get YouTube ID (limpa parâmetros extras como ?feature=share)
 const getYoutubeId = (input: string | null | undefined): string | null => {
@@ -87,33 +134,40 @@ export default function LiveSection({ churchSlug }: LiveSectionProps) {
 
   // Helper para converter data do MySQL (assumindo UTC) para timestamp
   const getScheduledTimestamp = (dateInput: string | Date): number => {
-    // MySQL pode retornar como objeto Date ou string '2026-05-24 18:30:00'
-    if (dateInput instanceof Date) {
-      return dateInput.getTime();
+    const parsed = parseDate(dateInput);
+    if (!parsed) {
+      console.warn('Erro ao fazer parse da data para timestamp:', dateInput);
+      return 0;
     }
-    // Se for string, tratamos como UTC
-    const isoString = dateInput.replace(' ', 'T') + 'Z';
-    return new Date(isoString).getTime();
+    return parsed.getTime();
   };
 
   // Helper para formatar data no timezone de Manaus
   const formatDateManaus = (dateInput: string | Date): string => {
+    const parsed = parseDate(dateInput);
+    if (!parsed) {
+      console.warn('Erro ao fazer parse da data:', dateInput, 'Tipo:', typeof dateInput);
+      return 'Data inválida';
+    }
     try {
-      let date: Date;
-      if (dateInput instanceof Date) {
-        date = dateInput;
-      } else {
-        const isoString = dateInput.replace(' ', 'T') + 'Z';
-        date = new Date(isoString);
-      }
-      return date.toLocaleString('pt-BR', {
+      return parsed.toLocaleString('pt-BR', {
         day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit',
         timeZone: 'America/Manaus'
       });
     } catch (e) {
-      return String(dateInput);
+      console.error('Erro ao formatar data:', e);
+      return 'Erro na data';
     }
   };
+
+  // Debug: logar a data recebida
+  useEffect(() => {
+    if (stream?.scheduled_start) {
+      console.log('[Live Debug] scheduled_start:', stream.scheduled_start);
+      console.log('[Live Debug] Tipo:', typeof stream.scheduled_start);
+      console.log('[Live Debug] Parsed:', parseDate(stream.scheduled_start));
+    }
+  }, [stream?.scheduled_start]);
 
   // Countdown timer - usando timezone de Manaus (UTC-4)
   useEffect(() => {
