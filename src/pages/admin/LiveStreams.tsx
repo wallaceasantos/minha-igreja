@@ -159,16 +159,36 @@ export default function AdminLiveStreams() {
   };
 
   const extractVideoId = (url: string): string | null => {
+    if (!url) return null;
+
+    // Remove parâmetros de query primeiro
+    const cleanUrl = url.split('?')[0].split('&')[0];
+
     const patterns = [
-      /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/,
-      /youtube\.com\/embed\/([^&\s]+)/,
-      /youtube\.com\/live\/([^&\s]+)/,
+      // youtube.com/watch?v=VIDEO_ID
+      /[?&]v=([a-zA-Z0-9_-]{11})/,
+      // youtu.be/VIDEO_ID
+      /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+      // youtube.com/embed/VIDEO_ID
+      /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
+      // youtube.com/live/VIDEO_ID
+      /youtube\.com\/live\/([a-zA-Z0-9_-]{11})/,
+      // youtube.com/shorts/VIDEO_ID
+      /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/,
     ];
-    
+
     for (const pattern of patterns) {
       const match = url.match(pattern);
       if (match && match[1]) return match[1];
     }
+
+    // Fallback: último segmento da URL limpa
+    const parts = cleanUrl.split('/').filter(p => p.length > 0);
+    const lastPart = parts[parts.length - 1];
+    if (lastPart && /^[a-zA-Z0-9_-]{11}$/.test(lastPart)) {
+      return lastPart;
+    }
+
     return null;
   };
 

@@ -77,19 +77,33 @@ const getYoutubeId = (input: string | null | undefined): string | null => {
     return url;
   }
 
-  // Tenta extrair o ID de uma URL completa do YouTube
-  const regex = /[?&]v=([a-zA-Z0-9_-]{11})|youtu\.be\/([a-zA-Z0-9_-]{11})|youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/;
-  const match = url.match(regex);
-  
-  if (match) {
-    // Verifica os grupos de captura explicitamente (usando optional chaining para segurança do TS)
-    const id = match[1] ?? match[2] ?? match[3];
-    if (id) return id;
+  // Remove parâmetros de query primeiro (?feature=share, etc)
+  const cleanUrl = url.split('?')[0].split('&')[0];
+
+  // Tenta extrair o ID de vários formatos de URL do YouTube
+  const patterns = [
+    // youtube.com/watch?v=VIDEO_ID
+    /[?&]v=([a-zA-Z0-9_-]{11})/,
+    // youtu.be/VIDEO_ID
+    /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+    // youtube.com/embed/VIDEO_ID
+    /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
+    // youtube.com/live/VIDEO_ID
+    /youtube\.com\/live\/([a-zA-Z0-9_-]{11})/,
+    // youtube.com/shorts/VIDEO_ID
+    /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/,
+  ];
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match && match[1]) {
+      return match[1];
+    }
   }
 
-  // Fallback: tenta pegar a primeira parte antes de qualquer ? ou &
-  const parts = url.split('?')[0].split('&')[0].split('/');
-  const lastPart = parts.pop();
+  // Fallback: tenta pegar o último segmento da URL limpa
+  const parts = cleanUrl.split('/').filter(p => p.length > 0);
+  const lastPart = parts[parts.length - 1];
   if (lastPart && /^[a-zA-Z0-9_-]{11}$/.test(lastPart)) {
     return lastPart;
   }
