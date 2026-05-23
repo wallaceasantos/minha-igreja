@@ -132,7 +132,7 @@ export default function ChurchPage() {
             const statsData = await statsRes.json();
             if (statsData.success) {
               setMembersCount(statsData.data?.members || 0);
-              setPrayersCount(statsData.data?.prayers || 0);
+              setPrayersCount(statsData.data?.prayers?.answered || 0);
               setEventsCount(statsData.data?.events || 0);
             }
           }

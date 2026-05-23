@@ -109,7 +109,7 @@ export default function HeroSection({ onOpenPrayer, prayersCount, churchName, ch
             
             <div className="space-y-0.5">
               <span className="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-white block">
-                {membersCount || 0}+
+                {membersCount || 0}
               </span>
               <span className="text-[10px] text-indigo-300 uppercase font-medium tracking-wide">
                 Membros Ativos
@@ -118,7 +118,7 @@ export default function HeroSection({ onOpenPrayer, prayersCount, churchName, ch
 
             <div className="space-y-0.5 border-x border-white/10 px-4">
               <span className="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-white block">
-                {eventsCount || 0}+
+                {eventsCount || 0}
               </span>
               <span className="text-[10px] text-indigo-300 uppercase font-medium tracking-wide">
                 Eventos Mensais
@@ -127,7 +127,7 @@ export default function HeroSection({ onOpenPrayer, prayersCount, churchName, ch
 
             <div className="space-y-0.5">
               <span className="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-white block">
-                {prayersCount}+
+                {prayersCount || 0}
               </span>
               <span className="text-[10px] text-indigo-300 uppercase font-medium tracking-wide">
                 Pedidos Respondidos
