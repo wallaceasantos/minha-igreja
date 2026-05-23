@@ -85,14 +85,15 @@ export default function LiveSection({ churchSlug }: LiveSectionProps) {
     return () => clearInterval(interval);
   }, [churchSlug]);
 
-  // Countdown timer
+  // Countdown timer - usando timezone de Brasília
   useEffect(() => {
     if (!stream?.scheduled_start || stream.status === 'live') {
       setCountdown('');
       return;
     }
     const timer = setInterval(() => {
-      const target = new Date(stream.scheduled_start!).getTime();
+      // Adiciona 'Z' para indicar UTC e converter corretamente
+      const target = new Date(stream.scheduled_start! + 'Z').getTime();
       const now = Date.now();
       const diff = target - now;
       if (diff <= 0) {
@@ -186,11 +187,15 @@ export default function LiveSection({ churchSlug }: LiveSectionProps) {
                   <p className="text-3xl font-mono font-bold text-amber-400">{countdown}</p>
                 ) : (
                   <p className="text-lg font-bold text-white">
-                    {new Date(stream.scheduled_start).toLocaleString('pt-BR', { 
-                      day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit' 
+                    {new Date(stream.scheduled_start + 'Z').toLocaleString('pt-BR', {
+                      day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit',
+                      timeZone: 'America/Sao_Paulo'
                     })}
                   </p>
                 )}
+                <p className="text-xs text-slate-500 mt-1">
+                  (Horário de Brasília)
+                </p>
               </div>
             ) : isLive ? (
                <div className="bg-red-950/30 rounded-xl p-4 border border-red-900/50">
