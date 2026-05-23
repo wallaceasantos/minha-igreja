@@ -523,30 +523,24 @@ export default function Membros() {
     setEditingMember(member);
     // Limpar erros de datas ao abrir edicao
     setDateErrors({ birth_date: '', baptism_date: '', membership_date: '' });
-    // Converter data do banco (AAAA-MM-DD) para formato brasileiro (DD/MM/AAAA)
-    let birthDateBR = '';
-    if (member.birth_date) {
-      const [year, month, day] = member.birth_date.split('-');
-      if (year && month && day) {
-        birthDateBR = `${day}/${month}/${year}`;
+    // Converter data do banco (ISO ou AAAA-MM-DD) para formato brasileiro (DD/MM/AAAA)
+    const formatDateToBR = (dateString: string | null): string => {
+      if (!dateString) return '';
+      try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return '';
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+      } catch {
+        return '';
       }
-    }
-    // Converter data de batismo
-    let baptismDateBR = '';
-    if (member.baptism_date) {
-      const [year, month, day] = member.baptism_date.split('-');
-      if (year && month && day) {
-        baptismDateBR = `${day}/${month}/${year}`;
-      }
-    }
-    // Converter data de membresia
-    let membershipDateBR = '';
-    if (member.membership_date) {
-      const [year, month, day] = member.membership_date.split('-');
-      if (year && month && day) {
-        membershipDateBR = `${day}/${month}/${year}`;
-      }
-    }
+    };
+
+    const birthDateBR = formatDateToBR(member.birth_date);
+    const baptismDateBR = formatDateToBR(member.baptism_date);
+    const membershipDateBR = formatDateToBR(member.membership_date);
     // Converter telefone do banco para formato (XX) XXXXX-XXXX
     let phoneBR = '';
     if (member.phone) {
