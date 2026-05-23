@@ -313,6 +313,10 @@ export default function LiveSection({ churchSlug }: LiveSectionProps) {
                     return <p className="text-lg font-bold text-white">Data não disponível</p>;
                   }
 
+                  // Calcula diferença de tempo
+                  const diffMs = dateObj.getTime() - Date.now();
+                  const diffHours = diffMs / (1000 * 60 * 60);
+
                   // Formata no horário de Manaus
                   try {
                     const formatted = dateObj.toLocaleString('pt-BR', {
@@ -323,9 +327,12 @@ export default function LiveSection({ churchSlug }: LiveSectionProps) {
                       timeZone: 'America/Manaus'
                     });
 
+                    // Só mostra countdown se faltar menos de 24 horas
+                    const showCountdown = countdown && diffHours < 24 && diffHours > 0;
+
                     return (
                       <>
-                        {countdown ? (
+                        {showCountdown ? (
                           <p className="text-3xl font-mono font-bold text-amber-400">{countdown}</p>
                         ) : (
                           <p className="text-lg font-bold text-white">{formatted}</p>
