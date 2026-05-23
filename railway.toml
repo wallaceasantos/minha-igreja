@@ -1,8 +1,12 @@
 [build]
 builder = "railpack"
+buildCommand = "npm install && npm run build"
 
 [deploy]
 startCommand = "npx serve -l $PORT"
 healthcheckPath = "/"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
+
+[variables]
+NODE_ENV = "production"
