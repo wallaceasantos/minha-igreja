@@ -83,11 +83,11 @@ export default function EventsSection({ events = [] }: EventsSectionProps) {
               const currentStyle = colors[index % colors.length] ?? colors[0];
 
               return (
-                <div key={event.id} className={`${currentStyle.border} pl-3 py-2 space-y-2 text-left group`}>
+                <div key={event.id} className={`${currentStyle?.border ?? 'border-l-2 border-gray-500'} pl-3 py-2 space-y-2 text-left group`}>
                   
                   {/* Badge de Data e Hora */}
                   {formattedDate && (
-                    <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold font-mono tracking-wide ${currentStyle.badge}`}>
+                    <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold font-mono tracking-wide ${currentStyle?.badge ?? 'bg-gray-500/20 text-gray-300 border border-gray-500/30'}`}>
                       <MyIcon name="Clock" size={10} />
                       <span>{formattedDate}</span>
                     </div>
