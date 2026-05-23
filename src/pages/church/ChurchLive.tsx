@@ -1,5 +1,5 @@
 /**
- * ChurchLive - Pagina de Transmissao ao Vivo Privada (Versao Profissional)
+ * ChurchLive - Pagina de Transmissao ao Vivo Privada (Versao Profissional - Novo Design)
  */
 
 import { useState, useEffect, useRef } from 'react';
@@ -13,10 +13,14 @@ import { toast } from 'sonner';
 import { buildApiUrl } from '@/lib/config';
 import LiveAuthGate from '@/components/LiveAuthGate';
 import LiveChat from '@/components/LiveChat';
-import { ChurchHeader, ChurchFooter } from './ChurchBase';
+import Navbar from './NewDesign/Navbar';
+import Footer from './NewDesign/Footer';
+import PrayerModal from './NewDesign/PrayerModal';
+import AdminModal from './NewDesign/AdminModal';
+import { ContactMessage, PrayerRequest } from './types';
 import {
   Play, Users, MessageCircle, ArrowLeft, Radio, Clock, WifiOff,
-  Calendar, Film, BookOpen, DollarSign, Heart, Bell, Mail, Smartphone, Loader2
+  Calendar, Film, BookOpen, DollarSign, Heart, Bell, Mail, Smartphone, Loader2, X
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 
@@ -56,6 +60,9 @@ export default function ChurchLive() {
   const [notifyOpen, setNotifyOpen] = useState(false);
   const [notifyLoading, setNotifyLoading] = useState(false);
   const [prayerOpen, setPrayerOpen] = useState(false);
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  
   const [prayerText, setPrayerText] = useState('');
   const [prayerLoading, setPrayerLoading] = useState(false);
   const [prayerName, setPrayerName] = useState('');
@@ -276,19 +283,31 @@ export default function ChurchLive() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black flex items-center justify-center">
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
         <div className="text-center text-white">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto mb-4"></div>
-          <p>Carregando...</p>
+          <div className="relative w-16 h-16 mx-auto mb-4">
+            <div className="absolute inset-0 border-4 border-red-500/30 rounded-full animate-ping"></div>
+            <div className="absolute inset-0 border-4 border-t-red-500 border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+            <Radio className="absolute inset-0 m-auto h-6 w-6 text-red-500" />
+          </div>
+          <p className="text-lg font-medium">Carregando transmissão...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
-      {/* Header da Igreja */}
-      {church && <ChurchHeader church={church} churchSlug={activeSlug} />}
+    <div className={`min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 ${isDarkMode ? 'dark' : ''}`}>
+      {/* Header do Novo Design */}
+      <Navbar 
+        isDarkMode={isDarkMode}
+        toggleTheme={() => setIsDarkMode(!isDarkMode)}
+        onOpenPrayer={() => setPrayerOpen(true)}
+        onOpenAdmin={() => setIsAdminOpen(true)}
+        churchName={church?.name}
+        churchSlug={activeSlug}
+        churchLogo={church?.logo_url ? buildApiUrl(church.logo_url) : null}
+      />
 
       {/* Banner de Conexão */}
       {!isOnline && (
@@ -300,14 +319,14 @@ export default function ChurchLive() {
       {/* Conteúdo Principal (Gate ou Player) */}
       <div className="flex-1">
         <LiveAuthGate churchSlug={activeSlug || ''}>
-          <div className="min-h-full bg-gradient-to-b from-gray-900 via-gray-900 to-black text-white">
-            <header className="bg-gray-900/95 backdrop-blur-sm border-b border-gray-800 sticky top-0 z-50">
+          <div className="min-h-full bg-slate-950 text-white">
+            <header className="bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 sticky top-0 z-50">
               <div className="container mx-auto px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <Button variant="ghost" size="sm" onClick={() => navigate(`/church/${slug}`)} className="text-gray-400 hover:text-white gap-2">
+                  <Button variant="ghost" size="sm" onClick={() => navigate(`/igreja/${slug}`)} className="text-slate-400 hover:text-white gap-2">
                     <ArrowLeft className="w-4 h-4" /> Voltar ao Site
                   </Button>
-                  <h1 className="text-white font-semibold text-lg hidden md:block">{church?.name || 'Igreja'} - Transmissao ao Vivo</h1>
+                  <h1 className="text-white font-semibold text-lg hidden md:block">{church?.name || 'Igreja'} - Transmissão ao Vivo</h1>
                 </div>
                 <div className="flex items-center gap-2">
                   {/* Indicador de Conexão */}
@@ -324,11 +343,11 @@ export default function ChurchLive() {
               </div>
             </header>
 
-        <main className="container mx-auto px-4 py-6 space-y-8">
+        <main className="container mx-auto px-4 py-6 space-y-6">
           {activeStream && (
             <div className="space-y-6">
               {/* Player Grande */}
-              <div className="aspect-video bg-black rounded-xl overflow-hidden shadow-2xl relative">
+              <div className="aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl relative border border-slate-800">
                 {activeStream.youtube_video_id || activeStream.youtube_url ? (
                   <iframe
                     className="absolute inset-0 w-full h-full"
@@ -344,38 +363,38 @@ export default function ChurchLive() {
               </div>
 
               {/* Info + Stats */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/50 rounded-xl p-4 border border-slate-800">
                 <div>
-                  <h2 className="text-2xl font-bold">{activeStream.title}</h2>
-                  {activeStream.description && <p className="text-gray-400 mt-1">{activeStream.description}</p>}
+                  <h2 className="text-xl font-bold text-white">{activeStream.title}</h2>
+                  {activeStream.description && <p className="text-slate-400 mt-1 text-sm">{activeStream.description}</p>}
                   {activeStream.status === 'scheduled' && activeStream.scheduled_start && (
                     <div className="mt-2 flex items-center gap-4">
                       <Badge variant="outline" className="border-amber-500 text-amber-400">
-                        <Clock className="w-3 h-3 mr-1" /> Comeca em: {countdown || '...'}
+                        <Clock className="w-3 h-3 mr-1" /> Começa em: {countdown || '...'}
                       </Badge>
-                      <span className="text-gray-400 text-sm">
+                      <span className="text-slate-400 text-sm">
                         {new Date(activeStream.scheduled_start).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
                   )}
                 </div>
-                <div className="flex items-center gap-4 text-sm text-gray-400">
+                <div className="flex items-center gap-4 text-sm text-slate-400">
                   <span className="flex items-center gap-1"><Users className="w-4 h-4" /> {viewerCount} assistindo</span>
                 </div>
               </div>
 
               {/* Countdown + Notify (quando agendada) */}
               {activeStream.status === 'scheduled' && (
-                <Card className="bg-gray-800 border-amber-500/30">
+                <Card className="bg-slate-900/50 border-amber-500/30 rounded-xl">
                   <CardContent className="p-6">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                       <div className="text-center md:text-left">
                         <h3 className="text-lg font-semibold text-amber-400 flex items-center gap-2">
-                          <Bell className="w-5 h-5" /> Nao perca esta transmissao!
+                          <Bell className="w-5 h-5" /> Não perca esta transmissão!
                         </h3>
-                        <p className="text-gray-400 mt-1">Inscreva-se para ser notificado quando a live comecar.</p>
+                        <p className="text-slate-400 mt-1 text-sm">Inscreva-se para ser notificado quando a live começar.</p>
                       </div>
-                      <Button onClick={() => setNotifyOpen(true)} className="bg-amber-600 hover:bg-amber-700 gap-2">
+                      <Button onClick={() => setNotifyOpen(true)} className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white gap-2 shadow-lg shadow-amber-500/20">
                         <Bell className="w-4 h-4" /> Me Notificar
                       </Button>
                     </div>
@@ -385,17 +404,17 @@ export default function ChurchLive() {
 
               {/* Botões de Acao */}
               <div className="flex gap-3 flex-wrap">
-                <Button onClick={() => setPrayerOpen(true)} className="bg-pink-600 hover:bg-pink-700 gap-2">
+                <Button onClick={() => setPrayerOpen(true)} className="bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white gap-2 shadow-lg shadow-pink-500/20">
                   <Heart className="w-4 h-4" /> Ore por mim
                 </Button>
-                <Button variant="outline" className="border-green-600 text-green-400 hover:bg-green-900/20 gap-2">
+                <Button variant="outline" className="border-emerald-600 text-emerald-400 hover:bg-emerald-900/20 gap-2">
                   <DollarSign className="w-4 h-4" /> Ofertar
                 </Button>
                 <Button variant="outline" onClick={() => setVersesOpen(true)} className="border-purple-600 text-purple-400 hover:bg-purple-900/20 gap-2">
-                  <BookOpen className="w-4 h-4" /> Versiculos
+                  <BookOpen className="w-4 h-4" /> Versículos
                 </Button>
                 <Button variant="outline" onClick={() => setShowChat(!showChat)} className="border-blue-600 text-blue-400 hover:bg-blue-900/20 gap-2">
-                  <MessageCircle className="w-4 h-4" /> Chat
+                  <MessageCircle className="w-4 h-4" /> Chat {showChat ? 'Fechado' : 'Aberto'}
                 </Button>
               </div>
 
@@ -415,29 +434,29 @@ export default function ChurchLive() {
 
           {/* Offline State */}
           {!activeStream && (
-            <Card className="bg-gray-800 border-gray-700 max-w-2xl mx-auto text-center">
+            <Card className="bg-slate-900/50 border-slate-800 max-w-2xl mx-auto text-center rounded-2xl">
               <CardContent className="py-16">
-                <Film className="w-10 h-10 mx-auto mb-4 text-gray-500" />
-                <h2 className="text-2xl font-bold mb-3">Nenhuma transmissao agora</h2>
-                <p className="text-gray-400 mb-6">Confira nossa programacao ou assista a gravacoes.</p>
-                <Button onClick={() => navigate(`/church/${slug}`)} variant="outline"><ArrowLeft className="w-4 h-4 mr-2" /> Voltar</Button>
+                <Film className="w-10 h-10 mx-auto mb-4 text-slate-500" />
+                <h2 className="text-2xl font-bold mb-3 text-white">Nenhuma transmissão agora</h2>
+                <p className="text-slate-400 mb-6">Confira nossa programação ou assista a gravações.</p>
+                <Button onClick={() => navigate(`/church/${slug}`)} variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800"><ArrowLeft className="w-4 h-4 mr-2" /> Voltar ao Site</Button>
               </CardContent>
             </Card>
           )}
 
           {/* Programacao Semanal */}
           <section>
-            <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><Calendar className="w-5 h-5" /> Programacao Semanal</h3>
+            <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-white"><Calendar className="w-5 h-5" /> Programação Semanal</h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
               {defaultSchedule.map((item, i) => (
-                <Card key={i} className="bg-gray-800 border-gray-700">
+                <Card key={i} className="bg-slate-900/50 border-slate-800 rounded-xl hover:border-slate-700 transition-colors">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <Badge variant="outline" className="border-blue-500 text-blue-400">{item.dia}</Badge>
-                      <span className="text-sm text-gray-400"><Clock className="w-3 h-3 inline" /> {item.hora}</span>
+                      <Badge variant="outline" className="border-blue-500 text-blue-400 text-xs">{item.dia}</Badge>
+                      <span className="text-xs text-slate-400 font-mono"><Clock className="w-3 h-3 inline" /> {item.hora}</span>
                     </div>
-                    <h4 className="font-semibold">{item.nome}</h4>
-                    <p className="text-sm text-gray-400 mt-1">{item.descricao}</p>
+                    <h4 className="font-semibold text-sm text-white">{item.nome}</h4>
+                    <p className="text-xs text-slate-400 mt-1">{item.descricao}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -446,18 +465,18 @@ export default function ChurchLive() {
 
           {/* Gravacoes */}
           <section>
-            <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><Film className="w-5 h-5" /> Transmissoes Anteriores</h3>
+            <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-white"><Film className="w-5 h-5" /> Transmissões Anteriores</h3>
             {previousStreams.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {previousStreams.map((rec) => (
-                  <div 
-                    key={rec.id} 
-                    className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition"
+                  <div
+                    key={rec.id}
+                    className="bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden cursor-pointer hover:border-slate-600 transition-all hover:shadow-lg"
                     onClick={() => window.open(`https://www.youtube.com/watch?v=${rec.youtube_video_id}`, '_blank')}
                   >
-                    <div className="aspect-video bg-gray-900 relative">
-                      <img 
-                        src={`https://img.youtube.com/vi/${rec.youtube_video_id}/hqdefault.jpg`} 
+                    <div className="aspect-video bg-black relative">
+                      <img
+                        src={`https://img.youtube.com/vi/${rec.youtube_video_id}/hqdefault.jpg`}
                         alt={rec.title}
                         className="w-full h-full object-cover"
                       />
@@ -467,7 +486,7 @@ export default function ChurchLive() {
                     </div>
                     <div className="p-3">
                       <h4 className="font-medium text-sm truncate text-white">{rec.title}</h4>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-slate-400 mt-1">
                         {new Date(rec.scheduled_start).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
                       </p>
                     </div>
@@ -475,7 +494,7 @@ export default function ChurchLive() {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-8">Nenhuma transmissão anterior encontrada.</p>
+              <p className="text-slate-500 text-center py-8 text-sm">Nenhuma transmissão anterior encontrada.</p>
             )}
           </section>
         </main>
@@ -483,41 +502,46 @@ export default function ChurchLive() {
         {/* Modal de Oracao Rápida */}
         {prayerOpen && (
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <Card className="bg-gray-800 border-gray-700 max-w-md w-full">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2"><Heart className="w-5 h-5 text-pink-400" /> Ore por mim</CardTitle>
-                <p className="text-gray-400 text-sm">Envie um pedido de oração para a equipe pastoral da igreja.</p>
+            <Card className="bg-slate-900 border-slate-800 max-w-md w-full rounded-2xl shadow-2xl">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-white flex items-center gap-2"><Heart className="w-5 h-5 text-pink-400" /> Ore por mim</CardTitle>
+                  <button onClick={() => { setPrayerOpen(false); setPrayerText(''); setPrayerName(''); }} className="text-slate-400 hover:text-white transition-colors">
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                <p className="text-slate-400 text-sm">Envie um pedido de oração para a equipe pastoral da igreja.</p>
               </CardHeader>
               <div className="space-y-4 px-6 pb-6">
                 <div>
-                  <Label className="text-gray-300">Seu Nome</Label>
-                  <Input 
-                    value={prayerName} 
-                    onChange={(e) => setPrayerName(e.target.value)} 
-                    placeholder="Como devemos te chamar?" 
-                    className="bg-gray-700 border-gray-600 text-white mt-1" 
+                  <Label className="text-slate-300">Seu Nome</Label>
+                  <Input
+                    value={prayerName}
+                    onChange={(e) => setPrayerName(e.target.value)}
+                    placeholder="Como devemos te chamar?"
+                    className="bg-slate-800 border-slate-700 text-white mt-1"
                   />
                 </div>
                 <div>
-                  <Label className="text-gray-300">Pedido de Oração</Label>
+                  <Label className="text-slate-300">Pedido de Oração</Label>
                   <textarea
                     value={prayerText}
                     onChange={(e) => setPrayerText(e.target.value)}
                     placeholder="Escreva seu pedido de oração (mínimo 10 caracteres)"
-                    className="w-full min-h-[100px] p-3 bg-gray-700 border border-gray-600 text-white rounded-md mt-1 resize-none focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    className="w-full min-h-[100px] p-3 bg-slate-800 border border-slate-700 text-white rounded-lg mt-1 resize-none focus:outline-none focus:ring-2 focus:ring-pink-500"
                   />
                 </div>
                 <div className="flex items-center gap-2">
-                  <input type="checkbox" id="lgpd" checked readOnly className="w-4 h-4 rounded border-gray-600 bg-gray-700 text-pink-600" />
-                  <label htmlFor="lgpd" className="text-xs text-gray-400">Concordo com a política de privacidade e envio de orações.</label>
+                  <input type="checkbox" id="lgpd" checked readOnly className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-pink-600" />
+                  <label htmlFor="lgpd" className="text-xs text-slate-400">Concordo com a política de privacidade e envio de orações.</label>
                 </div>
                 <div className="flex gap-3">
-                  <Button type="button" variant="outline" onClick={() => { setPrayerOpen(false); setPrayerText(''); setPrayerName(''); }} className="flex-1">Cancelar</Button>
-                  <Button onClick={handlePrayerRequest} disabled={prayerLoading} className="flex-1 bg-pink-600 hover:bg-pink-700 gap-2">
+                  <Button type="button" variant="outline" onClick={() => { setPrayerOpen(false); setPrayerText(''); setPrayerName(''); }} className="flex-1 border-slate-700 text-slate-300 hover:bg-slate-800">Cancelar</Button>
+                  <Button onClick={handlePrayerRequest} disabled={prayerLoading} className="flex-1 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white gap-2 shadow-lg shadow-pink-500/20">
                     {prayerLoading ? <><Loader2 className="w-4 h-4 animate-spin" /> Enviando...</> : <><Heart className="w-4 h-4" /> Enviar Oração</>}
                   </Button>
                 </div>
-                <p className="text-xs text-gray-500 text-center">Sua oração será enviada à equipe pastoral com total sigilo.</p>
+                <p className="text-xs text-slate-500 text-center">Sua oração será enviada à equipe pastoral com total sigilo.</p>
               </div>
             </Card>
           </div>
@@ -526,31 +550,36 @@ export default function ChurchLive() {
         {/* Modal de Versiculos */}
         {versesOpen && (
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <Card className="bg-gray-800 border-gray-700 max-w-md w-full max-h-[90vh] flex flex-col">
-              <CardHeader className="shrink-0 border-b border-gray-700">
-                <CardTitle className="text-white flex items-center gap-2"><BookOpen className="w-5 h-5 text-purple-400" /> Palavra de Deus</CardTitle>
+            <Card className="bg-slate-900 border-slate-800 max-w-md w-full max-h-[90vh] flex flex-col rounded-2xl shadow-2xl">
+              <CardHeader className="shrink-0 border-b border-slate-800">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-white flex items-center gap-2"><BookOpen className="w-5 h-5 text-purple-400" /> Palavra de Deus</CardTitle>
+                  <button onClick={() => setVersesOpen(false)} className="text-slate-400 hover:text-white transition-colors">
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
               </CardHeader>
               <div className="flex-1 overflow-y-auto space-y-6 px-6 py-4">
                 {versesList.length > 0 ? (
                   <>
                     {/* Versículo Principal */}
-                    <div className="text-center p-4 bg-gray-700/50 rounded-lg">
+                    <div className="text-center p-4 bg-slate-800/50 rounded-xl">
                       <p className="text-xl text-white font-serif italic mb-4">"{versesList[0]?.text}"</p>
                       <p className="text-purple-400 font-medium">{versesList[0]?.ref}</p>
                     </div>
 
-                    <Button onClick={() => handleCopyVerse(versesList[0]?.text || '', versesList[0]?.ref || '')} className="w-full bg-purple-600 hover:bg-purple-700 gap-2">
+                    <Button onClick={() => handleCopyVerse(versesList[0]?.text || '', versesList[0]?.ref || '')} className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white gap-2 shadow-lg shadow-purple-500/20">
                       <span>📋</span> Copiar e Compartilhar
                     </Button>
 
                     {versesList.length > 1 && (
                       <div className="space-y-3">
-                        <p className="text-sm text-gray-400 font-medium uppercase tracking-wider">Mais leituras</p>
+                        <p className="text-sm text-slate-400 font-medium uppercase tracking-wider">Mais leituras</p>
                         {versesList.slice(1).map((v, i) => (
-                          <div key={i} className="p-3 bg-gray-700/30 rounded-lg flex justify-between items-center gap-3">
+                          <div key={i} className="p-3 bg-slate-800/30 rounded-lg flex justify-between items-center gap-3">
                             <div>
-                              <p className="text-gray-300 italic">"{v.text}"</p>
-                              <p className="text-purple-400 text-sm mt-1">{v.ref}</p>
+                              <p className="text-slate-300 italic text-sm">"{v.text}"</p>
+                              <p className="text-purple-400 text-xs mt-1">{v.ref}</p>
                             </div>
                             <Button size="sm" variant="ghost" onClick={() => handleCopyVerse(v.text, v.ref)} className="text-purple-400 hover:text-white shrink-0">
                               Copiar
@@ -561,11 +590,11 @@ export default function ChurchLive() {
                     )}
                   </>
                 ) : (
-                  <p className="text-center text-gray-400 py-8">Nenhum versículo cadastrado. Peça ao pastor para adicionar no painel.</p>
+                  <p className="text-center text-slate-400 py-8 text-sm">Nenhum versículo cadastrado. Peça ao pastor para adicionar no painel.</p>
                 )}
               </div>
-              <div className="shrink-0 border-t border-gray-700 p-6">
-                <Button type="button" variant="outline" onClick={() => setVersesOpen(false)} className="w-full">Fechar</Button>
+              <div className="shrink-0 border-t border-slate-800 p-6">
+                <Button type="button" variant="outline" onClick={() => setVersesOpen(false)} className="w-full border-slate-700 text-slate-300 hover:bg-slate-800">Fechar</Button>
               </div>
             </Card>
           </div>
@@ -574,26 +603,32 @@ export default function ChurchLive() {
         {/* Modal de Notificacao */}
         {notifyOpen && (
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <Card className="bg-gray-800 border-gray-700 max-w-md w-full">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2"><Bell className="w-5 h-5 text-amber-400" /> Me Notificar</CardTitle>
+            <Card className="bg-slate-900 border-slate-800 max-w-md w-full rounded-2xl shadow-2xl">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-white flex items-center gap-2"><Bell className="w-5 h-5 text-amber-400" /> Me Notificar</CardTitle>
+                  <button onClick={() => { setNotifyOpen(false); setNotifyForm({ name: '', email: '', phone: '' }); }} className="text-slate-400 hover:text-white transition-colors">
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                <p className="text-slate-400 text-sm">Receba um aviso quando a live começar.</p>
               </CardHeader>
               <form onSubmit={handleNotifySubmit} className="space-y-4 px-6 pb-6">
                 <div>
-                  <Label className="text-gray-300">Nome *</Label>
-                  <Input value={notifyForm.name} onChange={(e) => setNotifyForm({ ...notifyForm, name: e.target.value })} placeholder="Seu nome" className="bg-gray-700 border-gray-600 text-white mt-1" required />
+                  <Label className="text-slate-300">Nome *</Label>
+                  <Input value={notifyForm.name} onChange={(e) => setNotifyForm({ ...notifyForm, name: e.target.value })} placeholder="Seu nome" className="bg-slate-800 border-slate-700 text-white mt-1" required />
                 </div>
                 <div>
-                  <Label className="text-gray-300 flex items-center gap-2"><Mail className="w-3 h-3" /> Email</Label>
-                  <Input type="email" value={notifyForm.email} onChange={(e) => setNotifyForm({ ...notifyForm, email: e.target.value })} placeholder="seu@email.com" className="bg-gray-700 border-gray-600 text-white mt-1" />
+                  <Label className="text-slate-300 flex items-center gap-2"><Mail className="w-3 h-3" /> Email</Label>
+                  <Input type="email" value={notifyForm.email} onChange={(e) => setNotifyForm({ ...notifyForm, email: e.target.value })} placeholder="seu@email.com" className="bg-slate-800 border-slate-700 text-white mt-1" />
                 </div>
                 <div>
-                  <Label className="text-gray-300 flex items-center gap-2"><Smartphone className="w-3 h-3" /> WhatsApp</Label>
-                  <Input value={notifyForm.phone} onChange={(e) => setNotifyForm({ ...notifyForm, phone: e.target.value })} placeholder="(92) 99999-9999" className="bg-gray-700 border-gray-600 text-white mt-1" />
+                  <Label className="text-slate-300 flex items-center gap-2"><Smartphone className="w-3 h-3" /> WhatsApp</Label>
+                  <Input value={notifyForm.phone} onChange={(e) => setNotifyForm({ ...notifyForm, phone: e.target.value })} placeholder="(92) 99999-9999" className="bg-slate-800 border-slate-700 text-white mt-1" />
                 </div>
                 <div className="flex gap-3">
-                  <Button type="button" variant="outline" onClick={() => { setNotifyOpen(false); setNotifyForm({ name: '', email: '', phone: '' }); }} className="flex-1">Cancelar</Button>
-                  <Button type="submit" disabled={notifyLoading || !notifyForm.name} className="flex-1 bg-amber-600 hover:bg-amber-700 gap-2">
+                  <Button type="button" variant="outline" onClick={() => { setNotifyOpen(false); setNotifyForm({ name: '', email: '', phone: '' }); }} className="flex-1 border-slate-700 text-slate-300 hover:bg-slate-800">Cancelar</Button>
+                  <Button type="submit" disabled={notifyLoading || !notifyForm.name} className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white gap-2 shadow-lg shadow-amber-500/20">
                     {notifyLoading ? <><Loader2 className="w-4 h-4 animate-spin" /> Enviando...</> : <><Bell className="w-4 h-4" /> Inscrever</>}
                   </Button>
                 </div>
@@ -601,12 +636,60 @@ export default function ChurchLive() {
             </Card>
           </div>
         )}
+        
+        {/* Modais e Footer */}
+        <PrayerModal
+          isOpen={prayerOpen}
+          onClose={() => setPrayerOpen(false)}
+          onSubmitPrayer={async (prayer) => {
+             setPrayerLoading(true);
+             try {
+               await fetch(buildApiUrl('/api/pedidos/public'), {
+                 method: 'POST',
+                 headers: { 'Content-Type': 'application/json' },
+                 body: JSON.stringify({
+                   church_slug: activeSlug,
+                   nome: prayer.name,
+                   email: prayer.email || '',
+                   telefone: prayer.phone || '',
+                   oracao: prayer.request,
+                   lgpd: true,
+                 }),
+               });
+               toast.success('Pedido de oração enviado!');
+               setPrayerOpen(false);
+             } catch (e) { toast.error('Erro ao enviar'); }
+             finally { setPrayerLoading(false); }
+          }}
+          churchSlug={activeSlug}
+          churchName={church?.name}
+          churchId={church?.id}
+        />
+        
+        <AdminModal
+          isOpen={isAdminOpen}
+          onClose={() => setIsAdminOpen(false)}
+          churchSlug={activeSlug}
+        />
+
+        <Footer
+          churchName={church?.name}
+          churchDescription={church?.description || ''}
+          churchLogo={church?.logo_url ? buildApiUrl(church.logo_url) : null}
+          address={church?.address_street}
+          neighborhood={church?.address_neighborhood}
+          city={church?.address_city}
+          state={church?.address_state}
+          zip={church?.address_zip}
+          phone={church?.phone}
+          email={church?.email}
+          facebookUrl={church?.facebook_url}
+          instagramUrl={church?.instagram_url}
+          youtubeUrl={church?.youtube_url}
+        />
       </div>
         </LiveAuthGate>
       </div>
-
-      {/* Footer da Igreja */}
-      {church && <ChurchFooter church={church} />}
     </div>
   );
 }

@@ -39,7 +39,9 @@
       "Bash(ren *)",
       "Bash(npm *)",
       "Bash(wsl *)",
-      "Bash(rmdir *)"
+      "Bash(rmdir *)",
+      "Read(c:\\Users\\wallace\\Desktop/**)",
+      "Agent(Explore)"
     ]
   },
   "$version": 4

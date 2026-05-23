@@ -60,13 +60,20 @@ interface UseChurchReturn {
  * Extrai o slug/subdomínio da URL atual
  */
 function extractSlug(): string {
-  // Em desenvolvimento (localhost), usa parâmetro da URL
+  // Extrair slug da rota /igreja/:slug
+  const pathParts = window.location.pathname.split('/');
+  const churchIndex = pathParts.indexOf('igreja');
+  if (churchIndex !== -1 && pathParts[churchIndex + 1]) {
+    return pathParts[churchIndex + 1];
+  }
+
+  // Em desenvolvimento (localhost), usa parâmetro da URL como fallback
   if (window.location.hostname === 'localhost') {
     const params = new URLSearchParams(window.location.search);
     const churchParam = params.get('church');
     return churchParam || '';
   }
-  
+
   // Em produção, usa subdomínio
   const hostname = window.location.hostname;
   const parts = hostname.split('.');
@@ -77,20 +84,12 @@ function extractSlug(): string {
   }
 
   // Se tiver mais de 2 partes, tem subdomínio
-  // Ex: igreja1.minhaigreja.app.br → 4 partes
   if (parts.length > 2) {
     return parts[0] || '';
   }
 
-  // Se tiver exatamente 2 partes, é domínio principal
-  // Ex: minhaigreja.app.br → 3 partes (ou 2 sem www)
-  // Retorna slug padrão ou vazio para landing page
-  if (parts.length === 2 || parts.length === 3) {
-    return ''; // Domínio principal
-  }
-
   // Fallback
-  return parts[0] || '';
+  return '';
 }
 
 /**
@@ -130,7 +129,7 @@ export function useChurch(): UseChurchReturn {
       }
       
       // Busca dados da igreja na API
-      const response = await fetch(`/api/church/${slug}`);
+      const response = await fetch(`/api/church/slug/${slug}`);
       
       if (!response.ok) {
         if (response.status === 404) {

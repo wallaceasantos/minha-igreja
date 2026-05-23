@@ -79,7 +79,7 @@ export default function ContatoInstitucional() {
               <Link to="/login">Entrar</Link>
             </Button>
             <ModeToggle />
-            <Button asChild>
+            <Button asChild className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg shadow-blue-600/20">
               <Link to="/criar">Criar Minha Igreja</Link>
             </Button>
           </nav>
@@ -128,7 +128,7 @@ export default function ContatoInstitucional() {
                   Entrar
                 </Link>
               </Button>
-              <Button asChild>
+              <Button asChild className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white">
                 <Link to="/criar" onClick={() => setMobileMenuOpen(false)}>
                   Criar Minha Igreja
                 </Link>
@@ -266,7 +266,7 @@ export default function ContatoInstitucional() {
                         />
                       </div>
 
-                      <Button type="submit" className="w-full h-11 md:h-12 text-base md:text-lg" disabled={sending}>
+                      <Button type="submit" className="w-full h-11 md:h-12 text-base md:text-lg bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg shadow-blue-600/20" disabled={sending}>
                         {sending ? (
                           <>
                             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />

@@ -258,7 +258,7 @@ export default function LandingPage() {
               <Link to="/login">Entrar</Link>
             </Button>
             <ModeToggle />
-            <Button asChild className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/20">
+            <Button asChild className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg shadow-blue-600/20 text-white">
               <Link to="/criar">Criar Minha Igreja</Link>
             </Button>
           </nav>
@@ -288,7 +288,7 @@ export default function LandingPage() {
               <Button variant="ghost" className="w-full justify-start">Entrar</Button>
             </Link>
             <Link to="/criar" className="block py-2" onClick={() => setMobileMenuOpen(false)}>
-              <Button className="w-full">Criar Minha Igreja</Button>
+              <Button className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white">Criar Minha Igreja</Button>
             </Link>
           </div>
         )}
@@ -325,17 +325,12 @@ export default function LandingPage() {
               Plataforma completa e segura para igrejas que desejam se <span className="text-primary font-semibold">conectar com membros</span>, <span className="text-primary font-semibold">crescer de verdade</span> e <span className="text-primary font-semibold">transformar vidas</span> de forma profissional.
             </p>
 
-            <div className={`hero-cta flex flex-col sm:flex-row gap-4 justify-center mt-8 ${isHeroInView ? 'animate' : ''}`}>
-              <Button size="lg" asChild className="hero-cta-primary text-lg h-14 px-8 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-xl shadow-primary/20">
+            <div className={`hero-cta flex justify-center mt-8 ${isHeroInView ? 'animate' : ''}`}>
+              <Button size="lg" asChild className="hero-cta-primary text-lg h-14 px-8 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-xl shadow-blue-600/20 text-white">
                 <Link to="/criar">
                   Testar Grátis (60 dias) Agora
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
-              </Button>
-
-              <Button size="lg" variant="outline" className="hero-cta-primary text-lg h-14 px-8 border-2 hover:bg-primary/5">
-                <Play className="mr-2 h-5 w-5" />
-                Ver Demonstração
               </Button>
             </div>
 
@@ -362,9 +357,9 @@ export default function LandingPage() {
         <div className="container px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto">
             {[
-              { value: '500+', label: 'Igrejas Ativas', icon: Church },
-              { value: '50K+', label: 'Membros', icon: Users },
-              { value: '100K+', label: 'Pedidos de Oração', icon: HeartHandshake },
+              { value: '50+', label: 'Igrejas Ativas', icon: Church },
+              { value: '100+', label: 'Membros', icon: Users },
+              { value: '200+', label: 'Pedidos de Oração', icon: HeartHandshake },
               { value: '99.9%', label: 'Uptime', icon: Cloud },
             ].map((stat, index) => (
               <div key={index} className={`hero-stat text-center group ${isStatsInView ? 'animate' : ''}`}>
@@ -529,7 +524,7 @@ export default function LandingPage() {
                         <span className="text-muted-foreground self-end mb-1">/{isAnnual ? 'ano' : 'mês'}</span>
                       </div>
 
-                      <Button className="w-full rounded-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/25" asChild>
+                      <Button className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg shadow-blue-600/20 text-white" asChild>
                         <Link to="/criar" state={{ selectedPlan: 'essencial' }}>
                           Testar Grátis (60 dias)
                           <ArrowRight className="ml-2 h-4 w-4" />
@@ -590,7 +585,7 @@ export default function LandingPage() {
           <div className="text-center">
             <div className="inline-flex flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-8 px-4 sm:px-8 py-4 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">500+</div>
+                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">50+</div>
                 <div className="text-sm text-gray-500 dark:text-gray-400">Igrejas Ativas</div>
               </div>
               <div className="w-px h-12 bg-gray-200 dark:bg-gray-700"></div>
@@ -620,7 +615,7 @@ export default function LandingPage() {
               para se conectar com seus membros.
             </p>
             <div className={`flex flex-col sm:flex-row gap-4 justify-center mt-8 cta-buttons ${isCtaInView ? 'animate' : ''}`}>
-              <Button size="lg" variant="secondary" asChild className="cta-button-primary text-lg h-12 px-8 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100">
+              <Button size="lg" variant="secondary" asChild className="cta-button-primary text-lg h-12 px-8 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white dark:from-blue-600 dark:to-cyan-600">
                 <Link to="/criar">
                   Criar Minha Igreja Grátis
                   <ArrowRight className="ml-2 h-5 w-5" />

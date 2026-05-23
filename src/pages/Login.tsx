@@ -137,7 +137,7 @@ export default function Login() {
               <Link to="/login">Entrar</Link>
             </Button>
             <ModeToggle />
-            <Button asChild>
+            <Button asChild className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg shadow-blue-600/20">
               <Link to="/criar">Criar Minha Igreja</Link>
             </Button>
           </nav>
@@ -186,7 +186,7 @@ export default function Login() {
                   Entrar
                 </Link>
               </Button>
-              <Button asChild>
+              <Button asChild className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white">
                 <Link to="/criar" onClick={() => setMobileMenuOpen(false)}>
                   Criar Minha Igreja
                 </Link>
@@ -311,7 +311,7 @@ export default function Login() {
                   </CardContent>
 
                   <CardFooter className="p-4 md:p-6 pt-0">
-                    <Button type="submit" className="w-full h-11 md:h-12 text-base md:text-lg" disabled={loading}>
+                    <Button type="submit" className="w-full h-11 md:h-12 text-base md:text-lg bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg shadow-blue-600/20" disabled={loading}>
                       {loading ? (
                         <>
                           <Loader2 className="h-4 w-4 md:h-5 md:w-5 mr-2 animate-spin" />

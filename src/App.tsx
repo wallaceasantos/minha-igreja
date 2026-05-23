@@ -6,7 +6,7 @@
 import { lazy, Suspense, useState, useEffect } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useParams, Navigate } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -34,9 +34,8 @@ const SuperAdminTickets = lazy(() => import("./pages/super-admin/SupportTickets"
 const SuperAdminAnnouncements = lazy(() => import("./pages/super-admin/Announcements"));
 const SuperAdminReports = lazy(() => import("./pages/super-admin/Reports"));
 const SuperAdminSecurity = lazy(() => import("./pages/super-admin/SecurityDashboard"));
-const ChurchPreview = lazy(() => import("./pages/church/ChurchPreview"));
+const ChurchNew = lazy(() => import("./pages/church/NewDesign/ChurchPage"));
 const ChurchLive = lazy(() => import("./pages/church/ChurchLive"));
-const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
 const PoliticaPrivacidade = lazy(() => import("./pages/PoliticaPrivacidade"));
 const SobreNos = lazy(() => import("./pages/SobreNos"));
@@ -108,6 +107,12 @@ const LazyAdminLiveStreams = lazy(() => import("./pages/admin/LiveStreams"));
 const LazyAdminReviews = lazy(() => import("./pages/admin/Reviews"));
 const LazyAdminVerses = lazy(() => import("./pages/admin/Verses"));
 
+// Componente de redirecionamento para rotas antigas /church -> /igreja
+const ChurchSlugRedirect = () => {
+  const { slug } = useParams<{ slug: string }>();
+  return <Navigate to={`/igreja/${slug}`} replace />;
+};
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -149,10 +154,14 @@ const App = () => (
               <Route path="/super-admin/reports" element={<SuperAdminReports />} />
               <Route path="/super-admin/security" element={<SuperAdminSecurity />} />
               
-              {/* Preview da Igreja (localhost) */}
-              <Route path="/church/:slug" element={<ChurchPreview />} />
-              <Route path="/church/:slug/ao-vivo" element={<ChurchLive />} />
-              <Route path="/church" element={<ChurchPreview />} />
+              {/* Preview da Igreja (localhost) - NOVO DESIGN */}
+              <Route path="/igreja/:slug" element={<ChurchNew />} />
+              <Route path="/igreja/:slug/ao-vivo" element={<ChurchLive />} />
+              <Route path="/igreja" element={<ChurchNew />} />
+
+              {/* Redirecionamento de rotas antigas /church -> /igreja */}
+              <Route path="/church/:slug" element={<ChurchSlugRedirect />} />
+              <Route path="/church" element={<Navigate to="/igreja" replace />} />
 
               {/* Páginas Institucionais (FORA DO LAYOUT) */}
               <Route path="/sobre-nos" element={<SobreNos />} />
@@ -162,10 +171,9 @@ const App = () => (
               <Route path="/lgpd" element={<LGPD />} />
               <Route path="/politica-privacidade" element={<PoliticaPrivacidade />} />
               <Route path="/pedidos-oracao" element={<PedidosOracaoPublico />} />
-              <Route path="/church/:slug/pedidos-oracao" element={<PedidosOracaoRouter />} />
+              <Route path="/igreja/:slug/pedidos-oracao" element={<PedidosOracaoRouter />} />
 
               {/* Rotas para Igrejas (Subdomínios) */}
-              <Route path="/home" element={<Home />} />
 
               {/* Área Administrativa */}
               <Route element={<ProtectedRoute />}>

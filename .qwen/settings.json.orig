@@ -38,7 +38,9 @@
       "Bash(/g)",
       "Bash(ren *)",
       "Bash(npm *)",
-      "Bash(wsl *)"
+      "Bash(wsl *)",
+      "Bash(rmdir *)",
+      "Read(c:\\Users\\wallace\\Desktop/**)"
     ]
   },
   "$version": 4

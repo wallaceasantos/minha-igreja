@@ -42,7 +42,7 @@ export default function TermosDeUso() {
               <Link to="/login">Entrar</Link>
             </Button>
             <ModeToggle />
-            <Button asChild>
+            <Button asChild className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg shadow-blue-600/20">
               <Link to="/criar">Criar Minha Igreja</Link>
             </Button>
           </nav>
@@ -91,7 +91,7 @@ export default function TermosDeUso() {
                   Entrar
                 </Link>
               </Button>
-              <Button asChild>
+              <Button asChild className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white">
                 <Link to="/criar" onClick={() => setMobileMenuOpen(false)}>
                   Criar Minha Igreja
                 </Link>
