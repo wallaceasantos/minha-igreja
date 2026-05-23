@@ -131,6 +131,8 @@ export default function Pedidos() {
         result = await response.json();
 
         if (result.success) {
+          console.log('[Pedidos] Dados recebidos:', result.data);
+          console.log('[Pedidos] Status dos pedidos:', result.data.map(p => ({ id: p.id, status: p.status })));
           setPedidos(result.data);
         }
       }
