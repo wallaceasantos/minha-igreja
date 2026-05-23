@@ -26,7 +26,8 @@ export default function ChurchPage() {
   const [prayers, setPrayers] = useState<PrayerRequest[]>([]);
   const [contactMessages, setContactMessages] = useState<ContactMessage[]>([]);
   const [prayersCount, setPrayersCount] = useState(0);
-  
+  const [eventsCount, setEventsCount] = useState(0);
+
   // Dados dinâmicos do backend
   const [ministries, setMinistries] = useState<any[]>([]);
   const [cults, setCults] = useState<any[]>([]);
@@ -130,13 +131,9 @@ export default function ChurchPage() {
           if (statsRes.ok) {
             const statsData = await statsRes.json();
             if (statsData.success) {
-              setMembersCount(
-                statsData.data?.members_count || 
-                statsData.data?.total_membros || 
-                statsData.data?.membros || 
-                statsData.data?.active_members ||
-                0
-              );
+              setMembersCount(statsData.data?.members || 0);
+              setPrayersCount(statsData.data?.prayers || 0);
+              setEventsCount(statsData.data?.events || 0);
             }
           }
         } catch (e) {
@@ -328,7 +325,7 @@ export default function ChurchPage() {
               churchName={church.name}
               churchDescription={church.description || 'Um lugar de fé, esperança e amor.'}
               membersCount={membersCount}
-              eventsCount={events.length}
+              eventsCount={eventsCount}
             />
           </div>
 
