@@ -36,9 +36,20 @@ export default function ChurchPage() {
 
   const toggleTheme = () => setIsDarkMode(prev => !prev);
 
+  // Se não houver igreja (erro ou slug inválido), desativa loadingData
+  useEffect(() => {
+    if (!church && !churchLoading) {
+      console.log('[ChurchPage] Sem igreja e churchLoading=false, desativando loadingData');
+      setLoadingData(false);
+    }
+  }, [church, churchLoading]);
+
   // Carregar dados reais da API quando a igreja estiver disponível
   useEffect(() => {
-    if (!church?.id || !church?.slug) return;
+    if (!church?.id || !church?.slug) {
+      console.log('[ChurchPage] church não disponível ainda:', { id: church?.id, slug: church?.slug });
+      return;
+    }
 
     const loadData = async () => {
       setLoadingData(true);

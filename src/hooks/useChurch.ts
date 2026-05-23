@@ -120,16 +120,21 @@ export function useChurch(): UseChurchReturn {
   const loadChurch = async () => {
     try {
       const slug = extractSlug();
-      
+      console.log('[useChurch] Slug extraído:', slug);
+
       // Se não tiver slug, é o domínio principal (landing page)
       if (!slug) {
+        console.log('[useChurch] Sem slug, definindo church como null');
         setChurch(null);
         setLoading(false);
         return;
       }
-      
+
       // Busca dados da igreja na API
-      const response = await fetch(`/api/church/slug/${slug}`);
+      const apiUrl = `/api/church/slug/${slug}`;
+      console.log('[useChurch] Buscando dados em:', apiUrl);
+      const response = await fetch(apiUrl);
+      console.log('[useChurch] Resposta da API:', response.status);
       
       if (!response.ok) {
         if (response.status === 404) {
@@ -155,9 +160,11 @@ export function useChurch(): UseChurchReturn {
       setError(null);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      console.error('[useChurch] Erro ao carregar igreja:', errorMessage, err);
       setError(errorMessage);
       setChurch(null);
     } finally {
+      console.log('[useChurch] Finalizando loading');
       setLoading(false);
     }
   };
