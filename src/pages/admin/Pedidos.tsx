@@ -12,7 +12,6 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Heart,
   Search,
@@ -65,15 +64,21 @@ import { cn } from '@/lib/utils';
 
 interface Pedido {
   id: number;
+  church_id: number;
+  tipo: 'pedido' | 'agradecimento';
   nome: string | null;
   email: string | null;
+  categoria: string | null;
+  tema: string | null;
+  privacidade: 'public' | 'private';
   titulo: string | null;
   oracao: string;
   pedido_atendido: number;
   status: 'pending' | 'answered' | 'archived';
-  answer: string | null;
-  created_at: string;
+  created_by: number | null;
   updated_at: string;
+  last_reminder_at: string | null;
+  created_at: string;
 }
 
 interface PedidoStats {
@@ -109,7 +114,6 @@ export default function Pedidos() {
   const [viewingPedido, setViewingPedido] = useState<Pedido | null>(null);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [answerDialogOpen, setAnswerDialogOpen] = useState(false);
-  const [answerText, setAnswerText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Verificar filtro na URL (para link do dashboard)
@@ -208,7 +212,7 @@ export default function Pedidos() {
     }
   };
 
-  const handleMarkAsAnswered = async (pedido: Pedido, answer?: string) => {
+  const handleMarkAsAnswered = async (pedido: Pedido) => {
     try {
       setIsSubmitting(true);
       const churchId = localStorage.getItem('churchId');
@@ -219,8 +223,7 @@ export default function Pedidos() {
           titulo: pedido.titulo,
           oracao: pedido.oracao,
           status: 'answered',
-          pedido_atendido: pedido.pedido_atendido,
-          answer: answer || pedido.answer
+          pedido_atendido: pedido.pedido_atendido
         })
       });
 
@@ -229,7 +232,6 @@ export default function Pedidos() {
       if (result.success) {
         toast.success('Pedido marcado como respondido!');
         setAnswerDialogOpen(false);
-        setAnswerText('');
         await Promise.all([loadPedidos(), loadStats()]);
       } else {
         toast.error('Erro ao marcar como respondido');
@@ -310,13 +312,12 @@ export default function Pedidos() {
 
   const openAnswerDialog = (pedido: Pedido) => {
     setViewingPedido(pedido);
-    setAnswerText(pedido.answer || '');
     setAnswerDialogOpen(true);
   };
 
   const submitAnswer = async () => {
     if (!viewingPedido) return;
-    await handleMarkAsAnswered(viewingPedido, answerText);
+    await handleMarkAsAnswered(viewingPedido);
   };
 
   // Abrir WhatsApp para responder pedido
@@ -380,6 +381,18 @@ export default function Pedidos() {
       bgColor: 'bg-gray-50',
       borderColor: 'border-gray-200'
     }
+  };
+
+  // Configurações de tipo
+  const tipoConfig = {
+    pedido: { label: 'Pedido', color: 'bg-blue-100 text-blue-800' },
+    agradecimento: { label: 'Agradecimento', color: 'bg-green-100 text-green-800' }
+  };
+
+  // Configurações de privacidade
+  const privacidadeConfig = {
+    public: { label: 'Público', icon: '👁️' },
+    private: { label: 'Privado', icon: '🔒' }
   };
 
   const getStatusBadge = (status: string) => {
@@ -653,7 +666,7 @@ export default function Pedidos() {
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
                               <p className="font-medium line-clamp-1">
-                                {pedido.titulo || 'Sem título'}
+                                {pedido.titulo || pedido.tema || 'Sem título'}
                               </p>
                               {isOld && (
                                 <Badge variant="destructive" className="text-xs">
@@ -665,6 +678,26 @@ export default function Pedidos() {
                             <p className="text-sm text-muted-foreground line-clamp-1">
                               {pedido.oracao.substring(0, 60)}...
                             </p>
+                            <div className="flex items-center gap-2 text-xs">
+                              {/* Tipo */}
+                              <Badge className={cn("text-xs", tipoConfig[pedido.tipo]?.color || 'bg-gray-100')}>
+                                {tipoConfig[pedido.tipo]?.label || pedido.tipo}
+                              </Badge>
+                              {/* Categoria */}
+                              {pedido.categoria && (
+                                <Badge variant="outline" className="text-xs">
+                                  {pedido.categoria}
+                                </Badge>
+                              )}
+                              {/* Tema */}
+                              {pedido.tema && !pedido.titulo?.includes(pedido.tema) && (
+                                <span className="text-muted-foreground">• {pedido.tema}</span>
+                              )}
+                              {/* Privacidade */}
+                              <span className="text-muted-foreground">
+                                {privacidadeConfig[pedido.privacidade]?.icon}
+                              </span>
+                            </div>
                             <div className="flex items-center gap-2 text-xs text-muted-foreground">
                               <User className="w-3 h-3" />
                               {pedido.nome || 'Anônimo'}
@@ -942,6 +975,34 @@ export default function Pedidos() {
                 </div>
               </div>
 
+              {/* Detalhes do Pedido */}
+              <div className="grid grid-cols-4 gap-4 p-4 bg-muted/30 rounded-lg">
+                <div>
+                  <p className="text-sm font-medium">Tipo</p>
+                  <Badge className={cn("mt-1", tipoConfig[viewingPedido.tipo]?.color || 'bg-gray-100')}>
+                    {tipoConfig[viewingPedido.tipo]?.label || viewingPedido.tipo}
+                  </Badge>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Categoria</p>
+                  <p className="text-sm text-muted-foreground">
+                    {viewingPedido.categoria || 'N/A'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Tema</p>
+                  <p className="text-sm text-muted-foreground">
+                    {viewingPedido.tema || 'N/A'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Privacidade</p>
+                  <p className="text-sm text-muted-foreground">
+                    {privacidadeConfig[viewingPedido.privacidade]?.icon} {privacidadeConfig[viewingPedido.privacidade]?.label}
+                  </p>
+                </div>
+              </div>
+
               {/* Título */}
               <div>
                 <p className="text-sm font-medium mb-1">Título</p>
@@ -957,21 +1018,6 @@ export default function Pedidos() {
                   </p>
                 </div>
               </div>
-
-              {/* Resposta do Pastor */}
-              {viewingPedido.answer && (
-                <div>
-                  <p className="text-sm font-medium mb-2 flex items-center gap-1">
-                    <MessageSquare className="w-4 h-4" />
-                    Resposta do Pastor
-                  </p>
-                  <div className="p-4 bg-green-50 border border-green-100 rounded-lg">
-                    <p className="text-sm whitespace-pre-wrap leading-relaxed">
-                      {viewingPedido.answer}
-                    </p>
-                  </div>
-                </div>
-              )}
 
               {/* Ações */}
               <div className="flex flex-wrap gap-2 justify-end pt-4 border-t">
@@ -1037,7 +1083,7 @@ export default function Pedidos() {
         </DialogContent>
       </Dialog>
 
-      {/* Dialog de Resposta */}
+      {/* Dialog de Resposta - Simplificado (sem campo answer no banco) */}
       <Dialog open={answerDialogOpen} onOpenChange={setAnswerDialogOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
@@ -1046,38 +1092,28 @@ export default function Pedidos() {
               Responder Pedido
             </DialogTitle>
             <DialogDescription>
-              Adicione uma resposta pastoral ao pedido de oração.
+              Deseja marcar este pedido como respondido?
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
               <p className="text-sm font-medium mb-2">Pedido</p>
               <p className="text-sm text-muted-foreground bg-muted p-3 rounded">
-                {viewingPedido?.titulo || 'Sem título'}
+                {viewingPedido?.titulo || viewingPedido?.tema || 'Sem título'}
               </p>
-            </div>
-            <div>
-              <p className="text-sm font-medium mb-2">Sua Resposta</p>
-              <Textarea
-                value={answerText}
-                onChange={(e) => setAnswerText(e.target.value)}
-                placeholder="Escreva sua resposta pastoral aqui..."
-                rows={5}
-              />
             </div>
             <div className="flex justify-end gap-2">
               <Button
                 variant="outline"
                 onClick={() => {
                   setAnswerDialogOpen(false);
-                  setAnswerText('');
                 }}
               >
                 Cancelar
               </Button>
               <Button
                 onClick={submitAnswer}
-                disabled={isSubmitting || !answerText.trim()}
+                disabled={isSubmitting}
                 className="gap-2"
               >
                 {isSubmitting ? (
