@@ -226,7 +226,7 @@ export default function LiveSection({ churchSlug }: LiveSectionProps) {
   // Limpeza dupla: tenta pela URL primeiro, depois pelo video_id, garantindo que seja apenas o ID puro
   // Usamos optional chaining (?.) para evitar erros de TS caso as propriedades sejam undefined
   const rawId = getYoutubeId(stream.youtube_url) || getYoutubeId(stream.youtube_video_id) || 'fallback';
-  const youtubeId = String(rawId).split('?')[0].split('&')[0].trim();
+  const youtubeId = String(rawId)?.split('?')?.[0]?.split('&')?.[0]?.trim() ?? 'fallback';
   const isLive = stream.status === 'live';
 
   // Função para redirecionar para a página privada de live
