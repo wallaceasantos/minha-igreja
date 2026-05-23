@@ -184,6 +184,63 @@ export default function AdminLiveStreams() {
     setSelectedStream(null);
   };
 
+  // Abrir modal para editar
+  const openEditDialog = (stream: LiveStream) => {
+    setSelectedStream(stream);
+    setTitle(stream.title);
+    setDescription(stream.description || '');
+    setYoutubeUrl(stream.youtube_url || '');
+    setScheduledStart(stream.scheduled_start ? stream.scheduled_start.slice(0, 16) : ''); // Formato datetime-local
+    setDialogOpen(true);
+  };
+
+  // Atualizar transmissão
+  const handleUpdate = async () => {
+    if (!selectedStream) return;
+
+    try {
+      const churchId = localStorage.getItem('churchId');
+
+      if (!title) {
+        toast.error('Preencha o título');
+        return;
+      }
+
+      const videoId = youtubeUrl ? extractVideoId(youtubeUrl) : selectedStream.youtube_video_id;
+
+      const response = await fetch(buildApiUrl(`/api/church/admin/live-streams/${selectedStream.id}`), {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-church-id': churchId || '',
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          youtube_url: youtubeUrl || null,
+          youtube_video_id: videoId,
+          scheduled_start: scheduledStart || null,
+          status: selectedStream.status,
+          is_active: selectedStream.is_active,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success('Transmissão atualizada!');
+        setDialogOpen(false);
+        resetForm();
+        loadStreams();
+      } else {
+        toast.error(result.error || 'Erro ao atualizar');
+      }
+    } catch (error) {
+      console.error('Error updating stream:', error);
+      toast.error('Erro ao atualizar transmissão');
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     const config = {
       scheduled: { label: 'Agendada', className: 'bg-blue-500' },
@@ -232,16 +289,19 @@ export default function AdminLiveStreams() {
             </p>
           </div>
 
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <Dialog open={dialogOpen} onOpenChange={(open) => {
+            setDialogOpen(open);
+            if (!open) resetForm();
+          }}>
             <DialogTrigger asChild>
-              <Button className="gap-2">
+              <Button className="gap-2" onClick={() => { resetForm(); setDialogOpen(true); }}>
                 <Plus className="w-4 h-4" />
                 Nova Transmissão
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Nova Transmissão Ao Vivo</DialogTitle>
+                <DialogTitle>{selectedStream ? 'Editar Transmissão' : 'Nova Transmissão Ao Vivo'}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
@@ -255,7 +315,7 @@ export default function AdminLiveStreams() {
                 </div>
 
                 <div>
-                  <Label htmlFor="youtube">URL do YouTube *</Label>
+                  <Label htmlFor="youtube">URL do YouTube {selectedStream ? '' : '*'}</Label>
                   <Input
                     id="youtube"
                     value={youtubeUrl}
@@ -288,7 +348,7 @@ export default function AdminLiveStreams() {
                   />
                 </div>
 
-                <Button onClick={handleSave} className="w-full">
+                <Button onClick={selectedStream ? handleUpdate : handleSave} className="w-full">
                   <Youtube className="w-4 h-4 mr-2" />
                   Salvar Transmissão
                 </Button>
@@ -390,6 +450,13 @@ export default function AdminLiveStreams() {
                   >
                     <Youtube className="w-3 h-3 mr-1" />
                     Assistir
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => openEditDialog(stream)}
+                  >
+                    <Edit className="w-3 h-3" />
                   </Button>
                   <Button
                     size="sm"

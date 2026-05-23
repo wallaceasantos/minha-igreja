@@ -144,18 +144,28 @@ export default function LiveSection({ churchSlug }: LiveSectionProps) {
 
   // Helper para formatar data no timezone de Manaus
   const formatDateManaus = (dateInput: string | Date): string => {
+    console.log('[formatDateManaus] Input:', dateInput, 'Tipo:', typeof dateInput);
+
     const parsed = parseDate(dateInput);
-    if (!parsed) {
-      console.warn('Erro ao fazer parse da data:', dateInput, 'Tipo:', typeof dateInput);
+    console.log('[formatDateManaus] Parsed:', parsed);
+
+    if (!parsed || isNaN(parsed.getTime())) {
+      console.warn('[formatDateManaus] Erro ao fazer parse da data:', dateInput);
       return 'Data inválida';
     }
+
     try {
-      return parsed.toLocaleString('pt-BR', {
-        day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit',
+      const formatted = parsed.toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: 'long',
+        hour: '2-digit',
+        minute: '2-digit',
         timeZone: 'America/Manaus'
       });
+      console.log('[formatDateManaus] Formatted:', formatted);
+      return formatted;
     } catch (e) {
-      console.error('Erro ao formatar data:', e);
+      console.error('[formatDateManaus] Erro ao formatar:', e);
       return 'Erro na data';
     }
   };
@@ -272,16 +282,47 @@ export default function LiveSection({ churchSlug }: LiveSectionProps) {
             {!isLive && stream.scheduled_start ? (
               <div className="bg-slate-950/50 rounded-xl p-4 border border-slate-700">
                 <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Começa em</p>
-                {countdown ? (
-                  <p className="text-3xl font-mono font-bold text-amber-400">{countdown}</p>
-                ) : (
-                  <p className="text-lg font-bold text-white">
-                    {formatDateManaus(stream.scheduled_start)}
-                  </p>
-                )}
-                <p className="text-xs text-slate-500 mt-1">
-                  (Horário de Manaus - AM)
-                </p>
+                {(() => {
+                  // Parse seguro da data
+                  const rawDate = stream.scheduled_start;
+                  let dateObj: Date | null = null;
+
+                  if (rawDate instanceof Date) {
+                    dateObj = rawDate;
+                  } else if (typeof rawDate === 'string') {
+                    // Tenta parsear como ISO (vindo do backend)
+                    dateObj = new Date(rawDate);
+                  }
+
+                  // Verifica se é válida
+                  if (!dateObj || isNaN(dateObj.getTime())) {
+                    return <p className="text-lg font-bold text-white">Data não disponível</p>;
+                  }
+
+                  // Formata no horário de Manaus
+                  try {
+                    const formatted = dateObj.toLocaleString('pt-BR', {
+                      day: '2-digit',
+                      month: 'long',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      timeZone: 'America/Manaus'
+                    });
+
+                    return (
+                      <>
+                        {countdown ? (
+                          <p className="text-3xl font-mono font-bold text-amber-400">{countdown}</p>
+                        ) : (
+                          <p className="text-lg font-bold text-white">{formatted}</p>
+                        )}
+                        <p className="text-xs text-slate-500 mt-1">(Horário de Manaus - AM)</p>
+                      </>
+                    );
+                  } catch (e) {
+                    return <p className="text-lg font-bold text-white">Erro ao formatar data</p>;
+                  }
+                })()}
               </div>
             ) : isLive ? (
               <div className="bg-red-950/30 rounded-xl p-4 border border-red-900/50">
