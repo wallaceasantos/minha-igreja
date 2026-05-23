@@ -353,10 +353,17 @@ export default function AdminLiveStreams() {
                   {stream.scheduled_start && (
                     <div className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
-                      {new Date(stream.scheduled_start + 'Z').toLocaleString('pt-BR', {
-                        day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
-                        timeZone: 'America/Sao_Paulo'
-                      })}
+                      {(() => {
+                        try {
+                          const isoString = stream.scheduled_start!.replace(' ', 'T') + 'Z';
+                          return new Date(isoString).toLocaleString('pt-BR', {
+                            day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
+                            timeZone: 'America/Manaus'
+                          });
+                        } catch (e) {
+                          return stream.scheduled_start;
+                        }
+                      })()}
                     </div>
                   )}
                   {stream.view_count > 0 && (

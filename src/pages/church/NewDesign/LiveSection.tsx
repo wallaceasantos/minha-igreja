@@ -85,25 +85,38 @@ export default function LiveSection({ churchSlug }: LiveSectionProps) {
     return () => clearInterval(interval);
   }, [churchSlug]);
 
-  // Countdown timer - usando timezone de Brasília
+  // Helper para converter data do MySQL (assumindo UTC) para timestamp
+  const getScheduledTimestamp = (dateStr: string): number => {
+    // MySQL retorna '2026-05-24 18:30:00' - tratamos como UTC
+    // Substituímos espaço por 'T' e adicionamos 'Z' para UTC
+    const isoString = dateStr.replace(' ', 'T') + 'Z';
+    return new Date(isoString).getTime();
+  };
+
+  // Countdown timer - usando timezone de Manaus (UTC-4)
   useEffect(() => {
     if (!stream?.scheduled_start || stream.status === 'live') {
       setCountdown('');
       return;
     }
     const timer = setInterval(() => {
-      // Adiciona 'Z' para indicar UTC e converter corretamente
-      const target = new Date(stream.scheduled_start! + 'Z').getTime();
-      const now = Date.now();
-      const diff = target - now;
-      if (diff <= 0) {
+      try {
+        const target = getScheduledTimestamp(stream.scheduled_start!);
+        const now = Date.now();
+        const diff = target - now;
+
+        if (diff <= 0 || isNaN(target)) {
+          setCountdown('');
+          return;
+        }
+
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const mins = Math.floor((diff / (1000 * 60)) % 60);
+        const secs = Math.floor((diff / 1000) % 60);
+        setCountdown(`${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`);
+      } catch (e) {
         setCountdown('');
-        return;
       }
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const mins = Math.floor((diff / (1000 * 60)) % 60);
-      const secs = Math.floor((diff / 1000) % 60);
-      setCountdown(`${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`);
     }, 1000);
     return () => clearInterval(timer);
   }, [stream?.scheduled_start, stream?.status]);
@@ -178,33 +191,46 @@ export default function LiveSection({ churchSlug }: LiveSectionProps) {
             </p>
           )}
 
-          {/* Info Box (Data/Hora ou Countdown) */}
-          <div className="mb-8 w-full">
-            {!isLive && stream.scheduled_start ? (
-              <div className="bg-slate-950/50 rounded-xl p-4 border border-slate-700">
-                <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Começa em</p>
-                {countdown ? (
-                  <p className="text-3xl font-mono font-bold text-amber-400">{countdown}</p>
-                ) : (
-                  <p className="text-lg font-bold text-white">
-                    {new Date(stream.scheduled_start + 'Z').toLocaleString('pt-BR', {
-                      day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit',
-                      timeZone: 'America/Sao_Paulo'
-                    })}
-                  </p>
-                )}
-                <p className="text-xs text-slate-500 mt-1">
-                  (Horário de Brasília)
-                </p>
+          {/* Helper para formatar data no timezone de Manaus */}
+          {(() => {
+            const formatDateManaus = (dateStr: string): string => {
+              try {
+                const isoString = dateStr.replace(' ', 'T') + 'Z';
+                return new Date(isoString).toLocaleString('pt-BR', {
+                  day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit',
+                  timeZone: 'America/Manaus'
+                });
+              } catch (e) {
+                return dateStr;
+              }
+            };
+
+            return (
+              <div className="mb-8 w-full">
+                {!isLive && stream.scheduled_start ? (
+                  <div className="bg-slate-950/50 rounded-xl p-4 border border-slate-700">
+                    <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Começa em</p>
+                    {countdown ? (
+                      <p className="text-3xl font-mono font-bold text-amber-400">{countdown}</p>
+                    ) : (
+                      <p className="text-lg font-bold text-white">
+                        {formatDateManaus(stream.scheduled_start)}
+                      </p>
+                    )}
+                    <p className="text-xs text-slate-500 mt-1">
+                      (Horário de Manaus - AM)
+                    </p>
+                  </div>
+                ) : isLive ? (
+                  <div className="bg-red-950/30 rounded-xl p-4 border border-red-900/50">
+                    <p className="text-sm text-red-300 flex items-center gap-2">
+                      <MyIcon name="Users" size={16} /> Assista agora junto com a comunidade!
+                    </p>
+                  </div>
+                ) : null}
               </div>
-            ) : isLive ? (
-               <div className="bg-red-950/30 rounded-xl p-4 border border-red-900/50">
-                 <p className="text-sm text-red-300 flex items-center gap-2">
-                   <MyIcon name="Users" size={16} /> Assista agora junto com a comunidade!
-                 </p>
-               </div>
-            ) : null}
-          </div>
+            );
+          })()}
 
           {/* Botão de Ação Principal */}
           <button 
