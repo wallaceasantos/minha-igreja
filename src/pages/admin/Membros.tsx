@@ -541,6 +541,17 @@ export default function Membros() {
     const birthDateBR = formatDateToBR(member.birth_date);
     const baptismDateBR = formatDateToBR(member.baptism_date);
     const membershipDateBR = formatDateToBR(member.membership_date);
+    
+    // Debug: verificar dados do membro
+    console.log('[Editar Membro] Dados do membro:', {
+      name: member.name,
+      birth_date: member.birth_date,
+      baptism_date: member.baptism_date,
+      membership_date: member.membership_date,
+      birthDateBR,
+      baptismDateBR,
+      membershipDateBR
+    });
     // Converter telefone do banco para formato (XX) XXXXX-XXXX
     let phoneBR = '';
     if (member.phone) {
