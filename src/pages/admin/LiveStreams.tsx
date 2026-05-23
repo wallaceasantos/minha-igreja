@@ -353,7 +353,10 @@ export default function AdminLiveStreams() {
                   {stream.scheduled_start && (
                     <div className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
-                      {new Date(stream.scheduled_start).toLocaleDateString('pt-BR')}
+                      {new Date(stream.scheduled_start + 'Z').toLocaleString('pt-BR', {
+                        day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
+                        timeZone: 'America/Sao_Paulo'
+                      })}
                     </div>
                   )}
                   {stream.view_count > 0 && (
