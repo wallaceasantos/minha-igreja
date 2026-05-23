@@ -500,12 +500,11 @@ router.post('/', identifyChurch, async (req, res) => {
 router.put('/:id', identifyChurch, async (req, res) => {
   try {
     const pedidoId = req.params.id;
-    const { 
-      titulo, 
+    const {
+      titulo,
       oracao,
       status,
-      pedido_atendido,
-      answer
+      pedido_atendido
     } = req.body;
 
     // Validações
@@ -540,15 +539,14 @@ router.put('/:id', identifyChurch, async (req, res) => {
 
     // Atualizar pedido
     await pool.execute(
-      `UPDATE pedidos 
-       SET titulo = ?, oracao = ?, status = ?, pedido_atendido = ?, answer = ?, updated_at = NOW()
+      `UPDATE pedidos
+       SET titulo = ?, oracao = ?, status = ?, pedido_atendido = ?, updated_at = NOW()
        WHERE id = ?`,
       [
-        titulo?.trim() || null, 
-        oracao.trim(), 
+        titulo?.trim() || null,
+        oracao.trim(),
         status || 'pending',
         pedido_atendido ? 1 : 0,
-        answer || null,
         pedidoId
       ]
     );
