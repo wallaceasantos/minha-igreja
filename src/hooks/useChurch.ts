@@ -18,6 +18,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { buildApiUrl } from '@/lib/config';
 
 export interface ChurchData {
   id: number;
@@ -131,7 +132,7 @@ export function useChurch(): UseChurchReturn {
       }
 
       // Busca dados da igreja na API
-      const apiUrl = `/api/church/slug/${slug}`;
+      const apiUrl = buildApiUrl(`/api/church/slug/${slug}`);
       console.log('[useChurch] Buscando dados em:', apiUrl);
       const response = await fetch(apiUrl);
       console.log('[useChurch] Resposta da API:', response.status);
