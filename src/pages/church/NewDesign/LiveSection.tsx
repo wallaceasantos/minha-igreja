@@ -78,7 +78,7 @@ const getYoutubeId = (input: string | null | undefined): string | null => {
   }
 
   // Remove parâmetros de query primeiro (?feature=share, etc)
-  const cleanUrl = url.split('?')[0].split('&')[0];
+  const cleanUrl = url?.split('?')[0]?.split('&')[0] ?? '';
 
   // Tenta extrair o ID de vários formatos de URL do YouTube
   const patterns = [
