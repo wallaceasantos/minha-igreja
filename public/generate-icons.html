@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gerar Ícones PWA</title>
+</head>
+<body>
+    <h1>Gerando ícones PWA...</h1>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <div id="output"></div>
+    
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const output = document.getElementById('output');
+        
+        // Carregar o SVG
+        const svgText = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <rect width="512" height="512" rx="80" fill="#4f46e5"/>
+            <path d="M256 120 L120 240 L160 240 L160 360 L352 360 L352 240 L392 240 Z" fill="white"/>
+            <rect x="220" y="280" width="72" height="80" fill="#4f46e5"/>
+        </svg>`;
+        
+        const img = new Image();
+        const svgBlob = new Blob([svgText], {type: 'image/svg+xml'});
+        const url = URL.createObjectURL(svgBlob);
+        
+        img.onload = function() {
+            sizes.forEach(size => {
+                canvas.width = size;
+                canvas.height = size;
+                ctx.drawImage(img, 0, 0, size, size);
+                
+                const pngUrl = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = pngUrl;
+                link.download = `icon-${size}x${size}.png`;
+                link.textContent = `Baixar icon-${size}x${size}.png`;
+                link.style.display = 'block';
+                link.style.margin = '10px';
+                output.appendChild(link);
+                
+                // Auto-download
+                link.click();
+            });
+            
+            URL.revokeObjectURL(url);
+            output.innerHTML += '<p>Ícones gerados! Verifique sua pasta de downloads.</p>';
+        };
+        
+        img.src = url;
+    </script>
+</body>
+</html>
