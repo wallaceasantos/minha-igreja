@@ -31,11 +31,16 @@ export const config: EnvConfig = Object.freeze({
  * Ex: buildApiUrl('/api/auth/login') → https://minha-igreja.up.railway.app/api/auth/login
  */
 export function buildApiUrl(path: string): string {
-  // Se path já é URL completa, extrai apenas o caminho (a partir de /api/)
+  // Se path já é URL completa
   if (path.startsWith('http://') || path.startsWith('https://')) {
+    // URLs do Cloudinary (ou outros serviços externos) - mantém como está
+    if (path.includes('cloudinary.com') || path.includes('amazonaws.com') || path.includes('googleusercontent.com')) {
+      return path;
+    }
+    
+    // URLs locais (localhost) - extrai apenas o pathname para reconstruir
     try {
       const url = new URL(path);
-      // Extrai o pathname (ex: /api/uploads/membros/...)
       path = url.pathname;
     } catch {
       // Se não conseguir parsear, continua com o path original
