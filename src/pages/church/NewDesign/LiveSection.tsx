@@ -86,11 +86,33 @@ export default function LiveSection({ churchSlug }: LiveSectionProps) {
   }, [churchSlug]);
 
   // Helper para converter data do MySQL (assumindo UTC) para timestamp
-  const getScheduledTimestamp = (dateStr: string): number => {
-    // MySQL retorna '2026-05-24 18:30:00' - tratamos como UTC
-    // Substituímos espaço por 'T' e adicionamos 'Z' para UTC
-    const isoString = dateStr.replace(' ', 'T') + 'Z';
+  const getScheduledTimestamp = (dateInput: string | Date): number => {
+    // MySQL pode retornar como objeto Date ou string '2026-05-24 18:30:00'
+    if (dateInput instanceof Date) {
+      return dateInput.getTime();
+    }
+    // Se for string, tratamos como UTC
+    const isoString = dateInput.replace(' ', 'T') + 'Z';
     return new Date(isoString).getTime();
+  };
+
+  // Helper para formatar data no timezone de Manaus
+  const formatDateManaus = (dateInput: string | Date): string => {
+    try {
+      let date: Date;
+      if (dateInput instanceof Date) {
+        date = dateInput;
+      } else {
+        const isoString = dateInput.replace(' ', 'T') + 'Z';
+        date = new Date(isoString);
+      }
+      return date.toLocaleString('pt-BR', {
+        day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit',
+        timeZone: 'America/Manaus'
+      });
+    } catch (e) {
+      return String(dateInput);
+    }
   };
 
   // Countdown timer - usando timezone de Manaus (UTC-4)
@@ -191,46 +213,30 @@ export default function LiveSection({ churchSlug }: LiveSectionProps) {
             </p>
           )}
 
-          {/* Helper para formatar data no timezone de Manaus */}
-          {(() => {
-            const formatDateManaus = (dateStr: string): string => {
-              try {
-                const isoString = dateStr.replace(' ', 'T') + 'Z';
-                return new Date(isoString).toLocaleString('pt-BR', {
-                  day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit',
-                  timeZone: 'America/Manaus'
-                });
-              } catch (e) {
-                return dateStr;
-              }
-            };
-
-            return (
-              <div className="mb-8 w-full">
-                {!isLive && stream.scheduled_start ? (
-                  <div className="bg-slate-950/50 rounded-xl p-4 border border-slate-700">
-                    <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Começa em</p>
-                    {countdown ? (
-                      <p className="text-3xl font-mono font-bold text-amber-400">{countdown}</p>
-                    ) : (
-                      <p className="text-lg font-bold text-white">
-                        {formatDateManaus(stream.scheduled_start)}
-                      </p>
-                    )}
-                    <p className="text-xs text-slate-500 mt-1">
-                      (Horário de Manaus - AM)
-                    </p>
-                  </div>
-                ) : isLive ? (
-                  <div className="bg-red-950/30 rounded-xl p-4 border border-red-900/50">
-                    <p className="text-sm text-red-300 flex items-center gap-2">
-                      <MyIcon name="Users" size={16} /> Assista agora junto com a comunidade!
-                    </p>
-                  </div>
-                ) : null}
+          {/* Info Box (Data/Hora ou Countdown) */}
+          <div className="mb-8 w-full">
+            {!isLive && stream.scheduled_start ? (
+              <div className="bg-slate-950/50 rounded-xl p-4 border border-slate-700">
+                <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Começa em</p>
+                {countdown ? (
+                  <p className="text-3xl font-mono font-bold text-amber-400">{countdown}</p>
+                ) : (
+                  <p className="text-lg font-bold text-white">
+                    {formatDateManaus(stream.scheduled_start)}
+                  </p>
+                )}
+                <p className="text-xs text-slate-500 mt-1">
+                  (Horário de Manaus - AM)
+                </p>
               </div>
-            );
-          })()}
+            ) : isLive ? (
+              <div className="bg-red-950/30 rounded-xl p-4 border border-red-900/50">
+                <p className="text-sm text-red-300 flex items-center gap-2">
+                  <MyIcon name="Users" size={16} /> Assista agora junto com a comunidade!
+                </p>
+              </div>
+            ) : null}
+          </div>
 
           {/* Botão de Ação Principal */}
           <button 

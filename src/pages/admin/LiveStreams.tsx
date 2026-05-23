@@ -355,13 +355,20 @@ export default function AdminLiveStreams() {
                       <Calendar className="w-3 h-3" />
                       {(() => {
                         try {
-                          const isoString = stream.scheduled_start!.replace(' ', 'T') + 'Z';
-                          return new Date(isoString).toLocaleString('pt-BR', {
+                          const input = stream.scheduled_start!;
+                          let date: Date;
+                          if (input instanceof Date) {
+                            date = input;
+                          } else {
+                            const isoString = input.replace(' ', 'T') + 'Z';
+                            date = new Date(isoString);
+                          }
+                          return date.toLocaleString('pt-BR', {
                             day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
                             timeZone: 'America/Manaus'
                           });
                         } catch (e) {
-                          return stream.scheduled_start;
+                          return String(stream.scheduled_start);
                         }
                       })()}
                     </div>
