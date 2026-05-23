@@ -42,6 +42,10 @@ interface LiveStream {
   description: string | null;
   youtube_url: string | null;
   youtube_video_id: string | null;
+  facebook_url: string | null;
+  instagram_url: string | null;
+  twitch_url: string | null;
+  primary_platform: string;
   scheduled_start: string | null;
   status: 'scheduled' | 'live' | 'ended' | 'cancelled';
   is_active: number;
@@ -228,21 +232,28 @@ export default function AdminLiveStreams() {
 
       const videoId = youtubeUrl ? extractVideoId(youtubeUrl) : selectedStream.youtube_video_id;
 
+      // Garantir que nenhum campo seja undefined (MySQL não aceita)
+      const body = {
+        title,
+        description: description || null,
+        youtube_url: youtubeUrl || null,
+        youtube_video_id: videoId || null,
+        facebook_url: selectedStream.facebook_url || null,
+        instagram_url: selectedStream.instagram_url || null,
+        twitch_url: selectedStream.twitch_url || null,
+        primary_platform: selectedStream.primary_platform || 'youtube',
+        scheduled_start: scheduledStart || null,
+        status: selectedStream.status,
+        is_active: selectedStream.is_active ?? 1,
+      };
+
       const response = await fetch(buildApiUrl(`/api/church/admin/live-streams/${selectedStream.id}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'x-church-id': churchId || '',
         },
-        body: JSON.stringify({
-          title,
-          description,
-          youtube_url: youtubeUrl || null,
-          youtube_video_id: videoId,
-          scheduled_start: scheduledStart || null,
-          status: selectedStream.status,
-          is_active: selectedStream.is_active,
-        }),
+        body: JSON.stringify(body),
       });
 
       const result = await response.json();
