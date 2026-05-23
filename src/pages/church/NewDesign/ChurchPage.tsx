@@ -124,12 +124,8 @@ export default function ChurchPage() {
 
         // Carregar estatísticas (membros)
         try {
-          // Tentar endpoint público de stats primeiro
-          let statsRes = await fetch(buildApiUrl(`/api/church/slug/${church.slug}/stats`));
-          if (!statsRes.ok) {
-            // Fallback: tentar endpoint por ID
-            statsRes = await fetch(buildApiUrl(`/api/church/${church.id}/stats`));
-          }
+          // Usar endpoint por ID (o endpoint por slug não existe)
+          let statsRes = await fetch(buildApiUrl(`/api/church/${church.id}/stats`));
           
           if (statsRes.ok) {
             const statsData = await statsRes.json();
