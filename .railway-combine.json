@@ -9,9 +9,8 @@
     {
       "name": "frontend",
       "rootDirectory": ".",
-      "port": 5173,
       "buildCommand": "npm install && npm run build",
-      "startCommand": "npm run preview"
+      "startCommand": "npx serve dist -s -l $PORT"
     }
   ]
 }

@@ -62,6 +62,7 @@
     "react-resizable-panels": "^2.1.9",
     "react-router-dom": "^6.30.1",
     "recharts": "^2.15.4",
+    "serve": "^14.2.6",
     "server": "^0.0.3",
     "socket.io-client": "^4.8.3",
     "sonner": "^1.7.4",
