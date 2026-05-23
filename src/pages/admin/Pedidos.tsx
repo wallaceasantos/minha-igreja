@@ -191,8 +191,7 @@ export default function Pedidos() {
           titulo: pedido.titulo,
           oracao: pedido.oracao,
           status: pedido.status,
-          pedido_atendido: !pedido.pedido_atendido,
-          answer: pedido.answer
+          pedido_atendido: !pedido.pedido_atendido
         })
       });
 
@@ -255,8 +254,7 @@ export default function Pedidos() {
           titulo: pedido.titulo,
           oracao: pedido.oracao,
           status: 'archived',
-          pedido_atendido: pedido.pedido_atendido,
-          answer: pedido.answer
+          pedido_atendido: pedido.pedido_atendido
         })
       });
 
