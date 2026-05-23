@@ -510,20 +510,20 @@ export default function Pedidos() {
       {limits.prayers > 0 && (
         <Alert className={cn(
           "mb-6",
-          isLimitReached ? 'bg-red-50 border-red-200' : 
-          isNearLimit ? 'bg-amber-50 border-amber-200' : 
-          'bg-blue-50 border-blue-200'
+          isLimitReached ? 'bg-destructive/10 border-destructive/30' :
+          isNearLimit ? 'bg-amber-500/10 border-amber-500/30' :
+          'bg-primary/10 border-primary/30'
         )}>
           <Crown className={cn(
             "h-4 w-4",
-            isLimitReached ? 'text-red-600' : 
-            isNearLimit ? 'text-amber-600' : 
-            'text-blue-600'
+            isLimitReached ? 'text-destructive' :
+            isNearLimit ? 'text-amber-500' :
+            'text-primary'
           )} />
           <AlertDescription className={cn(
-            isLimitReached ? 'text-red-800' : 
-            isNearLimit ? 'text-amber-800' : 
-            'text-blue-800'
+            isLimitReached ? 'text-destructive' :
+            isNearLimit ? 'text-amber-700 dark:text-amber-400' :
+            'text-foreground'
           )}>
             <div className="flex items-center justify-between mb-2">
               <div>
@@ -1010,8 +1010,8 @@ export default function Pedidos() {
               {/* Oração Completa */}
               <div>
                 <p className="text-sm font-medium mb-2">Pedido de Oração</p>
-                <div className="p-4 bg-blue-50 border border-blue-100 rounded-lg">
-                  <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                <div className="p-4 bg-muted border rounded-lg">
+                  <p className="text-sm whitespace-pre-wrap leading-relaxed text-foreground">
                     {viewingPedido.oracao}
                   </p>
                 </div>
