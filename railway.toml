@@ -1,8 +1,9 @@
 [build]
 builder = "railpack"
+buildCommand = "npm install && npm run build && cp serve.json dist/serve.json"
 
 [deploy]
-startCommand = "npx serve -s dist -l $PORT"
+startCommand = "cd dist && npx serve -l $PORT"
 healthcheckPath = "/"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
