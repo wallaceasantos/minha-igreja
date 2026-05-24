@@ -558,7 +558,7 @@ export default function Dashboard() {
       )}
 
       {/* Cards de Uso do Plano */}
-      <div className="grid md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
         {/* Membros */}
         <Card className={getLimitMessage(memberPercent, limits.members)?.message.includes('Limite') ? 'border-red-500' : getLimitMessage(memberPercent, limits.members)?.message.includes('Quase') ? 'border-amber-500' : ''}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -644,7 +644,7 @@ export default function Dashboard() {
       </div>
 
       {/* Stats Rápidos */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total de Membros</CardTitle>
@@ -826,7 +826,7 @@ export default function Dashboard() {
       )}
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-6 mb-6 sm:mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4 mb-6 sm:mb-8">
         <Card className="cursor-pointer hover:shadow-md transition-shadow">
           <Link to="/admin/configuracoes" className="block h-full">
             <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-0">
