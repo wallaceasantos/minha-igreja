@@ -7,6 +7,8 @@ const STATIC_CACHE = 'minhaigreja-static-v1';
 // Assets para cachear imediatamente
 const STATIC_ASSETS = [
   '/',
+  '/index.html',
+  '/login',
   '/admin',
   '/manifest.json',
   '/icon.svg',
@@ -70,9 +72,48 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Para navegação (SPA routes): Retornar index.html do cache
+  if (request.mode === 'navigate') {
+    event.respondWith(navigateWithFallback(request));
+    return;
+  }
+
   // Para outras requisições: Network with Cache fallback
   event.respondWith(networkWithCacheFallback(request));
 });
+
+// Navegação SPA: Sempre retorna index.html para rotas do React Router
+async function navigateWithFallback(request) {
+  try {
+    // Tenta rede primeiro
+    const networkResponse = await fetch(request);
+    if (networkResponse.ok) {
+      return networkResponse;
+    }
+  } catch (error) {
+    console.log('[SW] Network failed for navigation, serving index.html from cache');
+  }
+  
+  // Fallback para index.html (SPA)
+  const cachedIndex = await caches.match('/index.html');
+  if (cachedIndex) {
+    return cachedIndex;
+  }
+  
+  // Se nem index.html está no cache, tenta buscar
+  try {
+    const response = await fetch('/index.html');
+    if (response.ok) {
+      const cache = await caches.open(STATIC_CACHE);
+      cache.put('/index.html', response.clone());
+      return response;
+    }
+  } catch (e) {
+    console.error('[SW] Failed to fetch index.html:', e);
+  }
+  
+  throw new Error('Failed to load page');
+}
 
 // Verificar se é asset estático
 function isStaticAsset(request) {

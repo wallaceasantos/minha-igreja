@@ -2,12 +2,12 @@
   "name": "Minha Igreja - Admin",
   "short_name": "Admin Igreja",
   "description": "Dashboard de administração para pastores gerenciarem suas igrejas",
-  "start_url": "/admin",
+  "start_url": "/login",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4f46e5",
   "orientation": "portrait",
-  "scope": "/admin",
+  "scope": "/",
   "icons": [
     {
       "src": "/icon-72x72.png",
