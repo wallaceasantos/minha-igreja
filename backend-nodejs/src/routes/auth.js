@@ -7,12 +7,13 @@
 import express from 'express';
 import { query } from '../config/database.js';
 import bcrypt from 'bcrypt';
-import { 
-  checkBlockedIP, 
-  checkUserLocked, 
+import {
+  checkBlockedIP,
+  checkUserLocked,
   recordLoginAttempt,
-  createSession 
+  createSession
 } from '../middleware/security.js';
+import { generateToken } from '../middleware/auth.js';
 import { rateLimits } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
@@ -84,16 +85,16 @@ router.post('/login', rateLimits.login, async (req, res) => {
     // Login bem-sucedido - registrar tentativa
     await recordLoginAttempt(email, ip, true, user.id);
 
-    // Criar sessão
-    const sessionToken = await createSession(user.id, req);
+    // Criar sessão para rastreamento
+    await createSession(user.id, req);
 
-    // Gerar token simples (em produção use JWT)
-    const token = sessionToken || Buffer.from(JSON.stringify({
+    // Gerar JWT token
+    const token = generateToken({
       id: user.id,
       email: user.email,
       church_id: user.church_id,
       role: user.role
-    })).toString('base64');
+    });
 
     // Log auditoria
     await query(
