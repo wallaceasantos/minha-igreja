@@ -28,13 +28,20 @@ export function setupWebSocket(httpServer) {
 
       console.log(`💬 ${userName} entrou no chat: ${room}`);
 
-      // Carregar mensagens recentes do banco
+      // Carregar mensagens recentes do banco - APENAS da live atual
       try {
         const pool = getPool();
+        
+        // Se não houver liveStreamId, não carregar mensagens antigas
+        if (!liveStreamId) {
+          socket.emit('chat_history', []);
+          return;
+        }
+        
         const [messages] = await pool.query(
-          'SELECT id, user_name, user_type, message, message_type, is_pinned, created_at ' +
+          'SELECT id, user_name, user_type, message, message_type, is_pinned, created_at, live_stream_id ' +
           'FROM live_chat_messages ' +
-          'WHERE church_id = ? AND (live_stream_id = ? OR live_stream_id IS NULL) AND is_removed = 0 ' +
+          'WHERE church_id = ? AND live_stream_id = ? AND is_removed = 0 ' +
           'ORDER BY created_at DESC LIMIT 50',
           [churchId, liveStreamId]
         );
@@ -42,6 +49,7 @@ export function setupWebSocket(httpServer) {
         socket.emit('chat_history', messages.reverse());
       } catch (error) {
         console.error('Erro ao carregar histórico do chat:', error);
+        socket.emit('chat_history', []);
       }
     });
 

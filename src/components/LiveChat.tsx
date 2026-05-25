@@ -49,8 +49,17 @@ export default function LiveChat({ churchId, liveStreamId, memberSession, isOpen
   const [activeReaction, setActiveReaction] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Limpar mensagens quando liveStreamId mudar (nova live ou sair da live)
+  useEffect(() => {
+    setMessages([]);
+    setOnlineCount(0);
+  }, [liveStreamId]);
+
   useEffect(() => {
     if (!isOpen || !churchId) return;
+
+    // Limpar mensagens ao abrir o chat
+    setMessages([]);
 
     const socketUrl = buildApiUrl('').replace('/api', '');
     const newSocket = io(socketUrl, {
@@ -71,7 +80,16 @@ export default function LiveChat({ churchId, liveStreamId, memberSession, isOpen
     });
 
     newSocket.on('chat_history', (history: ChatMessage[]) => {
-      setMessages(history);
+      // Só carregar histórico se houver mensagens e for da live atual
+      if (history && history.length > 0) {
+        // Verificar se as mensagens são da live atual
+        const validMessages = history.filter(msg => 
+          !liveStreamId || msg.live_stream_id === liveStreamId
+        );
+        setMessages(validMessages);
+      } else {
+        setMessages([]);
+      }
     });
 
     newSocket.on('new_message', (msg: ChatMessage) => {
