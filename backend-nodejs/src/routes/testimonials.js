@@ -48,11 +48,6 @@ router.post('/public', async (req, res) => {
   try {
     const { church_id, member_name, member_email, member_since, testimonial_text } = req.body;
     
-    // Debug: Verificar conexão e schema
-    const pool = getPool();
-    const [columns] = await pool.query('DESCRIBE testimonials');
-    console.log('[DEBUG] Colunas da tabela testimonials:', columns.map(c => c.Field));
-    
     if (!church_id || !member_name || !testimonial_text) {
       return res.status(400).json({
         success: false,
