@@ -42,7 +42,8 @@
       "Bash(rmdir *)",
       "Read(c:\\Users\\wallace\\Desktop/**)",
       "Agent(Explore)",
-      "Bash(true)"
+      "Bash(true)",
+      "Bash(do *)"
     ]
   },
   "$version": 4

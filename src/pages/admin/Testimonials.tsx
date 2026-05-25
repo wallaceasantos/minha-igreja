@@ -43,6 +43,16 @@ export default function AdminTestimonials() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('pending');
   const [processingId, setProcessingId] = useState<number | null>(null);
+  const [churchSlug, setChurchSlug] = useState<string>('');
+
+  // Buscar slug da igreja do usuário logado
+  useEffect(() => {
+    // Tentar obter do localStorage (armazenado no login)
+    const storedSlug = localStorage.getItem('church_slug');
+    if (storedSlug) {
+      setChurchSlug(storedSlug);
+    }
+  }, []);
 
   // Buscar depoimentos
   const fetchTestimonials = async (status?: string) => {
@@ -204,6 +214,15 @@ export default function AdminTestimonials() {
         </h1>
         <p className="text-slate-400">
           Gerencie os depoimentos que aparecem na tela de boas-vindas da live
+        </p>
+      </div>
+
+      {/* Alerta informativo */}
+      <div className="mb-6 p-4 bg-indigo-900/30 border border-indigo-500/30 rounded-lg">
+        <p className="text-indigo-300 text-sm">
+          <strong>Nota:</strong> Você só vê os depoimentos da igreja em que está logado. 
+          Depoimentos enviados por membros de outras igrejas não aparecem aqui. 
+          Certifique-se de que os membros estejam enviando pelo link correto da sua igreja.
         </p>
       </div>
 
@@ -421,15 +440,32 @@ export default function AdminTestimonials() {
 
       {/* Link público */}
       <div className="mt-8 p-4 bg-indigo-900/20 border border-indigo-500/30 rounded-lg">
-        <div className="flex items-center gap-2 text-indigo-300">
+        <div className="flex items-center gap-2 text-indigo-300 mb-2">
           <ExternalLink className="w-4 h-4" />
           <span className="text-sm">
-            Link para membros enviarem depoimentos:{' '}
-            <code className="bg-slate-800 px-2 py-1 rounded text-white">
-              /igreja/[slug]/depoimento
-            </code>
+            Link para membros enviarem depoimentos:
           </span>
         </div>
+        {churchSlug ? (
+          <div className="flex items-center gap-3">
+            <code className="bg-slate-800 px-3 py-2 rounded text-white text-sm">
+              /igreja/{churchSlug}/depoimento
+            </code>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => window.open(`/igreja/${churchSlug}/depoimento`, '_blank')}
+              className="text-xs border-indigo-500/30 text-indigo-300 hover:bg-indigo-900/30"
+            >
+              <ExternalLink className="w-3 h-3 mr-1" />
+              Abrir
+            </Button>
+          </div>
+        ) : (
+          <p className="text-slate-500 text-sm">
+            Carregando informações da igreja...
+          </p>
+        )}
       </div>
     </div>
   );
