@@ -16,6 +16,8 @@ const router = express.Router();
 router.get('/church/:churchId/testimonials', async (req, res) => {
   try {
     const { churchId } = req.params;
+    console.log('[API] Buscando depoimentos aprovados para churchId:', churchId);
+    
     const pool = getPool();
     
     const [testimonials] = await pool.query(
@@ -26,6 +28,9 @@ router.get('/church/:churchId/testimonials', async (req, res) => {
        LIMIT 10`,
       [churchId]
     );
+    
+    console.log('[API] Depoimentos encontrados:', testimonials.length);
+    console.log('[API] Depoimentos:', testimonials);
     
     res.json({
       success: true,
