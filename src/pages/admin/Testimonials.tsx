@@ -10,10 +10,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  CheckCircle, XCircle, Clock, MessageSquare, 
-  Users, Trash2, RefreshCw, ExternalLink
+import {
+  CheckCircle, XCircle, Clock, MessageSquare,
+  Users, Trash2, RefreshCw, ExternalLink, ArrowLeft, LayoutDashboard
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { buildApiUrl } from '@/lib/config';
 
@@ -37,6 +38,7 @@ interface Stats {
 }
 
 export default function AdminTestimonials() {
+  const navigate = useNavigate();
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -214,10 +216,21 @@ export default function AdminTestimonials() {
     <div className="p-6 max-w-6xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-          <MessageSquare className="w-8 h-8 text-amber-400" />
-          Depoimentos dos Membros
-        </h1>
+        <div className="flex items-start justify-between mb-2">
+          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+            <MessageSquare className="w-8 h-8 text-amber-400" />
+            Depoimentos dos Membros
+          </h1>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate('/admin/dashboard')}
+            className="border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Voltar ao Dashboard
+          </Button>
+        </div>
         <p className="text-slate-400">
           Gerencie os depoimentos que aparecem na tela de boas-vindas da live
         </p>
