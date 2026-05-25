@@ -43,6 +43,7 @@ export default function Navbar({ isDarkMode, toggleTheme, onOpenPrayer, onOpenAd
     { label: "Ministérios", href: isLivePage ? `/igreja/${churchSlug}#ministerios` : "#ministerios" },
     { label: "Cultos", href: isLivePage ? `/igreja/${churchSlug}#cultos` : "#cultos" },
     { label: "Eventos", href: isLivePage ? `/igreja/${churchSlug}#eventos` : "#eventos" },
+    { label: "Depoimentos", href: isLivePage ? `/igreja/${churchSlug}/depoimento` : `/igreja/${churchSlug}/depoimento` },
     { label: "Contato", href: isLivePage ? `/igreja/${churchSlug}#contato` : "#contato" },
   ];
 

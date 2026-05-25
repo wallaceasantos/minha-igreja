@@ -7,6 +7,7 @@ import MinistriesSection from './MinistriesSection';
 import CultsSection from './CultsSection';
 import EventsSection from './EventsSection';
 import ContactSection from './ContactSection';
+import TestimonialsSection from './TestimonialsSection';
 import Footer from './Footer';
 import PrayerModal from './PrayerModal';
 import AdminModal from './AdminModal';
@@ -369,6 +370,14 @@ export default function ChurchPage() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Seção de Depoimentos */}
+          <div className="relative z-10">
+            <TestimonialsSection
+              churchId={church.id}
+              churchSlug={church.slug}
+            />
           </div>
 
           {/* Seção de Contato com dados reais */}
