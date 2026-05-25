@@ -89,9 +89,12 @@ router.post('/public', async (req, res) => {
     });
   } catch (error) {
     console.error('❌ Error creating testimonial:', error);
+    console.error('❌ Error details:', error.message);
+    console.error('❌ Error code:', error.code);
     res.status(500).json({
       success: false,
-      error: 'Erro ao enviar depoimento'
+      error: 'Erro ao enviar depoimento',
+      details: error.message
     });
   }
 });
