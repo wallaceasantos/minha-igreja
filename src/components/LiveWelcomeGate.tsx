@@ -4,18 +4,19 @@
  */
 
 import { useState, useEffect } from 'react';
+import { buildApiUrl } from '@/lib/config';
 import { motion } from 'motion/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { 
-  Users, Check, Crown, MessageCircle, Bell, Heart, Shield, 
+import {
+  Users, Check, Crown, MessageCircle, Bell, Heart, Shield,
   ChevronRight, Play, X
 } from 'lucide-react';
-import { buildApiUrl } from '@/lib/config';
 
 interface LiveWelcomeGateProps {
+  churchId: number;
   churchName: string;
   churchLogo?: string | null;
   memberCount: number;
@@ -33,14 +34,23 @@ const memberBenefits = [
   { icon: Crown, text: 'Conteúdo exclusivo', color: 'text-purple-400' },
 ];
 
-// Depoimentos de membros
-const testimonials = [
-  { name: 'Maria S.', time: '2 meses', text: 'Fazer parte mudou minha vida! O apoio da comunidade é incrível.', avatar: 'M' },
-  { name: 'João P.', time: '6 meses', text: 'Sinto-me em casa. Aqui encontrei minha família espiritual.', avatar: 'J' },
-  { name: 'Ana L.', time: '1 ano', text: 'As lives são uma bênção! Participo de todas.', avatar: 'A' },
+interface Testimonial {
+  id: number;
+  member_name: string;
+  member_avatar: string;
+  member_since: string;
+  testimonial_text: string;
+}
+
+// Depoimentos padrão (fallback)
+const defaultTestimonials: Testimonial[] = [
+  { id: 1, member_name: 'Maria S.', member_since: '2 meses', testimonial_text: 'Fazer parte mudou minha vida! O apoio da comunidade é incrível.', member_avatar: 'M' },
+  { id: 2, member_name: 'João P.', member_since: '6 meses', testimonial_text: 'Sinto-me em casa. Aqui encontrei minha família espiritual.', member_avatar: 'J' },
+  { id: 3, member_name: 'Ana L.', member_since: '1 ano', testimonial_text: 'As lives são uma bênção! Participo de todas.', member_avatar: 'A' },
 ];
 
 export default function LiveWelcomeGate({
+  churchId,
   churchName,
   churchLogo,
   memberCount,
@@ -51,6 +61,30 @@ export default function LiveWelcomeGate({
 }: LiveWelcomeGateProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [showTestimonials, setShowTestimonials] = useState(false);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(defaultTestimonials);
+  const [loadingTestimonials, setLoadingTestimonials] = useState(true);
+
+  // Buscar depoimentos reais da API
+  useEffect(() => {
+    if (!churchId) return;
+    
+    const fetchTestimonials = async () => {
+      try {
+        const response = await fetch(buildApiUrl(`/api/church/${churchId}/testimonials`));
+        const data = await response.json();
+        
+        if (data.success && data.data && data.data.length > 0) {
+          setTestimonials(data.data);
+        }
+      } catch (error) {
+        console.log('[LiveWelcomeGate] Usando depoimentos padrão:', error);
+      } finally {
+        setLoadingTestimonials(false);
+      }
+    };
+    
+    fetchTestimonials();
+  }, [churchId]);
 
   if (!isVisible) return null;
 
@@ -138,13 +172,13 @@ export default function LiveWelcomeGate({
               className="flex items-center justify-center"
             >
               <div className="flex -space-x-3">
-                {testimonials.map((t, i) => (
+                {testimonials.slice(0, 3).map((t, i) => (
                   <Avatar
-                    key={i}
+                    key={t.id || i}
                     className="w-10 h-10 border-2 border-indigo-600"
                   >
                     <AvatarFallback className="bg-indigo-500 text-white text-sm">
-                      {t.avatar}
+                      {t.member_avatar}
                     </AvatarFallback>
                   </Avatar>
                 ))}
@@ -189,28 +223,32 @@ export default function LiveWelcomeGate({
                 className="space-y-3"
               >
                 <p className="text-sm text-slate-400 text-center">O que dizem nossos membros:</p>
-                {testimonials.map((t, i) => (
-                  <div
-                    key={i}
-                    className="flex items-start gap-3 p-3 rounded-lg bg-slate-800/50 border border-slate-700/30"
-                  >
-                    <Avatar className="w-8 h-8 flex-shrink-0">
-                      <AvatarFallback className="bg-indigo-600 text-white text-xs">
-                        {t.avatar}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-sm text-white">{t.name}</span>
-                        <Badge variant="outline" className="text-[10px] border-indigo-500/30 text-indigo-300">
-                          <Shield className="w-3 h-3 mr-0.5" /> Membro
-                        </Badge>
+                {loadingTestimonials ? (
+                  <p className="text-center text-slate-500 text-sm">Carregando depoimentos...</p>
+                ) : (
+                  testimonials.map((t, i) => (
+                    <div
+                      key={t.id || i}
+                      className="flex items-start gap-3 p-3 rounded-lg bg-slate-800/50 border border-slate-700/30"
+                    >
+                      <Avatar className="w-8 h-8 flex-shrink-0">
+                        <AvatarFallback className="bg-indigo-600 text-white text-xs">
+                          {t.member_avatar}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-sm text-white">{t.member_name}</span>
+                          <Badge variant="outline" className="text-[10px] border-indigo-500/30 text-indigo-300">
+                            <Shield className="w-3 h-3 mr-0.5" /> Membro
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-slate-400">{t.member_since}</p>
+                        <p className="text-sm text-slate-300 mt-1 italic">"{t.testimonial_text}"</p>
                       </div>
-                      <p className="text-xs text-slate-400">{t.time}</p>
-                      <p className="text-sm text-slate-300 mt-1 italic">"{t.text}"</p>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </motion.div>
             )}
 

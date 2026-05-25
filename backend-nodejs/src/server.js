@@ -56,6 +56,7 @@ import startDomainScheduler from './schedulers/domain-scheduler.js';
 import adminUpgradeRoutes from './routes/admin-upgrade.js';
 import adminDomainRoutes from './routes/admin-domain.js';
 import superAdminDomainsRoutes from './routes/super-admin-domains.js';
+import testimonialsRoutes from './routes/testimonials.js';
 
 dotenv.config();
 
@@ -128,6 +129,7 @@ app.use('/api/live', liveNotificationsRoutes); // Live Streams routes
 app.use('/api/church', churchVersesRoutes); // Church Verses routes
 app.use('/api/admin', adminReviewsRoutes); // Rotas de avaliações (Admin)
 app.use('/api', adminReviewsRoutes);       // Rotas públicas de avaliações
+app.use('/api/testimonials', testimonialsRoutes); // Depoimentos de membros
 
 // Servir arquivos estáticos (uploads) - DEVE VIR ANTES das rotas
 app.use('/api/uploads/membros', express.static(path.join(rootDir, 'uploads/membros')));

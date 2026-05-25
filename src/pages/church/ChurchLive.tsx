@@ -344,6 +344,7 @@ export default function ChurchLive() {
       {/* Welcome Gate para conversão */}
       {showWelcomeGate && activeStream && (
         <LiveWelcomeGate
+          churchId={church?.id}
           churchName={church?.name || 'Igreja'}
           churchLogo={church?.logo_url}
           memberCount={memberCount}
