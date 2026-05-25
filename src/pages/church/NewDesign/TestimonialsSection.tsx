@@ -1,14 +1,14 @@
 /**
  * TestimonialsSection - Seção de depoimentos na página da igreja
- * Exibe depoimentos aprovados dos membros
+ * Exibe depoimentos aprovados dos membros com visual profissional
  */
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Heart, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
+import { MessageSquare, Heart, Quote, Sparkles } from 'lucide-react';
 import { buildApiUrl } from '@/lib/config';
 
 interface Testimonial {
@@ -27,20 +27,14 @@ interface TestimonialsSectionProps {
 export default function TestimonialsSection({ churchId, churchSlug }: TestimonialsSectionProps) {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        console.log('[TestimonialsSection] Buscando depoimentos para churchId:', churchId);
         const response = await fetch(buildApiUrl(`/api/church/${churchId}/testimonials`));
         const data = await response.json();
-        console.log('[TestimonialsSection] Resposta:', data);
         if (data.success) {
           setTestimonials(data.data);
-          console.log('[TestimonialsSection] Depoimentos carregados:', data.data.length);
-        } else {
-          console.error('[TestimonialsSection] Erro na resposta:', data.error);
         }
       } catch (error) {
         console.error('[TestimonialsSection] Erro ao carregar depoimentos:', error);
@@ -54,141 +48,121 @@ export default function TestimonialsSection({ churchId, churchSlug }: Testimonia
     }
   }, [churchId]);
 
-  const nextTestimonial = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-  };
-
-  const prevTestimonial = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
-
   if (loading) {
-    return null; // Não mostra nada enquanto carrega
+    return null;
   }
 
+  // Estado vazio - incentiva envio
   if (testimonials.length === 0) {
     return (
-      <section id="depoimentos" className="py-16 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/20 rounded-full mb-4">
-            <Heart className="w-4 h-4 text-amber-400" />
-            <span className="text-amber-400 text-sm font-medium">Depoimentos</span>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            O Que Nossos Membros Dizem
-          </h2>
-          <p className="text-slate-400 mb-8">
-            Ainda não há depoimentos aprovados. Envie o seu e inspire outros!
-          </p>
-          <Button
-            asChild
-            className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold"
+      <section id="depoimentos" className="py-20 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center max-w-2xl mx-auto"
           >
-            <a href={`/igreja/${churchSlug}/depoimento`}>
-              <MessageSquare className="w-4 h-4 mr-2" />
-              Compartilhar Minha História
-            </a>
-          </Button>
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 rounded-full mb-6 border border-amber-500/20">
+              <Heart className="w-4 h-4 text-amber-400" />
+              <span className="text-amber-400 text-sm font-medium">Depoimentos</span>
+            </div>
+
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              O Que Nossos Membros Dizem
+            </h2>
+            <p className="text-slate-400 mb-8">
+              Ainda não há depoimentos aprovados. Seja o primeiro a compartilhar sua experiência e inspirar outros!
+            </p>
+
+            <Button
+              asChild
+              size="lg"
+              className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold shadow-lg shadow-amber-500/25"
+            >
+              <a href={`/igreja/${churchSlug}/depoimento`}>
+                <MessageSquare className="w-5 h-5 mr-2" />
+                Compartilhar Minha História
+              </a>
+            </Button>
+          </motion.div>
         </div>
       </section>
     );
   }
 
   return (
-    <section id="depoimentos" className="py-16 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900">
+    <section id="depoimentos" className="py-20 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/20 rounded-full mb-4">
-            <Heart className="w-4 h-4 text-amber-400" />
-            <span className="text-amber-400 text-sm font-medium">Depoimentos</span>
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 rounded-full mb-6 border border-amber-500/20">
+            <Sparkles className="w-4 h-4 text-amber-400" />
+            <span className="text-amber-400 text-sm font-medium">Depoimentos Reais</span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            O Que Nossos Membros Dizem
+
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+            O Que Dizem Nossos Membros
           </h2>
-          <p className="text-slate-400 max-w-2xl mx-auto">
-            Histórias reais de transformação e fé que acontecem em nossa comunidade
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+            Histórias de fé, transformação e comunidade que acontecem em nossa igreja
           </p>
         </motion.div>
 
-        {/* Carousel de Depoimentos */}
-        <div className="relative max-w-4xl mx-auto">
-          <AnimatePresence mode="wait">
+        {/* Grid de Depoimentos */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {testimonials.map((testimonial, index) => (
             <motion.div
-              key={currentIndex}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.3 }}
+              key={testimonial.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
             >
-              <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
-                <CardContent className="p-8 md:p-12">
-                  <div className="flex flex-col items-center text-center">
-                    <Quote className="w-12 h-12 text-amber-400/30 mb-6" />
-                    
-                    <Avatar className="w-20 h-20 border-4 border-amber-500/30 mb-6">
-                      <AvatarFallback className="bg-indigo-600 text-white text-2xl font-bold">
-                        {testimonials[currentIndex].member_avatar}
+              <Card className="group h-full bg-slate-800/30 border-slate-700/30 hover:border-amber-500/30 hover:bg-slate-800/50 transition-all duration-300">
+                <CardContent className="p-6 flex flex-col h-full">
+                  {/* Aspas decorativas */}
+                  <Quote className="w-8 h-8 text-amber-400/40 mb-4" />
+
+                  {/* Texto do depoimento */}
+                  <p className="text-slate-300 text-base leading-relaxed flex-grow mb-6 line-clamp-6">
+                    "{testimonial.testimonial_text}"
+                  </p>
+
+                  {/* Separador */}
+                  <div className="w-full h-px bg-gradient-to-r from-transparent via-slate-600 to-transparent mb-4" />
+
+                  {/* Informação do membro */}
+                  <div className="flex items-center gap-3">
+                    <Avatar className="w-12 h-12 border-2 border-amber-500/30">
+                      {testimonial.member_avatar ? (
+                        <AvatarImage src={testimonial.member_avatar} alt={testimonial.member_name} />
+                      ) : null}
+                      <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-semibold text-sm">
+                        {testimonial.member_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
 
-                    <blockquote className="text-xl md:text-2xl text-slate-200 italic mb-6 leading-relaxed">
-                      "{testimonials[currentIndex].testimonial_text}"
-                    </blockquote>
-
-                    <div className="text-center">
-                      <h4 className="font-semibold text-white text-lg">
-                        {testimonials[currentIndex].member_name}
+                    <div>
+                      <h4 className="font-semibold text-white text-sm">
+                        {testimonial.member_name}
                       </h4>
-                      <p className="text-amber-400 text-sm">
-                        Membro há {testimonials[currentIndex].member_since}
+                      <p className="text-amber-400/80 text-xs">
+                        Membro há {testimonial.member_since}
                       </p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
             </motion.div>
-          </AnimatePresence>
-
-          {/* Navegação */}
-          {testimonials.length > 1 && (
-            <>
-              <button
-                onClick={prevTestimonial}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-12 h-12 bg-slate-800/80 hover:bg-slate-700 rounded-full flex items-center justify-center text-white border border-slate-600 transition-all hover:scale-110"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button
-                onClick={nextTestimonial}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-12 h-12 bg-slate-800/80 hover:bg-slate-700 rounded-full flex items-center justify-center text-white border border-slate-600 transition-all hover:scale-110"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
-            </>
-          )}
-
-          {/* Indicadores */}
-          {testimonials.length > 1 && (
-            <div className="flex justify-center gap-2 mt-6">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentIndex(index)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    index === currentIndex 
-                      ? 'w-8 bg-amber-400' 
-                      : 'bg-slate-600 hover:bg-slate-500'
-                  }`}
-                />
-              ))}
-            </div>
-          )}
+          ))}
         </div>
 
         {/* CTA para enviar depoimento */}
@@ -196,21 +170,29 @@ export default function TestimonialsSection({ churchId, churchSlug }: Testimonia
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="text-center mt-12"
+          transition={{ delay: 0.3 }}
+          className="mt-16 text-center"
         >
-          <p className="text-slate-400 mb-4">
-            Você também faz parte da nossa história?
-          </p>
-          <Button
-            asChild
-            className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold"
-          >
-            <a href={`/igreja/${churchSlug}/depoimento`}>
-              <MessageSquare className="w-4 h-4 mr-2" />
-              Compartilhar Minha História
-            </a>
-          </Button>
+          <Card className="max-w-2xl mx-auto bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-amber-500/20">
+            <CardContent className="p-8">
+              <h3 className="text-xl font-semibold text-white mb-2">
+                Você também faz parte dessa história?
+              </h3>
+              <p className="text-slate-400 mb-6">
+                Compartilhe sua experiência e inspire outros membros da comunidade
+              </p>
+              <Button
+                asChild
+                size="lg"
+                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold shadow-lg shadow-amber-500/25"
+              >
+                <a href={`/igreja/${churchSlug}/depoimento`}>
+                  <MessageSquare className="w-5 h-5 mr-2" />
+                  Compartilhar Meu Depoimento
+                </a>
+              </Button>
+            </CardContent>
+          </Card>
         </motion.div>
       </div>
     </section>
