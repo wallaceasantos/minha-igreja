@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Heart, Send, CheckCircle, Clock, Church } from 'lucide-react';
+import { Heart, Send, CheckCircle, Clock, Church, ArrowLeft } from 'lucide-react';
 import { buildApiUrl } from '@/lib/config';
 import { toast } from 'sonner';
 
@@ -24,6 +24,7 @@ interface Church {
 
 export default function TestimonialForm() {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const [church, setChurch] = useState<Church | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -140,12 +141,43 @@ export default function TestimonialForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 py-12 px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-lg mx-auto"
-      >
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950">
+      {/* Header Fixo */}
+      <header className="bg-slate-900/80 backdrop-blur-sm border-b border-slate-800 sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => navigate(`/igreja/${slug}`)}
+            className="text-slate-400 hover:text-white gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" /> Voltar
+          </Button>
+          
+          {church?.logo_url ? (
+            <img 
+              src={buildApiUrl(church.logo_url)} 
+              alt={church.name}
+              className="h-8 object-contain"
+            />
+          ) : (
+            <div className="flex items-center gap-2">
+              <Church className="w-5 h-5 text-amber-400" />
+              <span className="text-white font-medium">{church?.name || 'Igreja'}</span>
+            </div>
+          )}
+          
+          <div className="w-20" />
+        </div>
+      </header>
+
+      {/* Conteúdo */}
+      <div className="py-12 px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-lg mx-auto"
+        >
         {/* Header */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -275,10 +307,11 @@ export default function TestimonialForm() {
 
         {/* Footer */}
         <p className="text-center text-slate-500 text-sm mt-8">
-          Ao enviar, você concorda que seu depoimento possa ser exibido 
+          Ao enviar, você concorda que seu depoimento possa ser exibido
           publicamente após aprovação.
         </p>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 }
