@@ -367,49 +367,50 @@ export default function ChurchLive() {
         timeWatched={timeWatched}
       />
 
+      {/* Header fixo no topo - sempre visível */}
+      <header className="bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 fixed top-0 left-0 right-0 z-50">
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" onClick={() => navigate(`/igreja/${slug}`)} className="text-slate-400 hover:text-white gap-2">
+              <ArrowLeft className="w-4 h-4" /> Voltar ao Site
+            </Button>
+            <h1 className="text-white font-semibold text-lg hidden md:block">{church?.name || 'Igreja'} - Transmissão ao Vivo</h1>
+          </div>
+          <div className="flex items-center gap-2">
+            {/* Status de Membro */}
+            {(() => {
+              const session = localStorage.getItem('memberLiveSession');
+              const isMember = session && JSON.parse(session)?.member;
+              return isMember ? (
+                <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 gap-1">
+                  <Crown className="w-3 h-3" /> Membro
+                </Badge>
+              ) : (
+                <Badge variant="outline" className="border-amber-500/30 text-amber-400 gap-1 cursor-pointer hover:bg-amber-500/10" onClick={() => navigate(`/igreja/${slug}/cadastro`)}>
+                  <Crown className="w-3 h-3" /> Seja Membro
+                </Badge>
+              );
+            })()}
+
+            {/* Indicador de Conexão */}
+            <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${isOnline ? 'bg-green-600/20 text-green-400' : 'bg-red-600/20 text-red-400 animate-pulse'}`}>
+              <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-400' : 'bg-red-400'}`}></div>
+              <span className="hidden sm:inline">{isOnline ? 'Conectado' : 'Offline'}</span>
+            </div>
+            {activeStream ? (
+              activeStream.status === 'live' ? <Badge className="bg-red-600 animate-pulse gap-1"><Radio className="w-3 h-3" /> AO VIVO</Badge> :
+              activeStream.status === 'scheduled' ? <Badge className="bg-amber-600 gap-1"><Clock className="w-3 h-3" /> Agendada</Badge> :
+              <Badge variant="secondary" className="gap-1"><Clock className="w-3 h-3" /> Offline</Badge>
+            ) : <Badge variant="secondary"><Clock className="w-3 h-3 mr-1" /> Offline</Badge>}
+          </div>
+        </div>
+      </header>
+
       {/* Conteúdo Principal (Gate ou Player) */}
-      <div className="flex-1">
+      <div className="flex-1 pt-14">
         <LiveAuthGate churchSlug={activeSlug || ''}>
           <div className="min-h-full bg-slate-950 text-white">
-            <header className="bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 sticky top-0 z-50">
-              <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <Button variant="ghost" size="sm" onClick={() => navigate(`/igreja/${slug}`)} className="text-slate-400 hover:text-white gap-2">
-                    <ArrowLeft className="w-4 h-4" /> Voltar ao Site
-                  </Button>
-                  <h1 className="text-white font-semibold text-lg hidden md:block">{church?.name || 'Igreja'} - Transmissão ao Vivo</h1>
-                </div>
-                <div className="flex items-center gap-2">
-                  {/* Status de Membro */}
-                  {(() => {
-                    const session = localStorage.getItem('memberLiveSession');
-                    const isMember = session && JSON.parse(session)?.member;
-                    return isMember ? (
-                      <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 gap-1">
-                        <Crown className="w-3 h-3" /> Membro
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline" className="border-amber-500/30 text-amber-400 gap-1 cursor-pointer hover:bg-amber-500/10" onClick={() => navigate(`/igreja/${slug}/cadastro`)}>
-                        <Crown className="w-3 h-3" /> Seja Membro
-                      </Badge>
-                    );
-                  })()}
-                  
-                  {/* Indicador de Conexão */}
-                  <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${isOnline ? 'bg-green-600/20 text-green-400' : 'bg-red-600/20 text-red-400 animate-pulse'}`}>
-                    <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-400' : 'bg-red-400'}`}></div>
-                    <span className="hidden sm:inline">{isOnline ? 'Conectado' : 'Offline'}</span>
-                  </div>
-                  {activeStream ? (
-                    activeStream.status === 'live' ? <Badge className="bg-red-600 animate-pulse gap-1"><Radio className="w-3 h-3" /> AO VIVO</Badge> :
-                    activeStream.status === 'scheduled' ? <Badge className="bg-amber-600 gap-1"><Clock className="w-3 h-3" /> Agendada</Badge> :
-                    <Badge variant="secondary" className="gap-1"><Clock className="w-3 h-3" /> Offline</Badge>
-                  ) : <Badge variant="secondary"><Clock className="w-3 h-3 mr-1" /> Offline</Badge>}
-                </div>
-              </div>
-            </header>
-
-        <main className="container mx-auto px-4 py-6 space-y-6">
+            <main className="container mx-auto px-4 py-6 space-y-6">
           {activeStream && (
             <div className="space-y-6">
               {/* Player Grande */}
