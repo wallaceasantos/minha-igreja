@@ -534,45 +534,39 @@ export default function ChurchLive() {
             {previousStreams.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {previousStreams.map((rec) => {
-                // Valida se é um ID válido do YouTube
-                const isValidId = rec.youtube_video_id && 
-                  rec.youtube_video_id.length === 11 && 
-                  /^[a-zA-Z0-9_-]+$/.test(rec.youtube_video_id);
-                
-                return (
-                  <div
-                    key={rec.id}
-                    className="bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden cursor-pointer hover:border-slate-600 transition-all hover:shadow-lg group"
-                    onClick={() => isValidId && window.open(`https://www.youtube.com/watch?v=${rec.youtube_video_id}`, '_blank')}
-                  >
-                    <div className="aspect-video bg-slate-800 relative">
-                      {isValidId ? (
-                        <img
-                          src={`https://img.youtube.com/vi/${rec.youtube_video_id}/mqdefault.jpg`}
-                          alt={rec.title}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            // Se falhar, esconde a imagem
-                            (e.target as HTMLImageElement).style.display = 'none';
-                          }}
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-slate-800">
-                          <Film className="w-12 h-12 text-slate-600" />
+                  const isValidId = rec.youtube_video_id && rec.youtube_video_id.length === 11 && /^[a-zA-Z0-9_-]+$/.test(rec.youtube_video_id);
+                  return (
+                    <div
+                      key={rec.id}
+                      className="bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden cursor-pointer hover:border-slate-600 transition-all hover:shadow-lg group"
+                      onClick={() => isValidId && window.open(`https://www.youtube.com/watch?v=${rec.youtube_video_id}`, '_blank')}
+                    >
+                      <div className="aspect-video bg-slate-800 relative">
+                        {isValidId ? (
+                          <img
+                            src={`https://img.youtube.com/vi/${rec.youtube_video_id}/mqdefault.jpg`}
+                            alt={rec.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-slate-800">
+                            <Film className="w-12 h-12 text-slate-600" />
+                          </div>
+                        )}
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/30 transition-colors">
+                          <Play className="w-8 h-8 text-white" />
                         </div>
-                      )}
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/30 transition-colors">
-                        <Play className="w-8 h-8 text-white" />
+                      </div>
+                      <div className="p-3">
+                        <h4 className="font-medium text-sm truncate text-white">{rec.title}</h4>
+                        <p className="text-xs text-slate-400 mt-1">
+                          {new Date(rec.scheduled_start).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
+                        </p>
                       </div>
                     </div>
-                    <div className="p-3">
-                      <h4 className="font-medium text-sm truncate text-white">{rec.title}</h4>
-                      <p className="text-xs text-slate-400 mt-1">
-                        {new Date(rec.scheduled_start).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <p className="text-slate-500 text-center py-8 text-sm">Nenhuma transmissão anterior encontrada.</p>
