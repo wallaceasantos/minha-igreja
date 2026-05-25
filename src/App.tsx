@@ -36,6 +36,7 @@ const SuperAdminReports = lazy(() => import("./pages/super-admin/Reports"));
 const SuperAdminSecurity = lazy(() => import("./pages/super-admin/SecurityDashboard"));
 const ChurchNew = lazy(() => import("./pages/church/NewDesign/ChurchPage"));
 const ChurchLive = lazy(() => import("./pages/church/ChurchLive"));
+const TestimonialForm = lazy(() => import("./pages/church/TestimonialForm"));
 const Login = lazy(() => import("./pages/Login"));
 const PoliticaPrivacidade = lazy(() => import("./pages/PoliticaPrivacidade"));
 const SobreNos = lazy(() => import("./pages/SobreNos"));
@@ -106,6 +107,7 @@ const LazyAdminChurchGallery = lazy(() => import("./pages/admin/ChurchGallery"))
 const LazyAdminLiveStreams = lazy(() => import("./pages/admin/LiveStreams"));
 const LazyAdminReviews = lazy(() => import("./pages/admin/Reviews"));
 const LazyAdminVerses = lazy(() => import("./pages/admin/Verses"));
+const LazyAdminTestimonials = lazy(() => import("./pages/admin/Testimonials"));
 
 // Componente de redirecionamento para rotas antigas /church -> /igreja
 const ChurchSlugRedirect = () => {
@@ -157,6 +159,7 @@ const App = () => (
               {/* Preview da Igreja (localhost) - NOVO DESIGN */}
               <Route path="/igreja/:slug" element={<ChurchNew />} />
               <Route path="/igreja/:slug/ao-vivo" element={<ChurchLive />} />
+              <Route path="/igreja/:slug/depoimento" element={<TestimonialForm />} />
               <Route path="/igreja" element={<ChurchNew />} />
 
               {/* Redirecionamento de rotas antigas /church -> /igreja */}
@@ -181,6 +184,7 @@ const App = () => (
                 <Route path="/admin/galeria" element={<LazyAdminChurchGallery />} />
                 <Route path="/admin/live-streams" element={<LazyAdminLiveStreams />} />
                 <Route path="/admin/verses" element={<LazyAdminVerses />} />
+                <Route path="/admin/depoimentos" element={<LazyAdminTestimonials />} />
                 <Route path="/admin/avaliar" element={<LazyAdminReviews />} />
                 <Route path="/admin/configuracoes" element={<LazyAdminConfig />} />
                 <Route path="/admin/pedidos" element={<LazyAdminPedidos />} />

@@ -28,6 +28,7 @@ import {
   Copy,
   Ticket,
   Megaphone,
+  MessageSquare,
   X,
   MessageCircle,
   Mail,
@@ -918,11 +919,22 @@ export default function Dashboard() {
               <p className="text-sm text-muted-foreground">
                 Gerencie versículos para exibição na live
               </p>
-              {/*{church?.plan_type === 'essencial' && (
-                <Badge className="mt-2 bg-green-500 text-xs">
-                  Incluído no Essencial
-                </Badge>
-              )}*/}
+            </CardContent>
+          </Link>
+        </Card>
+
+        <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Link to="/admin/depoimentos" className="block h-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquare className="w-5 h-5 text-amber-600" />
+                Depoimentos
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Aprove depoimentos dos membros para a live
+              </p>
             </CardContent>
           </Link>
         </Card>
