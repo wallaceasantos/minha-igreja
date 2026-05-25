@@ -15,8 +15,8 @@ const router = express.Router();
  */
 router.get('/church/:churchId/testimonials', async (req, res) => {
   try {
-    const { churchId } = req.params;
-    console.log('[API] Buscando depoimentos aprovados para churchId:', churchId);
+    const churchId = parseInt(req.params.churchId, 10);
+    console.log('[API] Buscando depoimentos aprovados para churchId:', churchId, '(tipo:', typeof churchId, ')');
     
     const pool = getPool();
     
