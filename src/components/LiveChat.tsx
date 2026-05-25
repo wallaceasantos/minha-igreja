@@ -45,16 +45,6 @@ const quickReactions = [
   { emoji: '🎵', label: 'Louvor', message: '🎵 Que louvor maravilhoso!' },
 ];
 
-// Emojis rápidos para reações durante o culto
-const quickReactions = [
-  { emoji: '🙏', label: 'Oração', message: '🙏 Amém! Estou orando com você!' },
-  { emoji: '❤️', label: 'Amor', message: '❤️ Glória a Deus!' },
-  { emoji: '🔥', label: 'Fogo', message: '🔥 Aleluia! O Espírito de Deus está aqui!' },
-  { emoji: '😇', label: 'Bênção', message: '😇 Que Deus te abençoe!' },
-  { emoji: '✨', label: 'Glória', message: '✨ Glória ao Senhor!' },
-  { emoji: '🎵', label: 'Louvor', message: '🎵 Que louvor maravilhoso!' },
-];
-
 // Top membros simulados (em produção viria do backend)
 const topMembers = [
   { name: 'Maria S.', messages: 45, badge: 'gold' },
