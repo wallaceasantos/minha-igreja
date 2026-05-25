@@ -44,6 +44,7 @@ export default function AdminTestimonials() {
   const [activeTab, setActiveTab] = useState('pending');
   const [processingId, setProcessingId] = useState<number | null>(null);
   const [churchSlug, setChurchSlug] = useState<string>('');
+  const [tokenError, setTokenError] = useState(false);
 
   // Buscar slug da igreja do usuário logado
   useEffect(() => {
@@ -51,6 +52,12 @@ export default function AdminTestimonials() {
     const storedSlug = localStorage.getItem('church_slug');
     if (storedSlug) {
       setChurchSlug(storedSlug);
+    }
+    
+    // Verificar se existe token
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setTokenError(true);
     }
   }, []);
 
@@ -216,6 +223,25 @@ export default function AdminTestimonials() {
           Gerencie os depoimentos que aparecem na tela de boas-vindas da live
         </p>
       </div>
+
+      {/* Erro de Token */}
+      {tokenError && (
+        <div className="mb-6 p-4 bg-red-900/30 border border-red-500/30 rounded-lg">
+          <p className="text-red-300 text-sm mb-2">
+            <strong>Erro de autenticação:</strong> Sua sessão expirou ou o token é inválido.
+          </p>
+          <Button
+            size="sm"
+            onClick={() => {
+              localStorage.clear();
+              window.location.href = '/login';
+            }}
+            className="bg-red-600 hover:bg-red-700 text-white"
+          >
+            Fazer Login Novamente
+          </Button>
+        </div>
+      )}
 
       {/* Alerta informativo */}
       <div className="mb-6 p-4 bg-indigo-900/30 border border-indigo-500/30 rounded-lg">
