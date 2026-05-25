@@ -1,87 +1,38 @@
 -- Migration: Adicionar colunas de status e aprovação à tabela testimonials
--- Versão simplificada compatível com MySQL 5.7+
+-- Versão simplificada - execute cada comando separadamente se necessário
 
--- Verificar e adicionar coluna status
-SET @exist := (SELECT COUNT(*) FROM information_schema.columns 
-WHERE table_schema = DATABASE() AND table_name = 'testimonials' AND column_name = 'status');
+-- Desativar verificação de erros para comandos opcionais
+-- Execute cada ALTER TABLE separadamente
 
-SET @sql := IF(@exist = 0, 
-  'ALTER TABLE testimonials ADD COLUMN status ENUM(\'pending\', \'approved\', \'rejected\') DEFAULT \'approved\' COMMENT \'Status do depoimento\'', 
-  'SELECT \'Coluna status já existe\' as msg');
-PREPARE stmt FROM @sql;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
+-- Adicionar coluna status (ignore erro se já existir)
+ALTER TABLE testimonials 
+ADD COLUMN status ENUM('pending', 'approved', 'rejected') DEFAULT 'approved' 
+COMMENT 'Status do depoimento';
 
--- Verificar e adicionar coluna member_email
-SET @exist := (SELECT COUNT(*) FROM information_schema.columns 
-WHERE table_schema = DATABASE() AND table_name = 'testimonials' AND column_name = 'member_email');
+-- Adicionar coluna member_email (ignore erro se já existir)
+ALTER TABLE testimonials 
+ADD COLUMN member_email VARCHAR(100) DEFAULT NULL 
+COMMENT 'Email para contato';
 
-SET @sql := IF(@exist = 0, 
-  'ALTER TABLE testimonials ADD COLUMN member_email VARCHAR(100) DEFAULT NULL COMMENT \'Email para contato\'', 
-  'SELECT \'Coluna member_email já existe\' as msg');
-PREPARE stmt FROM @sql;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
+-- Adicionar coluna approved_at (ignore erro se já existir)
+ALTER TABLE testimonials 
+ADD COLUMN approved_at TIMESTAMP NULL DEFAULT NULL;
 
--- Verificar e adicionar coluna approved_at
-SET @exist := (SELECT COUNT(*) FROM information_schema.columns 
-WHERE table_schema = DATABASE() AND table_name = 'testimonials' AND column_name = 'approved_at');
+-- Adicionar coluna approved_by (ignore erro se já existir)
+ALTER TABLE testimonials 
+ADD COLUMN approved_by INT DEFAULT NULL 
+COMMENT 'ID do usuário que aprovou';
 
-SET @sql := IF(@exist = 0, 
-  'ALTER TABLE testimonials ADD COLUMN approved_at TIMESTAMP NULL DEFAULT NULL', 
-  'SELECT \'Coluna approved_at já existe\' as msg');
-PREPARE stmt FROM @sql;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
+-- Adicionar foreign key (ignore erro se já existir ou se users não existir)
+ALTER TABLE testimonials 
+ADD CONSTRAINT fk_testimonials_approved_by 
+FOREIGN KEY (approved_by) REFERENCES users(id) ON DELETE SET NULL;
 
--- Verificar e adicionar coluna approved_by
-SET @exist := (SELECT COUNT(*) FROM information_schema.columns 
-WHERE table_schema = DATABASE() AND table_name = 'testimonials' AND column_name = 'approved_by');
+-- Remover índice antigo se existir (ignore erro se não existir)
+DROP INDEX idx_church_active ON testimonials;
 
-SET @sql := IF(@exist = 0, 
-  'ALTER TABLE testimonials ADD COLUMN approved_by INT DEFAULT NULL COMMENT \'ID do usuário que aprovou\'', 
-  'SELECT \'Coluna approved_by já existe\' as msg');
-PREPARE stmt FROM @sql;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
-
--- Adicionar foreign key (sem IF EXISTS, com tratamento de erro)
--- Primeiro verificar se a constraint existe
-SET @exist := (SELECT COUNT(*) FROM information_schema.table_constraints 
-WHERE table_schema = DATABASE() AND table_name = 'testimonials' AND constraint_name = 'fk_testimonials_approved_by');
-
-SET @sql := IF(@exist = 0, 
-  'ALTER TABLE testimonials ADD CONSTRAINT fk_testimonials_approved_by FOREIGN KEY (approved_by) REFERENCES users(id) ON DELETE SET NULL', 
-  'SELECT \'Foreign key já existe\' as msg');
-PREPARE stmt FROM @sql;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
-
--- Remover índice antigo se existir (tratamento de erro)
--- Verificar se o índice existe
-SET @exist := (SELECT COUNT(*) FROM information_schema.statistics 
-WHERE table_schema = DATABASE() AND table_name = 'testimonials' AND index_name = 'idx_church_active');
-
-SET @sql := IF(@exist > 0, 
-  'DROP INDEX idx_church_active ON testimonials', 
-  'SELECT \'Índice idx_church_active não existe\' as msg');
-PREPARE stmt FROM @sql;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
-
--- Criar novo índice (verificar se já existe)
-SET @exist := (SELECT COUNT(*) FROM information_schema.statistics 
-WHERE table_schema = DATABASE() AND table_name = 'testimonials' AND index_name = 'idx_church_status');
-
-SET @sql := IF(@exist = 0, 
-  'CREATE INDEX idx_church_status ON testimonials(church_id, status)', 
-  'SELECT \'Índice idx_church_status já existe\' as msg');
-PREPARE stmt FROM @sql;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
+-- Criar novo índice (ignore erro se já existir)
+CREATE INDEX idx_church_status ON testimonials(church_id, status);
 
 -- Atualizar registros existentes
 UPDATE testimonials SET status = 'approved' WHERE status IS NULL;
-
--- Confirmação
-SELECT 'Migration concluída com sucesso' as resultado;
