@@ -225,8 +225,12 @@ export default function LiveSection({ churchSlug }: LiveSectionProps) {
 
   // Limpeza dupla: tenta pela URL primeiro, depois pelo video_id, garantindo que seja apenas o ID puro
   // Usamos optional chaining (?.) para evitar erros de TS caso as propriedades sejam undefined
-  const rawId = getYoutubeId(stream.youtube_url) || getYoutubeId(stream.youtube_video_id) || 'fallback';
-  const youtubeId = String(rawId)?.split('?')?.[0]?.split('&')?.[0]?.trim() ?? 'fallback';
+  const rawId = getYoutubeId(stream.youtube_url) || getYoutubeId(stream.youtube_video_id) || '';
+  const youtubeId = String(rawId)?.split('?')?.[0]?.split('&')?.[0]?.trim() ?? '';
+  
+  // Valida se é um ID válido do YouTube (11 caracteres alfanuméricos)
+  const isValidYoutubeId = youtubeId.length === 11 && /^[a-zA-Z0-9_-]+$/.test(youtubeId);
+  
   const isLive = stream.status === 'live';
 
   // Função para redirecionar para a página privada de live
@@ -245,14 +249,14 @@ export default function LiveSection({ churchSlug }: LiveSectionProps) {
         {/* Lado Esquerdo: Thumbnail/Preview */}
         <div className="lg:w-1/2 aspect-video lg:aspect-auto relative group">
            {/* Thumbnail da Live (se houver) ou Placeholder */}
-           {youtubeId ? (
+           {isValidYoutubeId ? (
              <img
                src={`https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`}
                alt={stream.title}
                className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity"
                onError={(e) => {
-                 // Fallback para imagem padrão
-                 (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 320 180"%3E%3Crect width="320" height="180" fill="%231e293b"/%3E%3Ctext x="160" y="90" font-family="Arial" font-size="14" fill="%2394a3b8" text-anchor="middle"%3ETransmissão%3C/text%3E%3C/svg%3E';
+                 // Se falhar, esconde a imagem e mostra placeholder
+                 (e.target as HTMLImageElement).style.display = 'none';
                }}
              />
            ) : (

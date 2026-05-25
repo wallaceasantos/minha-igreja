@@ -533,21 +533,27 @@ export default function ChurchLive() {
             <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-white"><Film className="w-5 h-5" /> Transmissões Anteriores</h3>
             {previousStreams.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {previousStreams.map((rec) => (
+                {previousStreams.map((rec) => {
+                // Valida se é um ID válido do YouTube
+                const isValidId = rec.youtube_video_id && 
+                  rec.youtube_video_id.length === 11 && 
+                  /^[a-zA-Z0-9_-]+$/.test(rec.youtube_video_id);
+                
+                return (
                   <div
                     key={rec.id}
                     className="bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden cursor-pointer hover:border-slate-600 transition-all hover:shadow-lg group"
-                    onClick={() => window.open(`https://www.youtube.com/watch?v=${rec.youtube_video_id}`, '_blank')}
+                    onClick={() => isValidId && window.open(`https://www.youtube.com/watch?v=${rec.youtube_video_id}`, '_blank')}
                   >
                     <div className="aspect-video bg-slate-800 relative">
-                      {rec.youtube_video_id ? (
+                      {isValidId ? (
                         <img
                           src={`https://img.youtube.com/vi/${rec.youtube_video_id}/mqdefault.jpg`}
                           alt={rec.title}
                           className="w-full h-full object-cover"
                           onError={(e) => {
-                            // Fallback para thumbnail padrão
-                            (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 320 180"%3E%3Crect width="320" height="180" fill="%231e293b"/%3E%3Ctext x="160" y="90" font-family="Arial" font-size="14" fill="%2394a3b8" text-anchor="middle"%3ETransmissão Anterior%3C/text%3E%3C/svg%3E';
+                            // Se falhar, esconde a imagem
+                            (e.target as HTMLImageElement).style.display = 'none';
                           }}
                         />
                       ) : (
