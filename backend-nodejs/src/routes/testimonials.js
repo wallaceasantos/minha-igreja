@@ -137,6 +137,8 @@ router.get('/pending', authenticateToken, async (req, res) => {
 router.get('/', authenticateToken, async (req, res) => {
   try {
     const churchId = req.user.church_id;
+    console.log('[DEBUG] /api/testimonials - church_id do token:', churchId);
+    console.log('[DEBUG] /api/testimonials - user no token:', req.user);
     const { status } = req.query; // opcional: ?status=pending|approved|rejected
     
     const pool = getPool();
@@ -322,6 +324,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 router.get('/stats', authenticateToken, async (req, res) => {
   try {
     const churchId = req.user.church_id;
+    console.log('[DEBUG] /api/testimonials/stats - church_id do token:', churchId);
     const pool = getPool();
     
     const [stats] = await pool.query(
