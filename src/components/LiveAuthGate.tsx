@@ -21,7 +21,7 @@ interface LiveAuthGateProps {
   churchSlug: string;
 }
 
-type AuthStep = 'email' | 'otp' | 'register';
+type AuthStep = 'email' | 'otp';
 
 export default function LiveAuthGate({ children, churchSlug }: LiveAuthGateProps) {
   const navigate = useNavigate();
@@ -43,13 +43,6 @@ export default function LiveAuthGate({ children, churchSlug }: LiveAuthGateProps
 
   // PIN (legacy support)
   const [pin, setPin] = useState('');
-
-  // Register Flow
-  const [regName, setRegName] = useState('');
-  const [regPhone, setRegPhone] = useState('');
-  const [regEmail, setRegEmail] = useState('');
-  const [regErrors, setRegErrors] = useState<{ phone?: string; email?: string }>({});
-  const [isRegistering, setIsRegistering] = useState(false);
 
   const activeSlug = slug || churchSlug;
 
@@ -206,8 +199,6 @@ export default function LiveAuthGate({ children, churchSlug }: LiveAuthGateProps
         return;
       }
 
-      setRegName(googleName);
-      setRegEmail(googleEmail);
       await quickRegister(googleId, googleName, googleEmail);
     } catch (error) {
       console.error(error);
@@ -234,59 +225,23 @@ export default function LiveAuthGate({ children, churchSlug }: LiveAuthGateProps
     finally { setIsVerifyingOtp(false); }
   };
 
-  const applyPhoneMask = (value: string) => {
-    const numbers = value.replace(/\D/g, '').slice(0, 11);
-    if (numbers.length <= 2) return numbers;
-    if (numbers.length <= 7) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
-    return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7)}`;
-  };
-
-  const quickRegister = async (googleId?: string, overrideName?: string, overrideEmail?: string) => {
-    const finalName = overrideName || regName;
-    const finalEmail = overrideEmail || regEmail;
-    const newErrors: { phone?: string; email?: string } = {};
-    const phoneDigits = regPhone.replace(/\D/g, '');
-
-    if (!googleId) {
-      if (!regPhone.trim()) {
-        newErrors.phone = 'O WhatsApp e obrigatorio';
-      } else if (phoneDigits.length < 10) {
-        newErrors.phone = 'Numero incompleto (minimo 10 digitos)';
-      }
-    }
-
-    if (finalEmail.trim()) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(finalEmail.trim())) {
-        newErrors.email = 'E-mail invalido';
-      }
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setRegErrors(newErrors);
-      toast.error('Verifique os dados informados');
-      return;
-    }
-    setRegErrors({});
-
+  const quickRegister = async (googleId: string, name: string, email: string) => {
     if (!churchId) { toast.error('Erro ao carregar igreja'); return; }
     try {
-      setIsRegistering(true);
       const response = await fetch(buildApiUrl('/api/member/live/quick-register'), {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          church_id: churchId, name: finalName, phone: phoneDigits,
-          email: finalEmail.trim() || null, source: googleId ? 'google' : 'quick_register',
+          church_id: churchId, name, email: email || null,
+          source: 'google', google_id: googleId,
         }),
       });
       const data = await response.json();
       if (data.success) {
         localStorage.setItem('memberLiveSession', JSON.stringify(data.data));
-        toast.success(googleId ? `Bem-vindo(a), ${finalName}!` : `Bem-vindo(a)!`);
+        toast.success(`Bem-vindo(a), ${name}!`);
         setIsAuthenticated(true);
       } else { toast.error(data.error || 'Erro ao cadastrar'); }
     } catch (error) { toast.error('Erro ao cadastrar'); }
-    finally { setIsRegistering(false); }
   };
 
   if (isChecking) {
@@ -415,10 +370,10 @@ export default function LiveAuthGate({ children, churchSlug }: LiveAuthGateProps
                       <div className="flex-1 h-px bg-slate-700"></div>
                     </div>
 
-                    {/* Cadastro Rápido */}
-                    <Button 
-                      onClick={() => setAuthStep('register')} 
-                      variant="outline" 
+                    {/* Cadastro Rápido - Redireciona para página dedicada */}
+                    <Button
+                      onClick={() => navigate(`/igreja/${activeSlug}/cadastro`)}
+                      variant="outline"
                       className="w-full border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white"
                     >
                       <UserPlus className="w-4 h-4 mr-2" /> Cadastre-se Rapidamente
@@ -483,67 +438,6 @@ export default function LiveAuthGate({ children, churchSlug }: LiveAuthGateProps
                   </div>
                 )}
 
-                {/* CADASTRO RÁPIDO */}
-                {authStep === 'register' && (
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Button variant="ghost" size="sm" onClick={() => setAuthStep('email')} className="text-slate-400 p-0 h-auto hover:text-white">
-                        <ArrowLeft className="w-4 h-4 mr-1" /> Voltar
-                      </Button>
-                    </div>
-                    <div className="bg-blue-900/30 border border-blue-800 rounded-lg p-3">
-                      <p className="text-sm text-blue-300 flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-blue-400" /> Cadastro gratuito • Acesso imediato
-                      </p>
-                    </div>
-                    <div>
-                      <Label className="text-slate-300">Nome Completo *</Label>
-                      <Input 
-                        value={regName} 
-                        onChange={(e) => setRegName(e.target.value)} 
-                        placeholder="Seu nome completo" 
-                        className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:ring-green-500 focus:border-green-500 mt-1" 
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-slate-300">WhatsApp *</Label>
-                      <Input
-                        value={regPhone}
-                        onChange={(e) => { setRegPhone(applyPhoneMask(e.target.value)); setRegErrors(prev => ({ ...prev, phone: undefined })); }}
-                        placeholder="(92) 99999-9999"
-                        className={`bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:ring-green-500 focus:border-green-500 mt-1 ${regErrors.phone ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
-                      />
-                      {regErrors.phone ? (
-                        <p className="text-xs text-red-400 mt-1">{regErrors.phone}</p>
-                      ) : (
-                        <p className="text-xs text-slate-500 mt-1">Para receber atualizações da igreja</p>
-                      )}
-                    </div>
-                    <div>
-                      <Label className="text-slate-300">Email (opcional)</Label>
-                      <Input
-                        type="email"
-                        value={regEmail}
-                        onChange={(e) => { setRegEmail(e.target.value); setRegErrors(prev => ({ ...prev, email: undefined })); }}
-                        placeholder="seu@email.com"
-                        className={`bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:ring-green-500 focus:border-green-500 mt-1 ${regErrors.email ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
-                      />
-                      {regErrors.email && <p className="text-xs text-red-400 mt-1">{regErrors.email}</p>}
-                    </div>
-                    <Button 
-                      onClick={() => quickRegister()} 
-                      disabled={isRegistering} 
-                      className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg shadow-green-500/20"
-                    >
-                      {isRegistering ? (
-                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Cadastrando...</>
-                      ) : (
-                        <><UserPlus className="w-4 h-4 mr-2" />Cadastrar e Acessar Live</>
-                      )}
-                    </Button>
-                    <p className="text-xs text-slate-500 text-center">Ao cadastrar, você concorda em receber comunicações da igreja.</p>
-                  </div>
-                )}
               </CardContent>
             </Card>
           </div>
