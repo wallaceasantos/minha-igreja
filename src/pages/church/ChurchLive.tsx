@@ -82,6 +82,22 @@ export default function ChurchLive() {
   const [showWelcomeGate, setShowWelcomeGate] = useState(true);
   const [showConversionBanner, setShowConversionBanner] = useState(false);
   const [timeWatched, setTimeWatched] = useState(0);
+
+  // Verificar se usuário já tem sessão ativa
+  useEffect(() => {
+    const session = localStorage.getItem('memberLiveSession');
+    if (session) {
+      try {
+        const parsed = JSON.parse(session);
+        // Se tem sessão válida, pula o welcome gate
+        if (parsed?.member?.id && parsed?.token) {
+          setShowWelcomeGate(false);
+        }
+      } catch (e) {
+        // Sessão inválida, mantém welcome gate
+      }
+    }
+  }, []);
   const [memberCount] = useState(53); // Simulado - em produção viria da API
 
   // Timer para contar tempo assistido
