@@ -536,16 +536,26 @@ export default function ChurchLive() {
                 {previousStreams.map((rec) => (
                   <div
                     key={rec.id}
-                    className="bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden cursor-pointer hover:border-slate-600 transition-all hover:shadow-lg"
+                    className="bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden cursor-pointer hover:border-slate-600 transition-all hover:shadow-lg group"
                     onClick={() => window.open(`https://www.youtube.com/watch?v=${rec.youtube_video_id}`, '_blank')}
                   >
-                    <div className="aspect-video bg-black relative">
-                      <img
-                        src={`https://img.youtube.com/vi/${rec.youtube_video_id}/hqdefault.jpg`}
-                        alt={rec.title}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                    <div className="aspect-video bg-slate-800 relative">
+                      {rec.youtube_video_id ? (
+                        <img
+                          src={`https://img.youtube.com/vi/${rec.youtube_video_id}/mqdefault.jpg`}
+                          alt={rec.title}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            // Fallback para thumbnail padrão
+                            (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 320 180"%3E%3Crect width="320" height="180" fill="%231e293b"/%3E%3Ctext x="160" y="90" font-family="Arial" font-size="14" fill="%2394a3b8" text-anchor="middle"%3ETransmissão Anterior%3C/text%3E%3C/svg%3E';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-slate-800">
+                          <Film className="w-12 h-12 text-slate-600" />
+                        </div>
+                      )}
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/30 transition-colors">
                         <Play className="w-8 h-8 text-white" />
                       </div>
                     </div>

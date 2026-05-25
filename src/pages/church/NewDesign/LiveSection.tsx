@@ -246,10 +246,14 @@ export default function LiveSection({ churchSlug }: LiveSectionProps) {
         <div className="lg:w-1/2 aspect-video lg:aspect-auto relative group">
            {/* Thumbnail da Live (se houver) ou Placeholder */}
            {youtubeId ? (
-             <img 
-               src={`https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`}
+             <img
+               src={`https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`}
                alt={stream.title}
                className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity"
+               onError={(e) => {
+                 // Fallback para imagem padrão
+                 (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="320" height="180" viewBox="0 0 320 180"%3E%3Crect width="320" height="180" fill="%231e293b"/%3E%3Ctext x="160" y="90" font-family="Arial" font-size="14" fill="%2394a3b8" text-anchor="middle"%3ETransmissão%3C/text%3E%3C/svg%3E';
+               }}
              />
            ) : (
              <div className="w-full h-full bg-slate-800 flex items-center justify-center">
