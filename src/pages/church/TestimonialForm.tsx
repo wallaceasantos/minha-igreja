@@ -243,13 +243,13 @@ export default function TestimonialForm() {
               </div>
 
               <div className="bg-indigo-950/50 border border-indigo-500/20 rounded-lg p-3">
-                <p className="text-xs text-slate-400 flex items-start gap-2">
+                <div className="text-xs text-slate-400 flex items-start gap-2">
                   <Badge variant="outline" className="text-[10px] border-amber-500/30 text-amber-400 shrink-0">
                     Importante
                   </Badge>
-                  Seu depoimento será analisado pelo pastor antes de ser publicado. 
+                  Seu depoimento será analisado pelo pastor antes de ser publicado.
                   Isso garante a qualidade e relevância do conteúdo.
-                </p>
+                </div>
               </div>
 
               <Button
