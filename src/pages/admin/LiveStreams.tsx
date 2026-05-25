@@ -166,7 +166,7 @@ export default function AdminLiveStreams() {
     if (!url) return null;
 
     // Remove parâmetros de query primeiro
-    const cleanUrl = url.split('?')[0].split('&')[0];
+    const cleanUrl = url?.split('?')?.[0]?.split('&')?.[0] ?? '';
 
     const patterns = [
       // youtube.com/watch?v=VIDEO_ID
@@ -187,7 +187,7 @@ export default function AdminLiveStreams() {
     }
 
     // Fallback: último segmento da URL limpa
-    const parts = cleanUrl.split('/').filter(p => p.length > 0);
+    const parts = cleanUrl?.split('/')?.filter(p => p.length > 0) ?? [];
     const lastPart = parts[parts.length - 1];
     if (lastPart && /^[a-zA-Z0-9_-]{11}$/.test(lastPart)) {
       return lastPart;
