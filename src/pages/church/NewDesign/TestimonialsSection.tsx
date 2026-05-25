@@ -32,19 +32,26 @@ export default function TestimonialsSection({ churchId, churchSlug }: Testimonia
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
+        console.log('[TestimonialsSection] Buscando depoimentos para churchId:', churchId);
         const response = await fetch(buildApiUrl(`/api/church/${churchId}/testimonials`));
         const data = await response.json();
+        console.log('[TestimonialsSection] Resposta:', data);
         if (data.success) {
           setTestimonials(data.data);
+          console.log('[TestimonialsSection] Depoimentos carregados:', data.data.length);
+        } else {
+          console.error('[TestimonialsSection] Erro na resposta:', data.error);
         }
       } catch (error) {
-        console.error('Erro ao carregar depoimentos:', error);
+        console.error('[TestimonialsSection] Erro ao carregar depoimentos:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTestimonials();
+    if (churchId) {
+      fetchTestimonials();
+    }
   }, [churchId]);
 
   const nextTestimonial = () => {
@@ -60,7 +67,31 @@ export default function TestimonialsSection({ churchId, churchSlug }: Testimonia
   }
 
   if (testimonials.length === 0) {
-    return null; // Não mostra seção se não houver depoimentos
+    return (
+      <section id="depoimentos" className="py-16 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/20 rounded-full mb-4">
+            <Heart className="w-4 h-4 text-amber-400" />
+            <span className="text-amber-400 text-sm font-medium">Depoimentos</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            O Que Nossos Membros Dizem
+          </h2>
+          <p className="text-slate-400 mb-8">
+            Ainda não há depoimentos aprovados. Envie o seu e inspire outros!
+          </p>
+          <Button
+            asChild
+            className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold"
+          >
+            <a href={`/igreja/${churchSlug}/depoimento`}>
+              <MessageSquare className="w-4 h-4 mr-2" />
+              Compartilhar Minha História
+            </a>
+          </Button>
+        </div>
+      </section>
+    );
   }
 
   return (
