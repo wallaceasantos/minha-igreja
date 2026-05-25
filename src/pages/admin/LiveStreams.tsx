@@ -446,7 +446,7 @@ export default function AdminLiveStreams() {
                       <Calendar className="w-3 h-3" />
                       {(() => {
                         try {
-                          const input = stream.scheduled_start!;
+                          const input: unknown = stream.scheduled_start;
                           let date: Date;
                           // Verifica se é um objeto Date usando Object.prototype.toString
                           if (Object.prototype.toString.call(input) === '[object Date]') {
