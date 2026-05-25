@@ -370,13 +370,28 @@ export default function LiveAuthGate({ children, churchSlug }: LiveAuthGateProps
                       <div className="flex-1 h-px bg-slate-700"></div>
                     </div>
 
+                    {/* Acessar como Visitante - Sem cadastro */}
+                    <Button
+                      onClick={() => setIsAuthenticated(true)}
+                      variant="ghost"
+                      className="w-full text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+                    >
+                      <Users className="w-4 h-4 mr-2" /> Acessar como Visitante
+                    </Button>
+
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 h-px bg-slate-700"></div>
+                      <span className="text-slate-500 text-sm">ou</span>
+                      <div className="flex-1 h-px bg-slate-700"></div>
+                    </div>
+
                     {/* Cadastro Rápido - Redireciona para página dedicada */}
                     <Button
                       onClick={() => navigate(`/igreja/${activeSlug}/cadastro`)}
                       variant="outline"
-                      className="w-full border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white"
+                      className="w-full border-amber-500/30 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300"
                     >
-                      <UserPlus className="w-4 h-4 mr-2" /> Cadastre-se Rapidamente
+                      <UserPlus className="w-4 h-4 mr-2" /> Cadastre-se Gratuitamente
                     </Button>
                   </div>
                 )}
