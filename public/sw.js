@@ -130,15 +130,21 @@ async function networkFirst(request) {
   try {
     const networkResponse = await fetch(request);
     if (networkResponse.ok) {
-      const cache = await caches.open(CACHE_NAME);
-      cache.put(request, networkResponse.clone());
+      // Só cacheia requisições GET (POST, PUT, DELETE não são cacheáveis)
+      if (request.method === 'GET') {
+        const cache = await caches.open(CACHE_NAME);
+        cache.put(request, networkResponse.clone());
+      }
     }
     return networkResponse;
   } catch (error) {
     console.log('[SW] Network failed, trying cache:', request.url);
-    const cachedResponse = await caches.match(request);
-    if (cachedResponse) {
-      return cachedResponse;
+    // Só tenta cache para GET
+    if (request.method === 'GET') {
+      const cachedResponse = await caches.match(request);
+      if (cachedResponse) {
+        return cachedResponse;
+      }
     }
     throw error;
   }
@@ -146,16 +152,22 @@ async function networkFirst(request) {
 
 // Cache First: Tenta cache primeiro, fallback para rede
 async function cacheFirst(request) {
-  const cachedResponse = await caches.match(request);
-  if (cachedResponse) {
-    return cachedResponse;
+  // Só tenta cache para GET
+  if (request.method === 'GET') {
+    const cachedResponse = await caches.match(request);
+    if (cachedResponse) {
+      return cachedResponse;
+    }
   }
-  
+
   try {
     const networkResponse = await fetch(request);
     if (networkResponse.ok) {
-      const cache = await caches.open(STATIC_CACHE);
-      cache.put(request, networkResponse.clone());
+      // Só cacheia requisições GET
+      if (request.method === 'GET') {
+        const cache = await caches.open(STATIC_CACHE);
+        cache.put(request, networkResponse.clone());
+      }
     }
     return networkResponse;
   } catch (error) {
@@ -170,9 +182,12 @@ async function networkWithCacheFallback(request) {
     const networkResponse = await fetch(request);
     return networkResponse;
   } catch (error) {
-    const cachedResponse = await caches.match(request);
-    if (cachedResponse) {
-      return cachedResponse;
+    // Só tenta cache para GET
+    if (request.method === 'GET') {
+      const cachedResponse = await caches.match(request);
+      if (cachedResponse) {
+        return cachedResponse;
+      }
     }
     throw error;
   }
