@@ -1,5 +1,5 @@
 -- Migration: Adicionar colunas de status e aprovação à tabela testimonials
--- Compatível com MySQL 5.7+
+-- Versão simplificada compatível com MySQL 5.7+
 
 -- Verificar e adicionar coluna status
 SET @exist := (SELECT COUNT(*) FROM information_schema.columns 
@@ -45,7 +45,8 @@ PREPARE stmt FROM @sql;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 
--- Adicionar foreign key se não existir
+-- Adicionar foreign key (sem IF EXISTS, com tratamento de erro)
+-- Primeiro verificar se a constraint existe
 SET @exist := (SELECT COUNT(*) FROM information_schema.table_constraints 
 WHERE table_schema = DATABASE() AND table_name = 'testimonials' AND constraint_name = 'fk_testimonials_approved_by');
 
@@ -56,9 +57,31 @@ PREPARE stmt FROM @sql;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 
--- Atualizar índice
-DROP INDEX IF EXISTS idx_church_active ON testimonials;
-CREATE INDEX IF NOT EXISTS idx_church_status ON testimonials(church_id, status);
+-- Remover índice antigo se existir (tratamento de erro)
+-- Verificar se o índice existe
+SET @exist := (SELECT COUNT(*) FROM information_schema.statistics 
+WHERE table_schema = DATABASE() AND table_name = 'testimonials' AND index_name = 'idx_church_active');
+
+SET @sql := IF(@exist > 0, 
+  'DROP INDEX idx_church_active ON testimonials', 
+  'SELECT \'Índice idx_church_active não existe\' as msg');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+-- Criar novo índice (verificar se já existe)
+SET @exist := (SELECT COUNT(*) FROM information_schema.statistics 
+WHERE table_schema = DATABASE() AND table_name = 'testimonials' AND index_name = 'idx_church_status');
+
+SET @sql := IF(@exist = 0, 
+  'CREATE INDEX idx_church_status ON testimonials(church_id, status)', 
+  'SELECT \'Índice idx_church_status já existe\' as msg');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
 
 -- Atualizar registros existentes
 UPDATE testimonials SET status = 'approved' WHERE status IS NULL;
+
+-- Confirmação
+SELECT 'Migration concluída com sucesso' as resultado;
