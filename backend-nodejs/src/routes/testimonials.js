@@ -13,7 +13,7 @@ const router = express.Router();
  * GET /api/church/:churchId/testimonials
  * Retorna depoimentos APROVADOS de uma igreja (público - para a live)
  */
-router.get('/church/:churchId/testimonials', async (req, res) => {
+router.get('/:churchId/testimonials', async (req, res) => {
   try {
     const churchId = parseInt(req.params.churchId, 10);
     console.log('[API] Buscando depoimentos aprovados para churchId:', churchId, '(tipo:', typeof churchId, ')');

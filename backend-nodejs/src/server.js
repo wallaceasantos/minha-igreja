@@ -127,6 +127,7 @@ app.use('/api/gallery', churchGalleryRoutes); // Church Gallery routes
 app.use('/api/church', liveStreamsRoutes);
 app.use('/api/live', liveNotificationsRoutes); // Live Streams routes
 app.use('/api/church', churchVersesRoutes); // Church Verses routes
+app.use('/api/church', testimonialsRoutes); // Depoimentos de membros (público)
 app.use('/api/admin', adminReviewsRoutes); // Rotas de avaliações (Admin)
 app.use('/api', adminReviewsRoutes);       // Rotas públicas de avaliações
 app.use('/api/testimonials', testimonialsRoutes); // Depoimentos de membros
