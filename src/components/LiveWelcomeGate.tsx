@@ -59,7 +59,7 @@ export default function LiveWelcomeGate({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/95 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/95 backdrop-blur-sm overflow-y-auto"
     >
       <motion.div
         initial={{ scale: 0.95, y: 20 }}
@@ -67,7 +67,7 @@ export default function LiveWelcomeGate({
         transition={{ duration: 0.3 }}
         className="w-full max-w-2xl"
       >
-        <Card className="bg-gradient-to-br from-indigo-900 via-slate-900 to-purple-900 border-indigo-700/50 overflow-hidden">
+        <Card className="bg-gradient-to-br from-indigo-900 via-slate-900 to-purple-900 border-indigo-700/50 overflow-hidden max-h-[90vh] my-4">
           {/* Header com Logo */}
           <div className="relative p-6 text-center border-b border-indigo-800/50">
             <button
@@ -105,7 +105,7 @@ export default function LiveWelcomeGate({
             </motion.div>
           </div>
 
-          <CardContent className="p-6 space-y-6">
+          <CardContent className="p-6 space-y-6 overflow-y-auto max-h-[calc(90vh-120px)]">
             {/* Social Proof - Contadores */}
             <motion.div
               initial={{ opacity: 0 }}
