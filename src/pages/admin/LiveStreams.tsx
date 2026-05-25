@@ -448,8 +448,8 @@ export default function AdminLiveStreams() {
                         try {
                           const input = stream.scheduled_start!;
                           let date: Date;
-                          // Verifica se é um objeto Date (não null e typeof object)
-                          if (input !== null && typeof input === 'object' && input instanceof Date) {
+                          // Verifica se é um objeto Date usando Object.prototype.toString
+                          if (Object.prototype.toString.call(input) === '[object Date]') {
                             date = input as Date;
                           } else if (typeof input === 'string') {
                             const isoString = input.replace(' ', 'T') + 'Z';
