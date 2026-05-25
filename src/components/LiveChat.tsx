@@ -10,7 +10,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Send, MessageCircle, Shield, User } from 'lucide-react';
+import { 
+  Send, MessageCircle, Shield, User, Crown, Flame, Award, 
+  Sparkles, Users, TrendingUp, Heart
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { buildApiUrl } from '@/lib/config';
 
 interface LiveChatProps {
@@ -41,12 +45,39 @@ const quickReactions = [
   { emoji: '🎵', label: 'Louvor', message: '🎵 Que louvor maravilhoso!' },
 ];
 
+// Emojis rápidos para reações durante o culto
+const quickReactions = [
+  { emoji: '🙏', label: 'Oração', message: '🙏 Amém! Estou orando com você!' },
+  { emoji: '❤️', label: 'Amor', message: '❤️ Glória a Deus!' },
+  { emoji: '🔥', label: 'Fogo', message: '🔥 Aleluia! O Espírito de Deus está aqui!' },
+  { emoji: '😇', label: 'Bênção', message: '😇 Que Deus te abençoe!' },
+  { emoji: '✨', label: 'Glória', message: '✨ Glória ao Senhor!' },
+  { emoji: '🎵', label: 'Louvor', message: '🎵 Que louvor maravilhoso!' },
+];
+
+// Top membros simulados (em produção viria do backend)
+const topMembers = [
+  { name: 'Maria S.', messages: 45, badge: 'gold' },
+  { name: 'João P.', messages: 32, badge: 'silver' },
+  { name: 'Ana L.', messages: 28, badge: 'bronze' },
+];
+
+// Mensagens de boas-vindas para novos membros
+const welcomeMessages = [
+  'Bem-vindo à família! 🙏',
+  'Que alegria ter você conosco! ✨',
+  'Seja bem-vindo à nossa comunidade! ❤️',
+];
+
 export default function LiveChat({ churchId, liveStreamId, memberSession, isOpen, onClose }: LiveChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [onlineCount, setOnlineCount] = useState(0);
   const [socket, setSocket] = useState<any>(null);
   const [activeReaction, setActiveReaction] = useState<string | null>(null);
+  const [showGamification, setShowGamification] = useState(true);
+  const [userMessageCount, setUserMessageCount] = useState(0);
+  const [showWelcome, setShowWelcome] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Limpar mensagens quando liveStreamId mudar (nova live ou sair da live)
@@ -195,11 +226,55 @@ export default function LiveChat({ churchId, liveStreamId, memberSession, isOpen
           <CardTitle className="text-white flex items-center gap-2 text-base">
             <MessageCircle className="w-5 h-5 text-blue-400" /> Chat ao Vivo
           </CardTitle>
-          <Badge variant="secondary" className="text-xs gap-1">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            {onlineCount} online
-          </Badge>
+          <div className="flex items-center gap-2">
+            {memberSession?.member && (
+              <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs gap-1">
+                <Crown className="w-3 h-3" /> Membro
+              </Badge>
+            )}
+            <Badge variant="secondary" className="text-xs gap-1">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              {onlineCount} online
+            </Badge>
+          </div>
         </div>
+        
+        {/* Gamificação - Top Membros */}
+        {showGamification && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            className="mt-3 pt-3 border-t border-gray-700/50"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Flame className="w-4 h-4 text-amber-400" />
+                <span className="text-xs text-gray-400">Top membros:</span>
+                <div className="flex -space-x-1">
+                  {topMembers.map((member, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-1 px-2 py-1 rounded-full bg-gray-700/50 border border-gray-600"
+                    >
+                      <span className="text-xs text-gray-300 truncate max-w-[60px]">
+                        {member.name}
+                      </span>
+                      {member.badge === 'gold' && <Crown className="w-3 h-3 text-amber-400" />}
+                      {member.badge === 'silver' && <Award className="w-3 h-3 text-slate-300" />}
+                      {member.badge === 'bronze' && <Sparkles className="w-3 h-3 text-amber-600" />}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <button
+                onClick={() => setShowGamification(false)}
+                className="text-gray-500 hover:text-gray-300"
+              >
+                <span className="text-xs">Ocultar</span>
+              </button>
+            </div>
+          </motion.div>
+        )}
       </CardHeader>
 
       {/* Mensagens */}
@@ -218,12 +293,24 @@ export default function LiveChat({ churchId, liveStreamId, memberSession, isOpen
               <div className="flex items-center gap-2 mb-1">
                 {msg.user_type === 'admin' ? (
                   <Shield className="w-3 h-3 text-amber-400" />
+                ) : msg.user_type === 'member' ? (
+                  <Crown className="w-3 h-3 text-indigo-400" />
                 ) : (
                   <User className="w-3 h-3 text-gray-400" />
                 )}
-                <span className={`text-sm font-medium ${msg.user_type === 'admin' ? 'text-amber-400' : 'text-gray-300'}`}>
+                <span className={`text-sm font-medium ${msg.user_type === 'admin' ? 'text-amber-400' : msg.user_type === 'member' ? 'text-indigo-300' : 'text-gray-300'}`}>
                   {msg.user_name}
                 </span>
+                {msg.user_type === 'member' && (
+                  <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-[10px] px-1">
+                    Membro
+                  </Badge>
+                )}
+                {msg.user_type === 'visitor' && (
+                  <Badge variant="outline" className="text-[10px] px-1 border-gray-600 text-gray-400">
+                    Visitante
+                  </Badge>
+                )}
                 <span className="text-xs text-gray-500">{formatTime(msg.created_at)}</span>
                 {msg.is_pinned && <span className="text-xs text-amber-400">📌</span>}
               </div>

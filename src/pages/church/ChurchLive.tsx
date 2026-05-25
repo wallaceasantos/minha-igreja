@@ -13,6 +13,8 @@ import { toast } from 'sonner';
 import { buildApiUrl } from '@/lib/config';
 import LiveAuthGate from '@/components/LiveAuthGate';
 import LiveChat from '@/components/LiveChat';
+import LiveWelcomeGate from '@/components/LiveWelcomeGate';
+import LiveConversionBanner from '@/components/LiveConversionBanner';
 import Navbar from './NewDesign/Navbar';
 import Footer from './NewDesign/Footer';
 import PrayerModal from './NewDesign/PrayerModal';
@@ -20,7 +22,7 @@ import AdminModal from './NewDesign/AdminModal';
 import { ContactMessage, PrayerRequest } from './types';
 import {
   Play, Users, MessageCircle, ArrowLeft, Radio, Clock, WifiOff,
-  Calendar, Film, BookOpen, DollarSign, Heart, Bell, Mail, Smartphone, Loader2, X
+  Calendar, Film, BookOpen, DollarSign, Heart, Bell, Mail, Smartphone, Loader2, X, Crown
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 
@@ -75,6 +77,29 @@ export default function ChurchLive() {
     { id: 3, title: 'Escola Biblica', date: 'Ter 14/05' },
     { id: 4, title: 'Santa Ceia', date: 'Dom 11/05' },
   ]);
+
+  // Estados para conversão (Welcome Gate & Banner)
+  const [showWelcomeGate, setShowWelcomeGate] = useState(true);
+  const [showConversionBanner, setShowConversionBanner] = useState(false);
+  const [timeWatched, setTimeWatched] = useState(0);
+  const [memberCount] = useState(53); // Simulado - em produção viria da API
+
+  // Timer para contar tempo assistido
+  useEffect(() => {
+    if (!showWelcomeGate && activeStream?.status === 'live') {
+      const timer = setInterval(() => {
+        setTimeWatched(prev => {
+          const newTime = prev + 1;
+          // Mostrar banner após 2 minutos se não for membro
+          if (newTime === 2 && !localStorage.getItem('memberLiveSession')) {
+            setShowConversionBanner(true);
+          }
+          return newTime;
+        });
+      }, 60000); // Incrementa a cada 1 minuto
+      return () => clearInterval(timer);
+    }
+  }, [showWelcomeGate, activeStream?.status]);
 
   useEffect(() => {
     loadChurchData();
@@ -316,6 +341,31 @@ export default function ChurchLive() {
         </div>
       )}
 
+      {/* Welcome Gate para conversão */}
+      {showWelcomeGate && activeStream && (
+        <LiveWelcomeGate
+          churchName={church?.name || 'Igreja'}
+          churchLogo={church?.logo_url}
+          memberCount={memberCount}
+          onlineCount={viewerCount}
+          liveTitle={activeStream?.title || 'Transmissão Ao Vivo'}
+          onEnterAsGuest={() => setShowWelcomeGate(false)}
+          onBecomeMember={() => {
+            setShowWelcomeGate(false);
+            navigate(`/igreja/${slug}/cadastro`);
+          }}
+        />
+      )}
+
+      {/* Banner de conversão contextual */}
+      <LiveConversionBanner
+        memberCount={memberCount}
+        isVisible={showConversionBanner}
+        onClose={() => setShowConversionBanner(false)}
+        onAction={() => navigate(`/igreja/${slug}/cadastro`)}
+        timeWatched={timeWatched}
+      />
+
       {/* Conteúdo Principal (Gate ou Player) */}
       <div className="flex-1">
         <LiveAuthGate churchSlug={activeSlug || ''}>
@@ -329,6 +379,21 @@ export default function ChurchLive() {
                   <h1 className="text-white font-semibold text-lg hidden md:block">{church?.name || 'Igreja'} - Transmissão ao Vivo</h1>
                 </div>
                 <div className="flex items-center gap-2">
+                  {/* Status de Membro */}
+                  {(() => {
+                    const session = localStorage.getItem('memberLiveSession');
+                    const isMember = session && JSON.parse(session)?.member;
+                    return isMember ? (
+                      <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 gap-1">
+                        <Crown className="w-3 h-3" /> Membro
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="border-amber-500/30 text-amber-400 gap-1 cursor-pointer hover:bg-amber-500/10" onClick={() => navigate(`/igreja/${slug}/cadastro`)}>
+                        <Crown className="w-3 h-3" /> Seja Membro
+                      </Badge>
+                    );
+                  })()}
+                  
                   {/* Indicador de Conexão */}
                   <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${isOnline ? 'bg-green-600/20 text-green-400' : 'bg-red-600/20 text-red-400 animate-pulse'}`}>
                     <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-400' : 'bg-red-400'}`}></div>
