@@ -48,6 +48,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const Plans = lazy(() => import("./pages/admin/Plans"));
 const PedidosOracaoPublico = lazy(() => import("./pages/PedidosOracaoPublico"));
 const PedidosOracaoPremium = lazy(() => import("./pages/PedidosOracaoPremium"));
+const MemberRegister = lazy(() => import("./pages/church/MemberRegister"));
 
 // Componente router para decidir qual página de pedidos mostrar baseado no plano
 const PedidosOracaoRouter = () => {
@@ -159,6 +160,7 @@ const App = () => (
               {/* Preview da Igreja (localhost) - NOVO DESIGN */}
               <Route path="/igreja/:slug" element={<ChurchNew />} />
               <Route path="/igreja/:slug/ao-vivo" element={<ChurchLive />} />
+              <Route path="/igreja/:slug/cadastro" element={<MemberRegister />} />
               <Route path="/igreja/:slug/depoimento" element={<TestimonialForm />} />
               <Route path="/igreja" element={<ChurchNew />} />
 
