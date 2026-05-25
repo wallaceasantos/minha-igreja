@@ -27,7 +27,6 @@ interface Testimonial {
   status: 'pending' | 'approved' | 'rejected';
   created_at: string;
   approved_at?: string;
-  approved_by_name?: string;
 }
 
 interface Stats {

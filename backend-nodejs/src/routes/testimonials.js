@@ -142,11 +142,10 @@ router.get('/', authenticateToken, async (req, res) => {
     const pool = getPool();
     
     let query = `
-      SELECT t.id, t.member_name, t.member_email, t.member_avatar, t.member_since, 
-             t.testimonial_text, t.status, t.is_active, t.display_order, 
-             t.created_at, t.approved_at, u.name as approved_by_name
+      SELECT t.id, t.member_name, t.member_email, t.member_avatar, t.member_since,
+             t.testimonial_text, t.status, t.is_active, t.display_order,
+             t.created_at, t.approved_at
       FROM testimonials t
-      LEFT JOIN users u ON t.approved_by = u.id
       WHERE t.church_id = ?
     `;
     const params = [churchId];
