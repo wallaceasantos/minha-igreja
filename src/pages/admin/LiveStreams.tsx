@@ -448,14 +448,14 @@ export default function AdminLiveStreams() {
                         try {
                           const input = stream.scheduled_start!;
                           let date: Date;
-                          // Verifica se é um objeto Date (typeof 'object') antes de usar instanceof
-                          if (typeof input === 'object' && input instanceof Date) {
-                            date = input;
+                          // Verifica se é um objeto Date (não null e typeof object)
+                          if (input !== null && typeof input === 'object' && input instanceof Date) {
+                            date = input as Date;
                           } else if (typeof input === 'string') {
                             const isoString = input.replace(' ', 'T') + 'Z';
                             date = new Date(isoString);
                           } else {
-                            date = new Date(input as string);
+                            date = new Date(String(input));
                           }
                           return date.toLocaleString('pt-BR', {
                             day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
