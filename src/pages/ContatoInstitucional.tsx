@@ -385,7 +385,7 @@ export default function ContatoInstitucional() {
                     </div>
                     <div>
                       <p className="font-semibold">Como funciona o período de teste?</p>
-                      <p className="text-muted-foreground">30 dias grátis em qualquer plano. Sem compromisso.</p>
+                      <p className="text-muted-foreground">60 dias grátis em qualquer plano. Sem compromisso.</p>
                     </div>
                   </CardContent>
                 </Card>

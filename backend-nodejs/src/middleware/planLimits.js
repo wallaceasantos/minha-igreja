@@ -1,9 +1,9 @@
 /**
  * Middleware: Limites por Plano
  * ============================================
- * Modelo Trial-First: Todas as igrejas começam com 90 dias de trial
+ * Modelo Trial-First: Todas as igrejas começam com 60 dias de trial
  * Após o trial, devem assinar o plano Essencial (R$ 79,90/mês)
- * - Trial: 90 dias com todos os recursos do Essencial
+ * - Trial: 60 dias com todos os recursos do Essencial
  * - Essencial: 200 membros, pedidos ilimitados, 3 admins
  * - Premium: 1000 membros, pedidos ilimitados, 10 admins
  * - Enterprise: ilimitado
@@ -63,7 +63,7 @@ const PLAN_LIMITS = {
 
 /**
  * Middleware para identificar igreja e plano
- * Nova lógica: trial de 90 dias, depois precisa assinar
+ * Nova lógica: trial de 60 dias, depois precisa assinar
  */
 export async function identifyChurch(req, res, next) {
   try {
@@ -107,11 +107,10 @@ export async function identifyChurch(req, res, next) {
     const subscription = Array.isArray(subscriptions) ? subscriptions[0] : null;
     const now = new Date();
 
-    // Verificar se trial está ativo (90 dias)
+    // Verificar se trial está ativo (60 dias)
     const trialEndDate = subscription?.trial_end_date 
       ? new Date(subscription.trial_end_date) 
-      : new Date(church.created_at);
-    trialEndDate.setDate(trialEndDate.getDate() + 90); // 90 dias de trial
+      : new Date(new Date(church.created_at).getTime() + 60 * 24 * 60 * 60 * 1000);
     
     const isTrialActive = trialEndDate > now;
 

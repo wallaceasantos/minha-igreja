@@ -380,14 +380,14 @@ router.post('/', async (req, res) => {
       console.log('✅ Admin criado');
 
       // Criar subscription
-      // Se o plano for 'essencial', cria um Trial de 30 dias.
+      // Se o plano for 'essencial', cria um Trial de 60 dias.
       // Se o plano for 'free' (ou outro), cria uma assinatura ativa sem trial.
       const isTrial = plan_type === 'essencial';
       const status = isTrial ? 'trial' : 'active';
-      // Define a data de fim do trial (30 dias) ou null para plano free
-      const trialEndDate = isTrial ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : null;
+      // Define a data de fim do trial (60 dias) ou null para plano free
+      const trialEndDate = isTrial ? new Date(Date.now() + 60 * 24 * 60 * 60 * 1000) : null;
       // Define o fim do período atual (fim do trial ou 1 ano)
-      const periodEndDate = isTrial ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+      const periodEndDate = isTrial ? new Date(Date.now() + 60 * 24 * 60 * 60 * 1000) : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
 
       await connection.execute(`
         INSERT INTO subscriptions (church_id, plan_type, status, is_trial, current_period_start, current_period_end, trial_end_date, created_at)\n        VALUES (?, ?, ?, ?, CURDATE(), ?, ?, NOW())
@@ -433,7 +433,7 @@ router.post('/', async (req, res) => {
                   <h3 style="margin-top: 0; color: #1f2937;">Detalhes da Igreja:</h3>
                   <p style="margin: 5px 0;"><strong>Nome:</strong> ${name}</p>
                   <p style="margin: 5px 0;"><strong>Subdomínio:</strong> ${slug}</p>
-                  <p style="margin: 5px 0;"><strong>Plano:</strong> Trial (30 dias grátis)</p>
+                  <p style="margin: 5px 0;"><strong>Plano:</strong> Trial (60 dias grátis)</p>
                 </div>
 
                 <p style="font-size: 16px;">Seu site está acessível em:</p>
@@ -497,7 +497,7 @@ router.post('/', async (req, res) => {
           email: email,
           url: `https://${slug}.plataforma.minhaigreja.com.br`,
           admin_url: `https://${slug}.plataforma.minhaigreja.com.br/login`,
-          trial_days: 30,
+          trial_days: 60,
           admin: {
             name: admin.name,
             email: admin.email

@@ -172,7 +172,7 @@ httpServer.listen(PORT, () => {
   startScheduler(); // Comunicados
   startPrayerReminderScheduler(); // Lembretes de Pedidos de Oração
   startBillingScheduler(); // Cobrança e Inadimplência
-  startTrialScheduler(); // Trial de 30 Dias
+  startTrialScheduler(); // Trial de 60 Dias
   startDomainScheduler(); // Verificação de DNS de Domínios
 });
 

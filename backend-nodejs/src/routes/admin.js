@@ -275,7 +275,7 @@ router.get('/recent-churches', isAdmin, async (req, res) => {
 /**
  * GET /api/admin/trials-ending
  * Buscar igrejas com trial acabando
- * Nota: Usa created_at + 30 dias como trial_end_date simulado
+ * Nota: Usa created_at + 60 dias como trial_end_date simulado
  */
 router.get('/trials-ending', isAdmin, async (req, res) => {
   const pool = getPool();
@@ -292,13 +292,13 @@ router.get('/trials-ending', isAdmin, async (req, res) => {
         plan_type,
         is_active,
         created_at,
-        DATE_ADD(created_at, INTERVAL 30 DAY) as trial_end_date,
-        DATEDIFF(DATE_ADD(created_at, INTERVAL 30 DAY), NOW()) as days_remaining
+        DATE_ADD(created_at, INTERVAL 60 DAY) as trial_end_date,
+        DATEDIFF(DATE_ADD(created_at, INTERVAL 60 DAY), NOW()) as days_remaining
       FROM churches
       WHERE plan_type = 'free' 
         AND is_active = 1
-        AND DATE_ADD(created_at, INTERVAL 30 DAY) >= NOW()
-        AND DATE_ADD(created_at, INTERVAL 30 DAY) <= DATE_ADD(NOW(), INTERVAL ? DAY)
+        AND DATE_ADD(created_at, INTERVAL 60 DAY) >= NOW()
+        AND DATE_ADD(created_at, INTERVAL 60 DAY) <= DATE_ADD(NOW(), INTERVAL ? DAY)
       ORDER BY trial_end_date ASC
     `, [days]);
     

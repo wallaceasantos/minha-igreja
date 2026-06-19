@@ -59,9 +59,9 @@ export default function HeroSection({ onOpenPrayer, prayersCount, churchName, ch
           >
             <h1 className="font-heading font-extrabold text-3xl sm:text-4xl md:text-5xl text-white tracking-tight leading-tight">
               {churchName || 'Pregando o Evangelho Pleno'} <br />
-              <span className="text-amber-400">
+              {/* <span className="text-amber-400">
                 de Jesus Cristo
-              </span>
+              </span> */}
             </h1>
             <p className="max-w-xl text-sm sm:text-base text-indigo-100/90 font-medium font-sans">
               {churchDescription || 'Um lugar de acolhimento, fé e transformação. Venha fazer parte da nossa família e crescer na graça do Senhor.'}

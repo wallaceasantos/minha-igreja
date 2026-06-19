@@ -69,17 +69,17 @@ export default function Plans() {
     },
   ];
 
-  // Handler para solicitar upgrade com trial de 30 dias
+  // Handler para solicitar upgrade com trial de 60 dias
   const handleRequestUpgrade = async (planName: string) => {
     if (!church) return;
 
     // Confirmar solicitação
     const confirm = window.confirm(
-      `Deseja ativar os 30 dias grátis do plano Essencial?\n\n` +
-      `✅ 30 dias de teste grátis\n` +
+      `Deseja ativar os 60 dias grátis do plano Essencial?\n\n` +
+      `✅ 60 dias de teste grátis\n` +
       `✅ Acesso a todos os recursos do Essencial\n` +
       `✅ Sem compromisso - cancele quando quiser\n\n` +
-      `Após 30 dias: R$ 79,90/mês`
+      `Após 60 dias: R$ 79,90/mês`
     );
 
     if (!confirm) return;
@@ -103,7 +103,7 @@ export default function Plans() {
 
       if (result.success) {
         toast.success('🎉 Upgrade ativado com sucesso!', {
-          description: `30 dias grátis ativados! Trial encerra em ${result.data.days_remaining} dias.`,
+          description: `60 dias grátis ativados! Trial encerra em ${result.data.days_remaining} dias.`,
         });
 
         // Redirecionar para dashboard
@@ -197,7 +197,7 @@ export default function Plans() {
             {plan.name === 'Essencial' && (
               <div className="absolute -top-3 right-1/2 transform translate-x-1/2">
                 <Badge className="bg-green-500 text-white">
-                  30 dias grátis
+                  60 dias grátis
                 </Badge>
               </div>
             )}

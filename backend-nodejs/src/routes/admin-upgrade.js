@@ -1,7 +1,7 @@
 /**
  * API: Admin - Upgrade de Planos
  * ============================================
- * Rotas para gestão de upgrade de planos com trial de 30 dias
+ * Rotas para gestão de upgrade de planos com trial de 60 dias
  *
  * Rotas:
  * POST   /api/admin/upgrade/request     - Solicitar upgrade com trial
@@ -55,7 +55,7 @@ const identifyChurch = async (req, res, next) => {
 
 /**
  * POST /api/admin/upgrade/request
- * Solicitar upgrade com trial de 30 dias
+ * Solicitar upgrade com trial de 60 dias
  */
 router.post('/request', identifyChurch, async (req, res) => {
   try {
@@ -97,7 +97,7 @@ router.post('/request', identifyChurch, async (req, res) => {
     if (result.success) {
       res.json({
         success: true,
-        message: 'Upgrade solicitado com sucesso! 30 dias grátis ativados.',
+        message: 'Upgrade solicitado com sucesso! 60 dias grátis ativados.',
         data: {
           trial_start_date: result.trialStartDate,
           trial_end_date: result.trialEndDate,

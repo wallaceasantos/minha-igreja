@@ -1,5 +1,5 @@
 /**
- * Scheduler: Trial de 30 Dias
+ * Scheduler: Trial de 60 Dias
  * ============================================
  * Verifica trials expirando e envia notificações automáticas
  * 
@@ -45,7 +45,7 @@ async function sendEmail(to, subject, text, html) {
  * Email de Boas-vindas ao Trial
  */
 async function sendTrialWelcomeEmail(church, trialEndDate) {
-  const subject = '🎉 Bem-vindo ao plano Essencial! 30 dias grátis!';
+  const subject = '🎉 Bem-vindo ao plano Essencial! 60 dias grátis!';
   
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -59,7 +59,7 @@ async function sendTrialWelcomeEmail(church, trialEndDate) {
         <h2 style="color: #16a34a; margin-top: 0;">✅ Período de Trial Ativado</h2>
         <p><strong>Início:</strong> ${new Date().toLocaleDateString('pt-BR')}</p>
         <p><strong>Fim do trial:</strong> ${trialEndDate.toLocaleDateString('pt-BR')}</p>
-        <p><strong>Dias de trial:</strong> 30 dias grátis</p>
+        <p><strong>Dias de trial:</strong> 60 dias grátis</p>
       </div>
       
       <h3>Aproveite todos os recursos:</h3>
@@ -126,7 +126,7 @@ async function sendTrialReminderEmail(church, daysRemaining, trialEndDate) {
       
       <p>Olá, <strong>${church.name}</strong>!</p>
       
-      <p>Seu período de teste de 30 dias está quase terminando.</p>
+      <p>Seu período de teste de 60 dias está quase terminando.</p>
       
       <div style="background: #fffbeb; padding: 20px; border-radius: 8px; margin: 20px 0; border: 2px solid #f59e0b;">
         <h2 style="color: #d97706; margin-top: 0;">${emoji} Fim do trial em ${daysRemaining} dias!</h2>
@@ -184,7 +184,7 @@ async function sendTrialEndedEmail(church) {
       
       <p>Olá, <strong>${church.name}</strong>!</p>
       
-      <p>Seu período de teste de 30 dias encerrou.</p>
+      <p>Seu período de teste de 60 dias encerrou.</p>
       
       <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
         <h3 style="margin-top: 0;">O que acontece agora:</h3>
@@ -364,7 +364,7 @@ export async function activateTrial(churchId) {
   try {
     const trialStartDate = new Date();
     const trialEndDate = new Date();
-    trialEndDate.setDate(trialEndDate.getDate() + 30);
+    trialEndDate.setDate(trialEndDate.getDate() + 60);
 
     // Atualizar subscription
     await pool.execute(`
@@ -414,7 +414,7 @@ export async function activateTrial(churchId) {
       success: true,
       trialStartDate,
       trialEndDate,
-      daysRemaining: 30
+      daysRemaining: 60
     };
 
   } catch (error) {

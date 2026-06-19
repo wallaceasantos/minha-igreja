@@ -87,7 +87,7 @@ export default function PlanSelection({ selectedPlan, onSelectPlan, onContinue }
               {selectedPlan === 'essencial' ? 'Selecionado' : 'Selecionar Essencial'}
             </Button>
             <p className="text-xs text-center text-muted-foreground">
-              30 dias de teste grátis
+              60 dias de teste grátis
             </p>
           </CardContent>
         </Card>

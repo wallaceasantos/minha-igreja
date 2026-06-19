@@ -92,7 +92,7 @@ export default function Sucesso() {
     );
   }
 
-  let daysRemaining = 30;
+  let daysRemaining = 60;
   if (churchData.trial_end_date) {
     const trialEndDate = new Date(churchData.trial_end_date);
     if (!isNaN(trialEndDate.getTime())) {

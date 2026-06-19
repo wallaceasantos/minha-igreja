@@ -417,7 +417,7 @@ export default function Dashboard() {
                 Seu período de trial está acabando!
               </p>
               <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
-                Faltam {daysRemaining} dias para o fim do seu trial de 30 dias. Faça upgrade para não perder suas configurações.
+                Faltam {daysRemaining} dias para o fim do seu trial de 60 dias. Faça upgrade para não perder suas configurações.
               </p>
             </div>
             <Button size="sm" variant="default" className="bg-amber-600 hover:bg-amber-700">
