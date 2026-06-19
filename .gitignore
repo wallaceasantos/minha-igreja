@@ -131,3 +131,6 @@ node_modules/.vite/
 # Git hooks (se usar husky)
 # ===========================================
 .husky/
+
+# Ferramentas de geração de documentação
+scripts/plantuml.jar
