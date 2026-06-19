@@ -1,0 +1,116 @@
+@startwbs EAP_MinhaIgreja
+skinparam backgroundColor #FEFEFE
+skinparam ArrowColor #666666
+skinparam lineColor #666666
+skinparam rectangle {
+    BackgroundColor<<done>> #C6EFCE
+    FontColor<<done>> #006100
+    BackgroundColor<<doing>> #FFEB9C
+    FontColor<<doing>> #9C5700
+    BackgroundColor<<todo>> #BDD7EE
+    FontColor<<todo>> #1F4E78
+}
+
+* MinhaIgreja — Plataforma SaaS
+** Gerência do Projeto
+*** TAP <<done>>
+*** EAP <<done>>
+*** Cronograma <<done>>
+*** Orçamento <<done>>
+*** Gestão de Riscos <<doing>>
+*** Relatórios de Status <<doing>>
+*** Fechamento do Projeto <<todo>>
+
+** Produto de Software — Frontend
+*** Setup e Configuração <<done>>
+**** Vite + React + TypeScript <<done>>
+**** TailwindCSS + shadcn/ui <<done>>
+**** ESLint + TypeScript <<done>>
+**** PWA (manifest + service worker) <<done>>
+*** Site Público da Igreja <<done>>
+**** Landing Page <<done>>
+**** Sobre / Quem Somos <<done>>
+**** Ministérios <<done>>
+**** Cultos e Eventos <<done>>
+**** Pedidos de Oração <<done>>
+**** Galeria de Fotos <<done>>
+**** Depoimentos <<done>>
+**** Transmissão ao Vivo <<done>>
+**** Cadastro de Membro <<done>>
+*** Painel Administrativo da Igreja <<done>>
+**** Dashboard <<done>>
+**** Membros <<done>>
+**** Pedidos de Oração <<done>>
+**** Eventos e Cultos <<done>>
+**** Ministérios <<done>>
+**** Galeria <<done>>
+**** Lives <<done>>
+**** Depoimentos <<done>>
+**** Configurações <<done>>
+**** Upgrade de Plano <<done>>
+*** Painel Super-Admin <<done>>
+**** Dashboard Geral <<done>>
+**** Gestão de Igrejas <<done>>
+**** Gestão de Usuários <<done>>
+**** Planos e Faturas <<done>>
+**** Comunicados <<done>>
+**** Logs de Auditoria <<done>>
+**** Configurações do Sistema <<done>>
+
+** Produto de Software — Backend
+*** Setup e Configuração <<done>>
+**** Express <<done>>
+**** Pool MySQL <<done>>
+**** CORS <<doing>>
+**** WebSocket (Socket.IO) <<done>>
+*** Autenticação e Segurança <<doing>>
+**** Login JWT <<done>>
+**** Google OAuth <<done>>
+**** Rate Limiting <<done>>
+**** Logs de Auditoria <<done>>
+**** Middleware de Permissões <<doing>>
+*** APIs REST <<done>>
+**** Igrejas <<done>>
+**** Membros <<done>>
+**** Pedidos de Oração <<done>>
+**** Eventos e Cultos <<done>>
+**** Ministérios <<done>>
+**** Lives <<done>>
+**** Depoimentos <<done>>
+**** Galeria <<done>>
+**** Upload <<done>>
+**** Assinaturas <<done>>
+*** Banco de Dados <<done>>
+**** Modelagem <<done>>
+**** Migrations <<doing>>
+**** Seeds <<todo>>
+*** Schedulers e Automações <<done>>
+**** Trial Scheduler <<done>>
+**** Billing Scheduler <<done>>
+**** Live Status Checker <<done>>
+**** Prayer Reminder <<done>>
+
+** Infraestrutura e Deploy
+*** Ambiente de Desenvolvimento <<done>>
+*** Ambiente de Produção (Railway) <<done>>
+*** Variáveis de Ambiente <<doing>>
+*** Domínio Personalizado <<done>>
+*** CDN para Imagens (Cloudinary) <<done>>
+*** Monitoramento Básico <<doing>>
+
+** Marketing e Lançamento
+*** Landing Page Institucional <<done>>
+*** Google Analytics 4 <<doing>>
+*** SEO e Meta Tags <<done>>
+*** Redes Sociais <<doing>>
+*** Vídeo de Demonstração <<todo>>
+*** Igrejas Piloto <<doing>>
+
+** Operação e Suporte
+*** Documentação do Usuário <<doing>>
+*** Documentação Técnica <<doing>>
+*** Suporte a Igrejas Piloto <<todo>>
+*** Coleta de Feedback <<todo>>
+*** Roadmap Pós-MVP <<todo>>
+
+@endwbs

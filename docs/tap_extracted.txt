@@ -1,0 +1,252 @@
+=== PARAGRAFOS ===
+0: TERMO DE ABERTURA DO PROJETO
+1: MINHA IGREJA - PLATAFORMA MULTI-TENANT PARA GESTÃO DE IGREJAS
+3: Gestor do Projeto
+Wallace Almeida dos Santos
+wallace.santos@igrejaconnect.com.br
+(92) 98855-1819
+6: 1. DESCRIÇÃO RESUMIDA DO PROJETO
+7: Contexto:
+O projeto IGREJA CONNECT surge da necessidade de digitalizar e modernizar a gestão de igrejas cristãs no Brasil. Muitas igrejas de pequeno e médio porte não possuem recursos para desenvolver sistemas próprios de gestão, resultando em processos manuais, desorganizados e ineficientes.
+8: Oportunidades Identificadas:
+9: Mercado de igrejas cristãs no Brasil representa mais de 100 milhões de fiéis
+10: Falta de soluções acessíveis e específicas para o nicho religioso
+11: Crescente digitalização de serviços religiosos pós-pandemia
+12: Necessidade de gestão profissional de membros, eventos, finanças e comunicação
+13: Solução:
+Desenvolvimento de uma plataforma SaaS (Software as a Service) multi-tenant que permite que igrejas de diferentes portes tenham seu próprio sistema de gestão completo, incluindo:
+14: Dashboard administrativo para pastores e líderes
+15: Site público personalizado para cada igreja
+16: Gestão de membros, eventos, cultos e ministérios
+17: Pedidos de oração online
+18: Integração com Google Maps
+19: Sistema de planos (Free e Essencial)
+20: Justificativa:
+O projeto visa democratizar o acesso à tecnologia para igrejas, oferecendo uma solução completa e acessível que permite aos líderes focarem em seu ministério principal enquanto o sistema cuida da gestão administrativa e digital.
+22: 2. ESCOPO – ROADMAP DO PRODUTO
+23: Módulo Super Admin (Plataforma)
+24: [x] Dashboard da Plataforma
+25: [x] Gestão de Igrejas (CRUD)
+26: [x] Gestão de Usuários
+27: [x] Financeiro da Plataforma
+28: [x] Gestão de Inadimplência
+29: [x] Logs de Auditoria
+30: [x] Gestão de Planos (Free, Essencial)
+31: [x] Comunicados em Massa
+32: [x] Tickets de Suporte
+33: [x] Relatórios de Atividade
+34: [x] Dashboard de Segurança
+35: [x] Configurações do Sistema
+36: Módulo Pastor/Admin (Igreja)
+37: [x] Dashboard da Igreja
+38: [x] Configurações da Igreja (Descrição Curta + Quem Somos)
+39: [x] Pedidos de Oração (CRUD + Limites por Plano)
+40: [x] Membros (CRUD)
+41: [x] Eventos (CRUD)
+42: [x] Cultos Fixos (CRUD)
+43: [x] Ministérios (CRUD + 22 ícones)
+44: [x] Upload de Logo (Plano Essencial)
+45: [x] Integração Google Maps
+46: [x] Modo Claro/Escuro
+47: Site Público (Igreja)
+48: [x] Página Institucional Personalizada
+49: [x] Seção Sobre (Quem Somos)
+50: [x] Ministérios com Ícones
+51: [x] Grade de Cultos
+52: [x] Lista de Eventos
+53: [x] Pedidos de Oração Online
+54: [x] Google Maps Embed
+55: [x] Contato Inteligente
+56: [x] Modo Claro/Escuro
+57: [x] Hover Effects nos Cards
+58: Sistema de Planos
+59: [x] Plano Free: 50 membros, 20 pedidos/mês, 1 admin, sem upload de logo
+60: [x] Plano Essencial: 200 membros, pedidos ilimitados, 3 admins, com upload de logo
+61: [x] Solicitação de Upgrade via Dashboard
+62: [x] Validação de Limites por Plano (Frontend + Backend)
+63: Backlog (Próximas Implementações)
+64: [ ] Sistema de Pagamento (Mercado Pago/Stripe)
+65: [ ] Autenticação JWT com Refresh Tokens
+66: [ ] Email Marketing (SendGrid/AWS SES)
+67: [ ] Importação/Exportação de Membros (CSV)
+68: [ ] Calendário de Eventos com Inscrição
+69: [ ] Financeiro da Igreja (Dízimos e Ofertas)
+70: [ ] Relatórios Avançados e Exportação
+71: [ ] Upload de Vídeos de Cultos
+72: [ ] Transmissão Ao Vivo
+73: [ ] Domínio Personalizado
+75: 3. NÃO ESCOPO
+76: Os seguintes itens, mesmo relacionados ao objetivo do projeto, NÃO farão parte do escopo:
+77: [x] Aplicativo Mobile Nativo: A plataforma será 100% web e responsiva, acessível via browser de qualquer dispositivo (desktop, tablet, mobile). Não haverá desenvolvimento de aplicativos nativos para iOS ou Android.
+78: [x] Sistema de Contribuição Online Integrado: Será implementado em fase futura
+79: [x] Transmissão Ao Vivo de Cultos: Funcionalidade planejada para roadmap futuro
+80: [x] Módulo de Kids (Escola Bíblica): Previsto para versões futuras
+81: [x] Integração com Redes Sociais Automática: Postagens manuais
+82: [x] Múltiplas Unidades/Igrejas por Conta: Disponível apenas para plano Enterprise (futuro)
+83: [x] Personalização Avançada de Tema: Apenas cores primária e secundária
+84: [x] API Pública para Terceiros: API interna apenas para consumo do frontend
+86: 4. EQUIPE ENVOLVIDA
+88: 5. PREMISSAS E RESTRIÇÕES
+89: Premissas
+90: A equipe terá acesso a ambiente de desenvolvimento, homologação e produção
+91: Os stakeholders estarão disponíveis para validações e feedbacks durante as sprints
+92: A infraestrutura de cloud (AWS/Azure) estará disponível e estável
+93: As APIs de terceiros (Google Maps, SendGrid, Mercado Pago) permanecerão operacionais
+94: O cliente (igrejas) possuirá acesso mínimo à internet para utilizar a plataforma
+95: A plataforma será acessada via browser, não sendo necessário desenvolvimento de app mobile
+96: Restrições
+97: Orçamento: Limitado para contratação de ferramentas premium
+98: Tempo: Prazo máximo de 6 meses para MVP em produção
+99: Tecnologia:
+100: Frontend: React + TypeScript + Vite + TailwindCSS
+101: Backend: Node.js + Express + MySQL
+102: Hospedagem: Hostinger ou similar
+103: Equipe: Time enxuto de 8 pessoas
+104: Conformidade: Necessário seguir LGPD para tratamento de dados dos fiéis
+105: Segurança: Dados sensíveis (pedidos de oração) devem ser criptografados
+106: Planos: Apenas 2 planos disponíveis (Free e Essencial)
+107: Recursos Desejáveis
+108: Ambiente de CI/CD automatizado
+109: Monitoramento contínuo (Sentry, New Relic)
+110: Backup automático diário do banco de dados
+111: Documentação técnica atualizada
+113: 6. RISCOS
+115: 7. PRAZO ESTIMADO
+116: Prazo Total Estimado: 6 meses (24 semanas)
+Data de Entrega Esperada: 16/08/2026
+118: 8. CUSTO ESTIMADO
+119: Custos de Desenvolvimento
+120: Custos Operacionais (Pós-Lançamento)
+121: Investimento Total
+122: Desenvolvimento: R$
+123: Operacional (12 meses): R$
+124: TOTAL GERAL: R$
+126: 9. INDICADORES DE SUCESSO
+127: Indicadores de Input
+128: Horas de Desenvolvimento: ≤ 960 horas/mês
+129: Budget Utilizado: ≤ R$ /mês
+130: Recursos Alocados: 100% da equipe disponível
+131: Indicadores de Processo
+132: Velocity da Sprint: ≥ 40 story points/sprint
+133: Bug Rate: ≤ 5 bugs críticos por release
+134: Code Coverage: ≥ 80% de testes automatizados
+135: Lead Time: ≤ 5 dias para features pequenas
+136: Indicadores de Resultado
+137: Igrejas Ativas: ≥ 100 igrejas nos primeiros 6 meses
+138: Usuários Ativos: ≥ 5.000 usuários mensais
+139: Taxa de Conversão: ≥ 30% de Free para Essencial
+140: NPS (Net Promoter Score): ≥ 70
+141: Churn Rate: ≤ 5% ao mês
+142: Indicadores de Impacto
+143: Receita Recorrente (MRR): R$  em 12 meses
+144: Satisfação do Cliente: ≥ 4.5/5 estrelas
+145: Tempo de Atividade (Uptime): ≥ 99.9%
+146: Redução de Tempo de Gestão: ≥ 40% para igrejas clientes
+148: 10. APORTECH - ESTRUTURA DE PLANOS
+149: Plano Free
+150: Público-Alvo: Igrejas pequenas e ministérios iniciantes
+151: Plano Essencial
+152: Público-Alvo: Igrejas em crescimento que necessitam de mais recursos
+153: Comparativo de Planos
+155: 11. APROVAÇÃO DO PROJETO
+157: Assinatura do Gestor do Projeto:
+159: Wallace Almeida dos Santos
+Gestor do Projeto - Igreja Connect
+Data: 05/04/2026
+161: Documento criado em 05 de abril de 2026
+Versão 1.1 - Igreja Connect
+Atualização: Confirmação de 2 planos (Free e Essencial) e exclusão de aplicativo mobile
+
+=== TABELAS ===
+
+--- Tabela 0 ---
+Data | Versão | Descrição | Autor
+05/04/2026 | 1.0 | Criação do Termo de Abertura do Projeto | Wallace Almeida dos Santos
+05/04/2026 | 1.1 | Atualização: Confirmação de 2 planos e exclusão de app mobile | Wallace Almeida dos Santos
+ |  |  | 
+
+--- Tabela 1 ---
+Área | Representante | Telefone | E-mail | Papel no Projeto
+Gestão | Wallace Almeida dos Santos | (92) 98855-1819 | wallace.santos@igrejaconnect.com.br | Gestor do Projeto / Product Owner
+Desenvolvimento Backend |  |  |  | Tech Lead Backend
+Desenvolvimento Frontend |  |  |  | Tech Lead Frontend
+Banco de Dados |  |  |  | DBA / Arquiteto de Dados
+UX/UI Design |  |  |  | Designer de Interface
+QA/Testing |  |  |  | Analista de Qualidade
+Infraestrutura |  |  |  | DevOps Engineer
+Suporte |  |  |  | Customer Success
+
+--- Tabela 2 ---
+ID | Risco | Probabilidade | Impacto | Mitigação
+R01 | Atraso na entrega de funcionalidades críticas | Média | Alto | Sprints bem definidas, daily meetings, buffer de tempo
+R02 | Mudança de escopo durante o desenvolvimento | Alta | Médio | Backlog gerenciado, change control board
+R03 | Instabilidade de APIs de terceiros (Google Maps) | Baixa | Médio | Fallback para endereço textual, múltiplos providers
+R04 | Vazamento de dados sensíveis dos fiéis | Baixa | Alto | Criptografia, auditoria, acesso restrito, LGPD compliance
+R05 | Baixa adoção da plataforma pelas igrejas | Média | Alto | Campanha de marketing, período de trial, suporte dedicado
+R06 | Dificuldade de integração com sistemas legados | Média | Baixo | API bem documentada, suporte técnico especializado
+R07 | Problemas de performance com crescimento de usuários | Média | Médio | Arquitetura escalável, cache, CDN, monitoramento
+R08 | Falta de pagamento das igrejas (inadimplência) | Alta | Alto | Sistema de cobrança automática, bloqueio após inadimplência
+
+--- Tabela 3 ---
+Fase | Duração | Data Início | Data Fim
+Planejamento | 2 semanas | 01/03/2026 | 15/03/2026
+Desenvolvimento MVP | 12 semanas | 16/03/2026 | 07/06/2026
+Testes e QA | 4 semanas | 08/06/2026 | 05/07/2026
+Piloto (Beta) | 4 semanas | 06/07/2026 | 02/08/2026
+Lançamento Oficial | 2 semanas | 03/08/2026 | 16/08/2026
+
+--- Tabela 4 ---
+Item | Valor Mensal | Duração | Total
+Equipe (8 pessoas) | R$ | 6 meses | R$
+Infraestrutura (Cloud) | R$ | 6 meses | R$
+Ferramentas e Licenças | R$ | 6 meses | R$
+APIs de Terceiros | R$ | 6 meses | R$
+Subtotal Desenvolvimento |  |  | R$
+
+--- Tabela 5 ---
+Item | Valor Mensal
+Manutenção da Equipe | R$
+Infraestrutura de Produção | R$
+Suporte e Atendimento | R$
+Marketing e Vendas | R$
+Subtotal Operacional | R$ /mês
+
+--- Tabela 6 ---
+Recurso | Limite
+Membros | Até 50
+Pedidos de Oração | Até 20/mês
+Administradores | 1
+Upload de Logo | ❌ Não disponível
+Site Público | ✅ Básico
+Google Maps | ✅ Disponível
+Modo Claro/Escuro | ✅ Disponível
+Valor | Grátis
+
+--- Tabela 7 ---
+Recurso | Limite
+Membros | Até 200
+Pedidos de Oração | Ilimitados
+Administradores | Até 3
+Upload de Logo | ✅ Disponível
+Site Público | ✅ Completo
+Google Maps | ✅ Disponível
+Modo Claro/Escuro | ✅ Disponível
+Suporte Prioritário | ✅ Disponível
+Valor | R$ 49,90/mês
+
+--- Tabela 8 ---
+Recurso | Free | Essencial
+Membros | 50 | 200
+Pedidos de Oração | 20/mês | Ilimitados
+Administradores | 1 | 3
+Upload de Logo | ❌ | ✅
+Site Público | Básico | Completo
+Suporte | Comunidade | Prioritário
+Valor | Grátis | R$ 49,90/mês
+
+--- Tabela 9 ---
+Patrocinador Técnico | Patrocinador Demandante
+Wallace Almeida dos Santos | [Nome do Patrocinador Demandante]
+Gestor do Projeto | Diretor Executivo
+Tecnologia da Informação | Igreja Connect
+Data: //______ | Data: //______
